@@ -314,6 +314,54 @@
   }
   .work-item:hover img { transform: scale(1.03); }
 
+  /* play button */
+  .work-item-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    background: rgba(0,0,0,0.6);
+    border: 2px solid rgba(255,255,255,0.8);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .work-item[data-trailer]:hover .work-item-play {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .work-item-play::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 3px;
+  }
+  .work-item-play:hover {
+    background: rgba(0,0,0,0.8);
+    border-color: #fff;
+  }
+  .work-item iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 5;
+  }
+
   /* hover overlay */
   .work-item-overlay {
     position: absolute;
@@ -681,7 +729,8 @@
   </div>
   <div class="work-grid">
 
-    <div class="work-item">
+    <div class="work-item" data-trailer="_N6lROdWde4">
+      <div class="work-item-play"></div>
       <img src="images/0DF8863C-BBC5-4CE0-966D75189839F0E0.jpg" alt="Educating Yorkshire Series 2" loading="lazy">
       <div class="work-item-overlay">
         <div class="overlay-role">Producer Director -- Two Four</div>
@@ -697,7 +746,8 @@
       </div>
     </div>
 
-    <div class="work-item">
+    <div class="work-item" data-trailer="kayrDtgpSCw">
+      <div class="work-item-play"></div>
       <img src="images/BENEATH_PORTRAIT-1.jpg" alt="Spartan Bare Knuckle" loading="lazy">
       <div class="work-item-overlay">
         <div class="overlay-role">Producer Director / DOP -- Apple TV+ / Amazon / Vice</div>
@@ -709,7 +759,8 @@
       </div>
     </div>
 
-    <div class="work-item">
+    <div class="work-item" data-trailer="Y9ExO9lL_24">
+      <div class="work-item-play"></div>
       <img src="images/Murder247.jpg" alt="Murder 24/7" loading="lazy">
       <div class="work-item-overlay">
         <div class="overlay-role">Producer / Director -- Expectation TV</div>
@@ -737,7 +788,8 @@
       </div>
     </div>
 
-    <div class="work-item">
+    <div class="work-item" data-trailer="TdPo6oQDfcA">
+      <div class="work-item-play"></div>
       <img src="images/p0jfnp88.jpg" alt="Freddie Flintoff Field of Dreams on Tour" loading="lazy">
       <div class="work-item-overlay">
         <div class="overlay-role">Location Director -- South Shore</div>
@@ -923,6 +975,38 @@
       setTimeout(() => msg.classList.remove('show'), 1500);
     });
   }
+
+  // Trailer play on click
+  document.querySelectorAll('.work-item-play').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = btn.closest('.work-item');
+      const videoId = item.getAttribute('data-trailer');
+      if (!videoId) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.allowFullscreen = true;
+      item.appendChild(iframe);
+      btn.style.display = 'none';
+      const overlay = item.querySelector('.work-item-overlay');
+      if (overlay) overlay.style.display = 'none';
+    });
+  });
+
+  // Close trailer when clicking outside
+  document.querySelectorAll('.work-item').forEach(item => {
+    item.addEventListener('mouseleave', () => {
+      const iframe = item.querySelector('iframe');
+      if (iframe) {
+        iframe.remove();
+        const btn = item.querySelector('.work-item-play');
+        if (btn) btn.style.display = 'flex';
+        const overlay = item.querySelector('.work-item-overlay');
+        if (overlay) overlay.style.display = '';
+      }
+    });
+  });
 
   // Dark mode toggle
   const toggle = document.querySelector('.theme-toggle');
