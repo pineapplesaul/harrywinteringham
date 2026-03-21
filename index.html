@@ -314,7 +314,8 @@
   }
   .work-item:hover img { transform: scale(1.03); }
 
-  .work-item iframe {
+  .work-item iframe,
+  .work-item video.trailer-video {
     position: absolute;
     top: 0;
     left: 0;
@@ -322,6 +323,7 @@
     height: 100%;
     border: none;
     z-index: 5;
+    object-fit: cover;
   }
   .work-item-unmute {
     position: absolute;
@@ -712,7 +714,7 @@
   </div>
   <div class="work-grid">
 
-    <div class="work-item" data-trailer="_N6lROdWde4">
+    <div class="work-item" data-trailer-video="images/educating-yorkshire-trailer.mp4">
 
       <img src="images/0DF8863C-BBC5-4CE0-966D75189839F0E0.jpg" alt="Educating Yorkshire Series 2" loading="lazy">
       <div class="work-item-overlay">
@@ -729,7 +731,7 @@
       </div>
     </div>
 
-    <div class="work-item" data-trailer="kayrDtgpSCw">
+    <div class="work-item" data-trailer-video="images/YTDown.com_YouTube_Spartan-Bare-Knuckle-Trailer-Available-N_Media_kayrDtgpSCw_001_1080p.mp4">
 
       <img src="images/BENEATH_PORTRAIT-1.jpg" alt="Spartan Bare Knuckle" loading="lazy">
       <div class="work-item-overlay">
@@ -742,7 +744,7 @@
       </div>
     </div>
 
-    <div class="work-item" data-trailer="Y9ExO9lL_24">
+    <div class="work-item" data-trailer-video="images/murder-247-trailer.mp4">
 
       <img src="images/Murder247.jpg" alt="Murder 24/7" loading="lazy">
       <div class="work-item-overlay">
@@ -963,6 +965,51 @@
   const mutedSvg = '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15" stroke="#fff" stroke-width="2"/><line x1="17" y1="9" x2="23" y2="15" stroke="#fff" stroke-width="2"/></svg>';
   const unmutedSvg = '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="#fff" stroke-width="1.5"/></svg>';
 
+  // Local video trailers
+  document.querySelectorAll('.work-item[data-trailer-video]').forEach(item => {
+    let hoverTimer;
+    item.addEventListener('mouseenter', () => {
+      hoverTimer = setTimeout(() => {
+        const src = item.getAttribute('data-trailer-video');
+        if (!src || item.querySelector('video.trailer-video')) return;
+        const video = document.createElement('video');
+        video.className = 'trailer-video';
+        video.src = src;
+        video.muted = true;
+        video.autoplay = true;
+        video.loop = true;
+        video.playsInline = true;
+        item.appendChild(video);
+        const btn = document.createElement('button');
+        btn.className = 'work-item-unmute';
+        btn.innerHTML = mutedSvg;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (video.muted) {
+            video.muted = false;
+            btn.innerHTML = unmutedSvg;
+          } else {
+            video.muted = true;
+            btn.innerHTML = mutedSvg;
+          }
+        });
+        item.appendChild(btn);
+        const overlay = item.querySelector('.work-item-overlay');
+        if (overlay) overlay.style.display = 'none';
+      }, 400);
+    });
+    item.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimer);
+      const video = item.querySelector('video.trailer-video');
+      const btn = item.querySelector('.work-item-unmute');
+      if (video) video.remove();
+      if (btn) btn.remove();
+      const overlay = item.querySelector('.work-item-overlay');
+      if (overlay) overlay.style.display = '';
+    });
+  });
+
+  // YouTube trailers (fallback)
   document.querySelectorAll('.work-item[data-trailer]').forEach(item => {
     let hoverTimer;
     let isMuted = true;
@@ -972,7 +1019,6 @@
         if (!videoId || item.querySelector('iframe')) return;
         isMuted = true;
         const iframe = document.createElement('iframe');
-        iframe.id = 'yt-' + videoId;
         iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&origin=' + window.location.origin;
         iframe.allow = 'autoplay; encrypted-media';
         iframe.allowFullscreen = true;
