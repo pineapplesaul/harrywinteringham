@@ -15,8 +15,17 @@
     --white: #fafaf8;
     --mid: #888;
     --rule: #d0cfc9;
+    --text-secondary: #444;
     --serif: 'EB Garamond', Georgia, serif;
     --sans: 'Karla', sans-serif;
+  }
+
+  [data-theme="dark"] {
+    --black: #e8e6e1;
+    --white: #141414;
+    --mid: #777;
+    --rule: #2a2a2a;
+    --text-secondary: #aaa;
   }
 
   html { font-size: 16px; }
@@ -26,6 +35,7 @@
     font-family: var(--sans);
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
+    transition: background 0.4s ease, color 0.4s ease;
   }
 
   /* ── NAV ── */
@@ -39,7 +49,7 @@
     padding: 22px 40px;
     background: var(--white);
     border-bottom: 1px solid transparent;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, background 0.4s ease;
   }
   nav.scrolled { border-color: var(--rule); }
   .nav-logo {
@@ -68,13 +78,89 @@
   }
   .nav-links a:hover { color: var(--mid); }
 
+  /* ── DARK MODE TOGGLE ── */
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { border-color: var(--mid); }
+  .theme-toggle svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: var(--black);
+    stroke-width: 1.5;
+    transition: stroke 0.3s;
+  }
+  .theme-toggle .icon-moon { display: block; }
+  .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+
+  /* ── COPY EMAIL ── */
+  .copy-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--black);
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    position: relative;
+  }
+  .copy-email:hover { border-color: var(--mid); }
+  .copy-email svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--mid);
+    fill: none;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+  }
+  .copy-email .copied-msg {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  .copy-email .copied-msg.show { opacity: 1; }
+  [data-theme="dark"] .work-item-overlay { background: var(--white); }
+  [data-theme="dark"] footer a { color: var(--black); }
+  [data-theme="dark"] .about-text a { color: var(--black); }
+  [data-theme="dark"] .award-badge.bafta { color: #c9a84c; }
+  [data-theme="dark"] .award-badge.emmy { color: #6a9fd8; }
+
   /* ── HERO ── */
   .hero {
     height: 100vh;
     position: relative;
     overflow: hidden;
   }
-  .hero img {
+  .hero img,
+  .hero video {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -131,9 +217,41 @@
   .info-value {
     font-size: 0.82rem;
     font-weight: 300;
-    color: #444;
+    color: var(--text-secondary);
     line-height: 1.7;
   }
+
+  /* ── CLIENT LOGOS ── */
+  .clients-bar {
+    padding: 48px 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .clients-bar-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 300;
+    color: var(--mid);
+    margin-bottom: 28px;
+  }
+  .clients-logos {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px 40px;
+  }
+  .clients-logos span {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--black);
+    opacity: 0.45;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  .clients-logos span:hover { opacity: 0.85; }
 
   /* ── INTRO TEXT SECTION ── */
   .intro-section {
@@ -154,7 +272,7 @@
     font-size: 0.88rem;
     line-height: 1.85;
     font-weight: 300;
-    color: #333;
+    color: var(--text-secondary);
   }
   .intro-body p + p { margin-top: 1.4em; }
 
@@ -195,6 +313,65 @@
     filter: grayscale(10%);
   }
   .work-item:hover img { transform: scale(1.03); }
+
+  /* hover overlay */
+  .work-item-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--white);
+    padding: 18px 24px 24px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .work-item:hover .work-item-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .work-item-overlay .overlay-role {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+  }
+  .work-item-overlay .overlay-desc {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .work-item-overlay .overlay-review {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+  }
+  .overlay-review-quote {
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .overlay-review-source {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    color: var(--mid);
+    margin-top: 4px;
+    letter-spacing: 0.03em;
+  }
+  .overlay-stars {
+    color: #c9a84c;
+    letter-spacing: 2px;
+    font-size: 0.7rem;
+  }
+
   .work-item-caption {
     padding: 18px 24px 24px;
     display: flex;
@@ -270,7 +447,7 @@
     width: 100%;
     aspect-ratio: 3/4;
     object-fit: cover;
-    object-position: center top;
+    object-position: 60% top;
     filter: grayscale(15%);
   }
   .about-text { }
@@ -285,7 +462,7 @@
     font-size: 0.88rem;
     line-height: 1.85;
     font-weight: 300;
-    color: #333;
+    color: var(--text-secondary);
     margin-bottom: 1.4em;
   }
 
@@ -335,12 +512,34 @@
   }
   .still-item:hover img { transform: scale(1.04); filter: grayscale(0%); }
 
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* stagger children in grids */
+  .work-item.reveal,
+  .still-item.reveal,
+  .awards-list li.reveal,
+  .clients-logos span.reveal {
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     nav { padding: 18px 20px; }
     .nav-links { gap: 20px; }
     .hero-caption { left: 20px; right: 20px; bottom: 32px; }
     .project-info-row { grid-template-columns: 1fr; gap: 24px; padding: 36px 20px; }
+    .clients-bar { padding: 36px 20px; }
+    .clients-logos { justify-content: flex-start; gap: 20px 32px; }
     .intro-section { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px; }
     .work-grid { grid-template-columns: 1fr; }
     .work-item { border-right: none; }
@@ -350,6 +549,7 @@
     .stills-grid { grid-template-columns: repeat(2, 1fr); }
     .stills-grid .still-item:nth-child(3n) { border-right: 1px solid var(--rule); }
     .stills-grid .still-item:nth-child(2n) { border-right: none; }
+    nav .copy-email { display: none; }
     footer { flex-direction: column; gap: 12px; padding: 32px 20px; text-align: center; }
   }
 </style>
@@ -363,17 +563,28 @@
     <li><a href="#work">Work</a></li>
     <li><a href="#stills">Stills</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="mailto:harry@harrywinteringham.uk">Contact</a></li>
+    <li><a href="#about">About</a></li>
   </ul>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
+      <span class="copied-msg">Copied</span>
+      hi@harrywinteringham.uk
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+    <button class="theme-toggle" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <img 
-    src="images/JESS_PORTRAITOFBRITAIN.jpg"
-    alt="Harry Winteringham – Documentary Director"
-    loading="eager"
-  >
+  <video
+    autoplay muted loop playsinline
+    poster="images/JESS_PORTRAITOFBRITAIN.jpg"
+    src="videos/Ronin_EducatingYorkshire.mp4"
+  ></video>
   <div class="hero-caption">
     <h1 class="hero-title">Documentary Producer,<br>Director &amp; Photographer.</h1>
     <span class="hero-scroll">London, UK</span>
@@ -396,6 +607,21 @@
   </div>
 </div>
 
+<!-- CLIENTS -->
+<div class="clients-bar">
+  <div class="clients-bar-label">Broadcasters &amp; Platforms</div>
+  <div class="clients-logos">
+    <span>BBC</span>
+    <span>Channel 4</span>
+    <span>ITV</span>
+    <span>Netflix</span>
+    <span>HBO</span>
+    <span>Hulu</span>
+    <span>Apple TV+</span>
+    <span>Vice</span>
+  </div>
+</div>
+
 <!-- INTRO -->
 <div class="intro-section">
   <div class="intro-tagline">Stories told from the inside out.</div>
@@ -409,7 +635,7 @@
 <div class="awards-section">
   <div class="awards-label">Awards &amp;<br>Nominations</div>
   <div>
-    <p style="font-size:0.82rem;font-weight:300;color:#555;line-height:1.7;margin-bottom:28px;font-style:italic;">Throughout my career I've contributed to these award-winning productions:</p>
+    <p style="font-size:0.82rem;font-weight:300;color:var(--text-secondary);line-height:1.7;margin-bottom:28px;font-style:italic;">Throughout my career I've contributed to these award-winning productions:</p>
     <ul class="awards-list">
       <li>
         <span>Ambulance — Series 11 &amp; 12</span>
@@ -457,6 +683,14 @@
 
     <div class="work-item">
       <img src="images/0DF8863C-BBC5-4CE0-966D75189839F0E0.jpg" alt="Educating Yorkshire Series 2" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">Producer Director -- Two Four</div>
+        <div class="overlay-desc">The critically acclaimed return to Thornhill Academy. Managing relationships with teachers and students with special educational needs.</div>
+        <div class="overlay-review">
+          <div class="overlay-review-quote">"Great care has been taken to make these children hilarious, but never the butt of the joke."</div>
+          <div class="overlay-review-source">The Guardian</div>
+        </div>
+      </div>
       <div class="work-item-caption">
         <div class="work-item-title">Educating Yorkshire, Series 2</div>
         <div class="work-item-meta">Channel 4</div>
@@ -465,6 +699,10 @@
 
     <div class="work-item">
       <img src="images/BENEATH_PORTRAIT-1.jpg" alt="Spartan Bare Knuckle" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">Producer Director / DOP -- Vice</div>
+        <div class="overlay-desc">Three-part series. In Bradford, a brutal boxing club is growing in popularity -- the UK's only licensed bare knuckle syndicate set up to combat knife crime.</div>
+      </div>
       <div class="work-item-caption">
         <div class="work-item-title">Spartan Bare Knuckle: The Real Life Fight Club</div>
         <div class="work-item-meta">Broadcast Nominated</div>
@@ -473,6 +711,14 @@
 
     <div class="work-item">
       <img src="images/Murder247.jpg" alt="Murder 24/7" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">Producer / Director -- Expectation TV</div>
+        <div class="overlay-desc">Embedded with West Mercia Police managing sensitive access across departments, with victims, family members and perpetrators of crime. Self-shot in sensitive environments including crime scenes.</div>
+        <div class="overlay-review">
+          <div class="overlay-review-quote">"An extremely well-crafted crime documentary; a thoroughbred of the genre."</div>
+          <div class="overlay-review-source">The Times <span class="overlay-stars">&#9733;&#9733;&#9733;&#9733;</span></div>
+        </div>
+      </div>
       <div class="work-item-caption">
         <div class="work-item-title">Murder 24/7</div>
         <div class="work-item-meta">BBC One</div>
@@ -480,7 +726,27 @@
     </div>
 
     <div class="work-item">
+      <img src="images/UltimateTest.jpg" alt="Freddie Flintoff Field of Dreams Series 2" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">Producer Director -- South Shore</div>
+        <div class="overlay-desc">Second series following Freddie Flintoff as he returns to inspire young people through cricket.</div>
+      </div>
+      <div class="work-item-caption">
+        <div class="work-item-title">Freddie Flintoff's Field of Dreams, Series 2</div>
+        <div class="work-item-meta">BBC One</div>
+      </div>
+    </div>
+
+    <div class="work-item">
       <img src="images/p0jfnp88.jpg" alt="Freddie Flintoff Field of Dreams on Tour" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">Location Director -- South Shore</div>
+        <div class="overlay-desc">Cross-shot sequences and fast-paced telephoto sports coverage. Coordinated multi-team shoot, car-mount pretties and GVs.</div>
+        <div class="overlay-review">
+          <div class="overlay-review-quote">"Truly transformational TV... the most entertaining, touching series you'll watch this year."</div>
+          <div class="overlay-review-source">The Telegraph <span class="overlay-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
+        </div>
+      </div>
       <div class="work-item-caption">
         <div class="work-item-title">Freddie Flintoff's Field of Dreams: On Tour</div>
         <div class="work-item-meta">BBC One · BAFTA Nominated</div>
@@ -489,6 +755,14 @@
 
     <div class="work-item">
       <img src="images/JESS_PORTRAITOFBRITAIN.jpg" alt="Ambulance BBC One" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">Producer / Director &amp; EP -- Dragonfly</div>
+        <div class="overlay-desc">12-week shoot embedded with the Ambulance and Air Ambulance Service. Shot and structured the edit for the series finale.</div>
+        <div class="overlay-review">
+          <div class="overlay-review-quote">"All human life was here -- birth, death and resurrection in the space of just two shifts."</div>
+          <div class="overlay-review-source">The Telegraph <span class="overlay-stars">&#9733;&#9733;&#9733;&#9733;</span></div>
+        </div>
+      </div>
       <div class="work-item-caption">
         <div class="work-item-title">Ambulance</div>
         <div class="work-item-meta">BBC One · BAFTA Award</div>
@@ -497,14 +771,26 @@
 
     <div class="work-item">
       <img src="images/CHERRYVALENTINE (17 of 18).jpg" alt="Cherry Valentine: Gypsy Queen and Proud" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">DV Director -- True North</div>
+        <div class="overlay-desc">Intimate documentary following the Drag Race star's return to the Traveller community.</div>
+        <div class="overlay-review">
+          <div class="overlay-review-quote">"A very sweet insight into her journey blending Gypsy heritage with queer identity."</div>
+          <div class="overlay-review-source">Gay Times</div>
+        </div>
+      </div>
       <div class="work-item-caption">
         <div class="work-item-title">Cherry Valentine: Gypsy Queen and Proud</div>
-        <div class="work-item-meta">Channel 4</div>
+        <div class="work-item-meta">BBC Three</div>
       </div>
     </div>
 
     <div class="work-item">
       <img src="images/IMG_2042 (2)_0009_CB_Grade_JPG_1.49.1.jpg" alt="Brain or Brawn" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">Producer / Director</div>
+        <div class="overlay-desc">BBC Two factual entertainment series.</div>
+      </div>
       <div class="work-item-caption">
         <div class="work-item-title">Brain or Brawn</div>
         <div class="work-item-meta">BBC Two</div>
@@ -513,6 +799,14 @@
 
     <div class="work-item">
       <img src="images/ce39222c-7502-4a0b-839e-9106b4429511.jpg" alt="Emergency Channel 4" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">Producer / Director -- The Garden</div>
+        <div class="overlay-desc">Self-shot on the road with the London Ambulance Service's Advanced Paramedic Practitioners and Air Ambulance operating within the London Trauma Network.</div>
+        <div class="overlay-review">
+          <div class="overlay-review-quote">"Essential programming that really ought to find a large audience."</div>
+          <div class="overlay-review-source">The Guardian</div>
+        </div>
+      </div>
       <div class="work-item-caption">
         <div class="work-item-title">Emergency</div>
         <div class="work-item-meta">Channel 4</div>
@@ -529,9 +823,10 @@
     <span style="font-size:0.75rem;color:var(--mid);letter-spacing:0.04em">Photography</span>
   </div>
   <div class="stills-grid">
+    <div class="still-item"><img src="images/87960011-2.jpg" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/WhatsApp Image 2025-05-15 at 11.01.56.jpeg" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/Mandy.jpg" alt="" loading="lazy"></div>
-    <div class="still-item"><img src="images/Ambulance.jpg" alt="" loading="lazy"></div>
+
     <div class="still-item"><img src="images/Lauren.jpg" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/JESSH.jpg" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/_MG_0551.jpg" alt="" loading="lazy"></div>
@@ -539,7 +834,7 @@
     <div class="still-item"><img src="images/ARRIVAL_PC_HWINTERINGHAM-28 (30).JPG" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/HayleyAndJoe.jpg" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/MAN_Selects_HighRes-4.JPG" alt="" loading="lazy"></div>
-    <div class="still-item"><img src="images/WD_BONNIE (16 of 20).jpg" alt="" loading="lazy"></div>
+    <div class="still-item"><img src="images/WD_BONNIE (9 of 20).jpg" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/MAN_Selects-137.JPG" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/Lake_District_01052017-91.jpg" alt="" loading="lazy"></div>
     <div class="still-item"><img src="images/HCMT-10.jpg" alt="" loading="lazy"></div>
@@ -560,19 +855,23 @@
     <p>Harry is a Documentary Producer / Director based in London. An experienced producer-director with a cinematic eye, he specialises in human-interest stories that get under the skin of their subjects.</p>
     <p>Over the past seven years, Harry has crafted ambitious prime-time factual, specialist factual, and observational programmes for BBC One, BBC Two, Channel 4, Netflix, and Hulu.</p>
     <p>His credits include the BAFTA-winning <em>Ambulance</em>, BAFTA-nominated <em>Freddie Flintoff's Field of Dreams</em>, and the critically acclaimed <em>Educating Yorkshire</em> (Series 2).</p>
-    <p>Alongside his directorial work, Harry operates a Sony FX6 on professional productions and builds digital tools that help documentary makers and journalists capture authentic human stories — including StoryCoPilot, his AI-assisted interview companion.</p>
-    <p style="margin-top:2em;">
-      <a href="mailto:harry@harrywinteringham.uk" style="font-size:0.82rem;text-decoration:underline;text-underline-offset:3px;color:var(--black);">harry@harrywinteringham.uk</a>
-    </p>
+    <p>Alongside his directorial work, Harry operates a Sony FX6 on professional productions and builds digital tools that help documentary makers and journalists capture authentic human stories — including StoryCoPilot, a workflow tool that helps filmmakers and storytellers tell better stories.</p>
   </div>
 </div>
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2026 Harry Winteringham</p>
-  <div style="display:flex;gap:32px;">
-    <a href="mailto:harry@harrywinteringham.uk">Contact</a>
-    <a href="https://www.harrywinteringham.uk">harrywinteringham.uk</a>
+  <div>
+    <p>© 2026 Harry Winteringham</p>
+    <p style="margin-top:8px;font-size:0.75rem;color:var(--mid);"><a href="https://www.storycopilot.app" target="_blank" rel="noopener" style="font-weight:400;color:var(--black);text-decoration:none;"><strong>StoryCoPilot</strong></a> — A workflow tool that helps filmmakers and storytellers tell better stories.</p>
+    <p style="margin-top:6px;"><a href="#about" style="font-size:0.75rem;color:var(--black);text-decoration:none;letter-spacing:0.03em;transition:color 0.2s;">About</a></p>
+  </div>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
+      <span class="copied-msg">Copied</span>
+      hi@harrywinteringham.uk
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
   </div>
 </footer>
 
@@ -582,6 +881,60 @@
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 60);
   }, { passive: true });
+
+  // Scroll reveal
+  const revealTargets = [
+    '.project-info-row > div',
+    '.clients-logos span',
+    '.intro-tagline',
+    '.intro-body',
+    '.awards-label',
+    '.awards-list li',
+    '.work-item',
+    '.still-item',
+    '.about-image',
+    '.about-text',
+  ];
+
+  revealTargets.forEach(sel => {
+    document.querySelectorAll(sel).forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.setProperty('--i', i);
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Copy email to clipboard
+  function copyEmail(btn) {
+    const email = btn.getAttribute('data-email');
+    navigator.clipboard.writeText(email).then(() => {
+      const msg = btn.querySelector('.copied-msg');
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 1500);
+    });
+  }
+
+  // Dark mode toggle
+  const toggle = document.querySelector('.theme-toggle');
+  const saved = localStorage.getItem('theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+
+  toggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
 </script>
 
 </body>
