@@ -1203,9 +1203,15 @@
   }
 
   // Showreel modal
+  let musicWasPlaying = false;
   function openShowreel() {
     const overlay = document.getElementById('showreel-overlay');
     const video = overlay.querySelector('video');
+    musicWasPlaying = !bgMusic.paused;
+    if (musicWasPlaying) {
+      bgMusic.pause();
+      document.querySelector('.music-toggle').classList.remove('playing');
+    }
     overlay.classList.add('active');
     video.currentTime = 0;
     video.play();
@@ -1215,6 +1221,10 @@
     const video = overlay.querySelector('video');
     video.pause();
     overlay.classList.remove('active');
+    if (musicWasPlaying) {
+      bgMusic.play();
+      document.querySelector('.music-toggle').classList.add('playing');
+    }
   }
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeShowreel();
