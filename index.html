@@ -355,7 +355,7 @@
   .clients-logos .logo-bbc { height: 72px; }
   .clients-logos .logo-c4 { height: 90px; }
   .clients-logos .logo-itv { height: 52px; }
-  .clients-logos .logo-netflix { height: 84px; }
+  .clients-logos .logo-netflix { height: 56px; }
   .clients-logos .logo-hulu { height: 78px; }
   .clients-logos .logo-appletv { height: 52px; }
 
@@ -743,7 +743,7 @@
 <div class="project-info-row">
   <div>
     <div class="info-label"><strong>Practice</strong></div>
-    <div class="info-value">Documentary Film<br>Camera Operation<br>Photography</div>
+    <div class="info-value">Documentary Film<br>Camera Operation<br>Drone Operation<br>Photography</div>
   </div>
   <div>
     <div class="info-label"><strong>Clients</strong></div>
@@ -1180,18 +1180,16 @@
   bgMusic.loop = true;
   bgMusic.volume = 0.3;
   let musicStarted = false;
-  function startMusicOnInteraction() {
+  function startMusicOnScroll() {
     if (musicStarted) return;
     musicStarted = true;
     bgMusic.play();
     document.querySelector('.music-toggle').classList.add('playing');
-    document.removeEventListener('click', startMusicOnInteraction);
-    document.removeEventListener('scroll', startMusicOnInteraction);
-    document.removeEventListener('touchstart', startMusicOnInteraction);
+    document.removeEventListener('scroll', startMusicOnScroll);
+    document.removeEventListener('touchmove', startMusicOnScroll);
   }
-  document.addEventListener('click', startMusicOnInteraction);
-  document.addEventListener('scroll', startMusicOnInteraction);
-  document.addEventListener('touchstart', startMusicOnInteraction);
+  document.addEventListener('scroll', startMusicOnScroll);
+  document.addEventListener('touchmove', startMusicOnScroll);
   function toggleMusic(btn) {
     if (bgMusic.paused) {
       bgMusic.play();
