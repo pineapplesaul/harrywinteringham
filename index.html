@@ -194,33 +194,35 @@
   }
   .showreel-modal {
     position: relative;
-    background: #fff;
-    border: 1px solid #d0cfc9;
-    padding: 20px;
-    max-width: 900px;
-    width: 90%;
-    transform: scale(0.95);
-    transition: transform 0.4s ease;
-  }
-  .showreel-overlay.active .showreel-modal {
-    transform: scale(1);
+    background: #000;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .showreel-modal video {
     width: 100%;
+    height: 100%;
+    object-fit: contain;
     display: block;
   }
   .showreel-close {
     position: absolute;
-    top: -36px;
-    right: 0;
+    top: 20px;
+    right: 24px;
     background: none;
     border: none;
-    color: #fff;
-    font-size: 1.4rem;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.82rem;
     cursor: pointer;
     font-family: var(--sans);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 10;
+    transition: color 0.3s;
   }
+  .showreel-close:hover { color: #fff; }
   [data-theme="dark"] .showreel-modal {
     background: #1a1a1a;
     border-color: #333;
