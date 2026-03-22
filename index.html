@@ -152,6 +152,79 @@
   [data-theme="dark"] .about-text a { color: var(--black); }
   [data-theme="dark"] .award-badge.bafta { color: #c9a84c; }
   [data-theme="dark"] .award-badge.emmy { color: #6a9fd8; }
+  [data-theme="dark"] .clients-logos img { filter: invert(1) brightness(2); }
+
+  /* ── SHOWREEL BUTTON ── */
+  .showreel-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 28px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fafaf8;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .showreel-btn:hover {
+    border-color: #fff;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* ── SHOWREEL MODAL ── */
+  .showreel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  .showreel-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .showreel-modal {
+    position: relative;
+    background: #fff;
+    border: 1px solid #d0cfc9;
+    padding: 20px;
+    max-width: 900px;
+    width: 90%;
+    transform: scale(0.95);
+    transition: transform 0.4s ease;
+  }
+  .showreel-overlay.active .showreel-modal {
+    transform: scale(1);
+  }
+  .showreel-modal video {
+    width: 100%;
+    display: block;
+  }
+  .showreel-close {
+    position: absolute;
+    top: -36px;
+    right: 0;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    font-family: var(--sans);
+    letter-spacing: 0.05em;
+  }
+  [data-theme="dark"] .showreel-modal {
+    background: #1a1a1a;
+    border-color: #333;
+  }
 
   /* ── HERO ── */
   .hero {
@@ -624,8 +697,11 @@
     src="videos/Ronin_EducatingYorkshire.mp4"
   ></video>
   <div class="hero-caption">
-    <h1 class="hero-title">Documentary Producer,<br>Director &amp; Photographer.</h1>
-    <span class="hero-scroll">London, UK</span>
+    <div>
+      <h1 class="hero-title">Documentary Producer,<br>Director &amp; Photographer.</h1>
+      <button class="showreel-btn" onclick="openShowreel()">See my showreel</button>
+    </div>
+    <span class="hero-scroll">London &amp; Bristol</span>
   </div>
 </section>
 
@@ -1064,7 +1140,33 @@
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
   });
+
+  // Showreel modal
+  function openShowreel() {
+    const overlay = document.getElementById('showreel-overlay');
+    const video = overlay.querySelector('video');
+    overlay.classList.add('active');
+    video.currentTime = 0;
+    video.play();
+  }
+  function closeShowreel() {
+    const overlay = document.getElementById('showreel-overlay');
+    const video = overlay.querySelector('video');
+    video.pause();
+    overlay.classList.remove('active');
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeShowreel();
+  });
 </script>
+
+<!-- SHOWREEL MODAL -->
+<div class="showreel-overlay" id="showreel-overlay" onclick="if(event.target===this)closeShowreel()">
+  <div class="showreel-modal">
+    <button class="showreel-close" onclick="closeShowreel()">Close</button>
+    <video src="videos/showreel.mp4" controls preload="none"></video>
+  </div>
+</div>
 
 </body>
 </html>
