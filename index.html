@@ -179,7 +179,7 @@
     font-family: var(--serif);
     font-size: clamp(2.2rem, 5vw, 3.8rem);
     font-weight: 400;
-    color: var(--white);
+    color: #fafaf8;
     line-height: 1.08;
     max-width: 520px;
     text-shadow: 0 1px 20px rgba(0,0,0,0.3);
@@ -241,17 +241,20 @@
     flex-wrap: wrap;
     gap: 24px 40px;
   }
-  .clients-logos span {
-    font-family: var(--sans);
-    font-size: 1rem;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    color: var(--black);
+  .clients-logos img {
+    height: 28px;
+    width: auto;
     opacity: 0.45;
     transition: opacity 0.3s;
-    white-space: nowrap;
+    object-fit: contain;
   }
-  .clients-logos span:hover { opacity: 0.85; }
+  .clients-logos img:hover { opacity: 0.85; }
+  .clients-logos .logo-bbc { height: 24px; }
+  .clients-logos .logo-c4 { height: 30px; }
+  .clients-logos .logo-itv { height: 26px; }
+  .clients-logos .logo-netflix { height: 28px; }
+  .clients-logos .logo-hulu { height: 26px; }
+  .clients-logos .logo-appletv { height: 26px; }
 
   /* ── INTRO TEXT SECTION ── */
   .intro-section {
@@ -360,6 +363,7 @@
     transform: translateY(100%);
     transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
+    z-index: 10;
   }
   .work-item:hover .work-item-overlay {
     opacity: 1;
@@ -562,7 +566,7 @@
   .work-item.reveal,
   .still-item.reveal,
   .awards-list li.reveal,
-  .clients-logos span.reveal {
+  .clients-logos img.reveal {
     transition-delay: calc(var(--i, 0) * 80ms);
   }
 
@@ -574,6 +578,7 @@
     .project-info-row { grid-template-columns: 1fr; gap: 24px; padding: 36px 20px; }
     .clients-bar { padding: 36px 20px; }
     .clients-logos { justify-content: flex-start; gap: 20px 32px; }
+    .clients-logos img { height: 22px; }
     .intro-section { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px; }
     .work-grid { grid-template-columns: 1fr; }
     .work-item { border-right: none; }
@@ -644,14 +649,12 @@
 <div class="clients-bar">
   <div class="clients-bar-label">Broadcasters &amp; Platforms</div>
   <div class="clients-logos">
-    <span>BBC</span>
-    <span>Channel 4</span>
-    <span>ITV</span>
-    <span>Netflix</span>
-    <span>HBO</span>
-    <span>Hulu</span>
-    <span>Apple TV+</span>
-    <span>Vice</span>
+    <img class="logo-bbc" src="images/BBC-Logo.png" alt="BBC" />
+    <img class="logo-c4" src="images/Channel_4_logo_2004.svg" alt="Channel 4" />
+    <img class="logo-itv" src="images/ITV-Logo-White.png" alt="ITV" />
+    <img class="logo-netflix" src="images/black-netflix-text-logo-701751694792594emxo6cr4pb.png" alt="Netflix" />
+    <img class="logo-hulu" src="images/hulu-2-logo.png" alt="Hulu" />
+    <img class="logo-appletv" src="images/apple-tv-logo-black-and-white.png" alt="Apple TV+" />
   </div>
 </div>
 
@@ -922,7 +925,7 @@
   // Scroll reveal
   const revealTargets = [
     '.project-info-row > div',
-    '.clients-logos span',
+    '.clients-logos img',
     '.intro-tagline',
     '.intro-body',
     '.awards-label',
@@ -994,8 +997,6 @@
           }
         });
         item.appendChild(btn);
-        const overlay = item.querySelector('.work-item-overlay');
-        if (overlay) overlay.style.display = 'none';
       }, 400);
     });
     item.addEventListener('mouseleave', () => {
@@ -1004,8 +1005,6 @@
       const btn = item.querySelector('.work-item-unmute');
       if (video) video.remove();
       if (btn) btn.remove();
-      const overlay = item.querySelector('.work-item-overlay');
-      if (overlay) overlay.style.display = '';
     });
   });
 
@@ -1041,8 +1040,6 @@
           }
         });
         item.appendChild(btn);
-        const overlay = item.querySelector('.work-item-overlay');
-        if (overlay) overlay.style.display = 'none';
       }, 400);
     });
     item.addEventListener('mouseleave', () => {
