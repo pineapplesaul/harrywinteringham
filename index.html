@@ -823,6 +823,26 @@
   </div>
 </div>
 
+<!-- DRONE PARALLAX -->
+<div class="drone-parallax" style="position:relative;height:70vh;overflow:hidden;margin:0;">
+  <video src="videos/instagrampost5.mp4" autoplay muted loop playsinline style="position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;transform:translate(-50%,-50%);object-fit:cover;will-change:transform;"></video>
+  <div style="position:absolute;bottom:32px;left:32px;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);font-weight:300;">Drone Operator</div>
+</div>
+
+<script>
+(function(){
+  const dp = document.querySelector('.drone-parallax video');
+  if(dp){
+    window.addEventListener('scroll', function(){
+      const rect = dp.parentElement.getBoundingClientRect();
+      const speed = 0.3;
+      const offset = rect.top * speed;
+      dp.style.transform = 'translate(-50%, calc(-50% + ' + offset + 'px))';
+    }, {passive:true});
+  }
+})();
+</script>
+
 <!-- WORK -->
 <div id="work">
   <div class="work-header">
@@ -831,7 +851,7 @@
   </div>
   <div class="work-grid">
 
-    <div class="work-item" data-trailer-video="images/educating-yorkshire-trailer.mp4">
+    <div class="work-item" data-trailer-video="videos/scott-results-compressed.mp4">
 
       <img src="images/0DF8863C-BBC5-4CE0-966D75189839F0E0.jpg" alt="Educating Yorkshire Series 2" loading="lazy">
       <div class="work-item-overlay">
