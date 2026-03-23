@@ -41,7 +41,7 @@
   /* ── NAV ── */
   nav {
     position: fixed;
-    top: 26px; left: 0; right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 100;
     display: flex;
     justify-content: space-between;
@@ -254,42 +254,6 @@
   [data-theme="dark"] .showreel-modal {
     background: #1a1a1a;
     border-color: #333;
-  }
-
-  /* ── NOW TICKER ── */
-  .now-ticker {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 101;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 6px 0;
-    background: var(--black);
-    font-family: var(--sans);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .now-ticker-label {
-    color: var(--white);
-    font-weight: 300;
-  }
-  .now-ticker-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #e74c3c;
-    animation: ticker-pulse 2s ease-in-out infinite;
-  }
-  @keyframes ticker-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-  .now-ticker-title {
-    color: var(--white);
-    font-weight: 400;
   }
 
   /* ── PRESS QUOTE SCROLL REVEAL ── */
@@ -771,13 +735,6 @@
     </button>
   </div>
 </nav>
-
-<!-- CURRENTLY WORKING ON -->
-<div class="now-ticker">
-  <span class="now-ticker-label">Currently in production</span>
-  <span class="now-ticker-dot"></span>
-  <span class="now-ticker-title">Architecture Series -- Apple TV+</span>
-</div>
 
 <!-- HERO -->
 <section class="hero">
