@@ -41,7 +41,7 @@
   /* ── NAV ── */
   nav {
     position: fixed;
-    top: 0; left: 0; right: 0;
+    top: 26px; left: 0; right: 0;
     z-index: 100;
     display: flex;
     justify-content: space-between;
@@ -256,6 +256,53 @@
     border-color: #333;
   }
 
+  /* ── NOW TICKER ── */
+  .now-ticker {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 101;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 0;
+    background: var(--black);
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .now-ticker-label {
+    color: var(--white);
+    font-weight: 300;
+  }
+  .now-ticker-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e74c3c;
+    animation: ticker-pulse 2s ease-in-out infinite;
+  }
+  @keyframes ticker-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .now-ticker-title {
+    color: var(--white);
+    font-weight: 400;
+  }
+
+  /* ── PRESS QUOTE SCROLL REVEAL ── */
+  .overlay-review {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+  }
+  .work-item:hover .overlay-review {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   /* ── HERO ── */
   .hero {
     height: 100vh;
@@ -461,12 +508,14 @@
     right: 0;
     bottom: 0;
     background: var(--white);
-    padding: 18px 24px 24px;
+    padding: 12px 20px 14px;
     opacity: 0;
     transform: translateY(100%);
     transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
     z-index: 10;
+    max-height: 45%;
+    overflow: hidden;
   }
   .work-item:hover .work-item-overlay {
     opacity: 1;
@@ -474,37 +523,37 @@
   }
   .work-item-overlay .overlay-role {
     font-family: var(--sans);
-    font-size: 0.85rem;
+    font-size: 0.72rem;
     font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--mid);
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
   .work-item-overlay .overlay-desc {
     font-family: var(--sans);
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     font-weight: 300;
     color: var(--text-secondary);
-    line-height: 1.7;
+    line-height: 1.5;
   }
   .work-item-overlay .overlay-review {
-    margin-top: 10px;
-    padding-top: 10px;
+    margin-top: 8px;
+    padding-top: 8px;
     border-top: 1px solid var(--rule);
   }
   .overlay-review-quote {
     font-family: var(--serif);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-style: italic;
     color: var(--text-secondary);
-    line-height: 1.5;
+    line-height: 1.4;
   }
   .overlay-review-source {
     font-family: var(--sans);
-    font-size: 0.72rem;
+    font-size: 0.65rem;
     color: var(--mid);
-    margin-top: 4px;
+    margin-top: 3px;
     letter-spacing: 0.03em;
   }
   .overlay-stars {
@@ -723,6 +772,13 @@
   </div>
 </nav>
 
+<!-- CURRENTLY WORKING ON -->
+<div class="now-ticker">
+  <span class="now-ticker-label">Currently in production</span>
+  <span class="now-ticker-dot"></span>
+  <span class="now-ticker-title">Architecture Series -- Apple TV+</span>
+</div>
+
 <!-- HERO -->
 <section class="hero">
   <video
@@ -743,7 +799,7 @@
 <div class="project-info-row">
   <div>
     <div class="info-label"><strong>Practice</strong></div>
-    <div class="info-value">Documentary Film<br>Camera Operation<br>Drone Operation<br>Photography</div>
+    <div class="info-value">Documentary Film<br>Camera Operation<br>Photography</div>
   </div>
   <div>
     <div class="info-label"><strong>Clients</strong></div>
@@ -822,26 +878,6 @@
     </ul>
   </div>
 </div>
-
-<!-- DRONE PARALLAX -->
-<div class="drone-parallax" style="position:relative;height:70vh;overflow:hidden;margin:0;">
-  <video src="videos/instagrampost5.mp4" autoplay muted loop playsinline style="position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;transform:translate(-50%,-50%);object-fit:cover;will-change:transform;"></video>
-  <div style="position:absolute;bottom:32px;left:32px;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);font-weight:300;">Drone Operator</div>
-</div>
-
-<script>
-(function(){
-  const dp = document.querySelector('.drone-parallax video');
-  if(dp){
-    window.addEventListener('scroll', function(){
-      const rect = dp.parentElement.getBoundingClientRect();
-      const speed = 0.3;
-      const offset = rect.top * speed;
-      dp.style.transform = 'translate(-50%, calc(-50% + ' + offset + 'px))';
-    }, {passive:true});
-  }
-})();
-</script>
 
 <!-- WORK -->
 <div id="work">
@@ -1125,9 +1161,18 @@
           if (video.muted) {
             video.muted = false;
             btn.innerHTML = unmutedSvg;
+            item._musicWasPlaying = !bgMusic.paused;
+            if (item._musicWasPlaying) {
+              bgMusic.pause();
+              document.querySelector('.music-toggle').classList.remove('playing');
+            }
           } else {
             video.muted = true;
             btn.innerHTML = mutedSvg;
+            if (item._musicWasPlaying) {
+              bgMusic.play();
+              document.querySelector('.music-toggle').classList.add('playing');
+            }
           }
         });
         item.appendChild(btn);
@@ -1137,6 +1182,10 @@
       clearTimeout(hoverTimer);
       const video = item.querySelector('video.trailer-video');
       const btn = item.querySelector('.work-item-unmute');
+      if (video && !video.muted && item._musicWasPlaying) {
+        bgMusic.play();
+        document.querySelector('.music-toggle').classList.add('playing');
+      }
       if (video) video.remove();
       if (btn) btn.remove();
     });
@@ -1167,10 +1216,19 @@
             f.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
             btn.innerHTML = unmutedSvg;
             isMuted = false;
+            item._musicWasPlaying = !bgMusic.paused;
+            if (item._musicWasPlaying) {
+              bgMusic.pause();
+              document.querySelector('.music-toggle').classList.remove('playing');
+            }
           } else {
             f.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
             btn.innerHTML = mutedSvg;
             isMuted = true;
+            if (item._musicWasPlaying) {
+              bgMusic.play();
+              document.querySelector('.music-toggle').classList.add('playing');
+            }
           }
         });
         item.appendChild(btn);
@@ -1180,10 +1238,12 @@
       clearTimeout(hoverTimer);
       const iframe = item.querySelector('iframe');
       const btn = item.querySelector('.work-item-unmute');
+      if (!isMuted && item._musicWasPlaying) {
+        bgMusic.play();
+        document.querySelector('.music-toggle').classList.add('playing');
+      }
       if (iframe) iframe.remove();
       if (btn) btn.remove();
-      const overlay = item.querySelector('.work-item-overlay');
-      if (overlay) overlay.style.display = '';
     });
   });
 
