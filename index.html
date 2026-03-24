@@ -153,6 +153,7 @@
   [data-theme="dark"] .award-badge.bafta { color: #c9a84c; }
   [data-theme="dark"] .award-badge.emmy { color: #6a9fd8; }
   [data-theme="dark"] .clients-logos img { filter: invert(1) brightness(2); }
+  [data-theme="dark"] .smiley-icon { filter: grayscale(1) invert(1); }
 
   /* ── MUSIC TOGGLE ── */
   .music-toggle {
@@ -1031,9 +1032,9 @@
     <p>© 2026 Harry Winteringham</p>
     <p style="margin-top:8px;font-size:0.75rem;color:var(--mid);"><a href="https://www.storycopilot.app" target="_blank" rel="noopener" style="font-weight:400;color:var(--black);text-decoration:none;"><strong>StoryCoPilot</strong></a> — A workflow tool that helps filmmakers and storytellers tell better stories.</p>
     <p style="margin-top:6px;font-size:0.75rem;color:var(--mid);letter-spacing:0.03em;">If you'd like to, please reach out.</p>
-    <div style="margin-top:16px;display:flex;justify-content:center;"><div style="background:#fff;padding:4px;display:inline-flex;"><img src="images/smiley.gif" alt="" style="width:36px;height:36px;filter:grayscale(1);"></div></div>
   </div>
-  <div style="display:flex;align-items:center;gap:24px;">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <img src="images/smiley.gif" alt="" style="width:32px;height:32px;filter:grayscale(1);" class="smiley-icon">
     <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
       <span class="copied-msg">Copied</span>
       hi@harrywinteringham.uk
