@@ -58,7 +58,7 @@ def main() -> None:
         save_all=True,
         append_images=palette_frames[1:],
         duration=durations,
-        loop=1,
+        loop=0,
         disposal=2,
         optimize=True,
     )
