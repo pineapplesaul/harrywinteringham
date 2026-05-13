@@ -12,7 +12,10 @@
   ol { font-size: 13px; line-height: 1.7; color: #333; padding-left: 18px; }
   ol li { margin-bottom: 4px; }
   code { background: #f0f0f0; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
-  .preview-label { font-size: 12px; color: #888; margin-bottom: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .preview-label { font-size: 12px; color: #888; margin-bottom: 16px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .copy-btn { display: inline-block; margin-top: 24px; padding: 10px 18px; background: #111; color: #fff; border: 0; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; }
+  .copy-btn:hover { background: #333; }
+  .copy-btn.copied { background: #2a8a4a; }
 </style>
 </head>
 <body>
@@ -20,15 +23,16 @@
 
   <div class="card">
     <h1>How to install</h1>
-    <p>1. Make sure <code>signature.gif</code> is live at <code>https://harrywinteringham.uk/images/signature.gif</code> (push the site).<br>
-       2. Select everything inside the box below (cmd+A inside it) and copy.<br>
-       3. Gmail → Settings → See all settings → General → Signature → paste into the editor → Save Changes.</p>
+    <p>1. Click <strong>Copy signature</strong> below.<br>
+       2. Gmail → ⚙ → See all settings → General → Signature.<br>
+       3. Click in the signature editor box, paste (cmd+V), then Save Changes.</p>
   </div>
 
   <div class="card">
-    <div class="preview-label">Signature preview — copy from here</div>
+    <div class="preview-label">Signature preview</div>
 
-    <!-- ====== GMAIL SIGNATURE (copy everything between these markers) ====== -->
+    <div id="signature-source">
+    <!-- ====== GMAIL SIGNATURE ====== -->
     <table cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; color: #111; font-size: 13px; line-height: 1.55;">
       <tr>
         <td style="padding-bottom: 4px;">
@@ -59,7 +63,9 @@
       </tr>
     </table>
     <!-- ====== END SIGNATURE ====== -->
+    </div>
 
+    <button class="copy-btn" id="copy-btn" onclick="copySignature()">Copy signature</button>
   </div>
 
   <div class="card">
@@ -73,5 +79,26 @@
   </div>
 
 </div>
+
+<script>
+async function copySignature() {
+  const html = document.getElementById('signature-source').innerHTML.trim();
+  const plain = 'Harry Winteringham\nProducer Director / Cam op\n+44 7771 146148\nShowreel: https://f.io/aonUFzmK\nWebsite: https://harrywinteringham.uk\nInstagram: https://www.instagram.com/hwinteringham/';
+  const btn = document.getElementById('copy-btn');
+  try {
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        'text/html': new Blob([html], { type: 'text/html' }),
+        'text/plain': new Blob([plain], { type: 'text/plain' }),
+      }),
+    ]);
+    btn.textContent = 'Copied — now paste into Gmail';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy signature'; btn.classList.remove('copied'); }, 3000);
+  } catch (e) {
+    alert('Copy failed: ' + e.message + '\n\nFallback: triple-click the signature image area and copy manually.');
+  }
+}
+</script>
 </body>
 </html>
