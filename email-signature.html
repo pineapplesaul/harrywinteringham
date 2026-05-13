@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Email signature — Harry Winteringham</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f4f4f4; padding: 60px; color: #111; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  .card { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 32px; }
+  h1 { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #888; margin: 0 0 8px; }
+  h1 + p { margin: 0 0 24px; font-size: 13px; color: #444; line-height: 1.6; }
+  ol { font-size: 13px; line-height: 1.7; color: #333; padding-left: 18px; }
+  ol li { margin-bottom: 4px; }
+  code { background: #f0f0f0; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
+  .preview-label { font-size: 12px; color: #888; margin-bottom: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="card">
+    <h1>How to install</h1>
+    <p>1. Make sure <code>signature.gif</code> is live at <code>https://harrywinteringham.uk/images/signature.gif</code> (push the site).<br>
+       2. Select everything inside the box below (cmd+A inside it) and copy.<br>
+       3. Gmail → Settings → See all settings → General → Signature → paste into the editor → Save Changes.</p>
+  </div>
+
+  <div class="card">
+    <div class="preview-label">Signature preview — copy from here</div>
+
+    <!-- ====== GMAIL SIGNATURE (copy everything between these markers) ====== -->
+    <table cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; color: #111; font-size: 13px; line-height: 1.55;">
+      <tr>
+        <td style="padding-bottom: 4px;">
+          <img src="https://harrywinteringham.uk/images/signature.gif"
+               alt="Harry Winteringham"
+               width="260"
+               style="display:block; width:260px; height:auto; border:0;">
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 0; padding-bottom: 14px; font-size: 13px; color: #555; letter-spacing: 0.02em;">
+          Producer Director&nbsp;/&nbsp;Cam op
+        </td>
+      </tr>
+      <tr>
+        <td style="font-size: 13px; color: #111;">
+          <a href="tel:+447771146148" style="color:#111; text-decoration:none;">+44&nbsp;7771&nbsp;146148</a>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 8px; font-size: 13px;">
+          <a href="https://f.io/aonUFzmK" style="color:#111; text-decoration:underline;">Showreel</a>
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          <a href="https://harrywinteringham.uk" style="color:#111; text-decoration:underline;">Website</a>
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          <a href="https://www.instagram.com/hwinteringham/" style="color:#111; text-decoration:underline;">Instagram</a>
+        </td>
+      </tr>
+    </table>
+    <!-- ====== END SIGNATURE ====== -->
+
+  </div>
+
+  <div class="card">
+    <h1>Notes</h1>
+    <ol>
+      <li>The signature image must be hosted publicly — deploy the site before testing.</li>
+      <li>Gmail caches images per recipient. Animation plays the first time someone opens the email, then most clients show the final frame (which reads as a clean static signature).</li>
+      <li>Outlook desktop will likely show only the first frame (start of the stroke). If that's a problem, swap the <code>src</code> to <code>signature.png</code> for an all-static version.</li>
+      <li>If Gmail strips the image on paste, use the Gmail signature editor's image button and paste the URL <code>https://harrywinteringham.uk/images/signature.gif</code> directly.</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>
