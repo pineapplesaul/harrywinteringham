@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harry Winteringham — Wedding Photography</title>
+<meta name="description" content="Wedding photography by Harry Winteringham. Documentary-style, cinematic wedding coverage across the UK.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0f0f0f;
+    --white: #fafaf8;
+    --mid: #888;
+    --rule: #d0cfc9;
+    --text-secondary: #444;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Karla', sans-serif;
+    --accent: #b8a88a;
+  }
+
+  [data-theme="dark"] {
+    --black: #e8e6e1;
+    --white: #141414;
+    --mid: #777;
+    --rule: #2a2a2a;
+    --text-secondary: #aaa;
+    --accent: #c4b594;
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  /* -- NAV -- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 40px;
+    background: var(--white);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.4s ease;
+  }
+  nav.scrolled { border-color: var(--rule); }
+
+  .nav-logo {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--black);
+    line-height: 1.3;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    color: var(--black);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--mid); }
+
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { border-color: var(--mid); }
+  .theme-toggle svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: var(--black);
+    stroke-width: 1.5;
+    transition: stroke 0.3s;
+  }
+  .theme-toggle .icon-moon { display: block; }
+  .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+
+  /* -- HERO -- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    position: relative;
+  }
+
+  .hero-label {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 24px;
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1.08;
+    max-width: 700px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-subtitle {
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 480px;
+    margin-top: 28px;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 12px 36px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--black);
+    border: 1px solid var(--rule);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .hero-cta:hover {
+    border-color: var(--black);
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--mid);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .scroll-hint svg {
+    stroke: var(--mid);
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
+  /* -- SECTION -- */
+  .section {
+    padding: 80px 40px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 48px;
+  }
+
+  /* -- APPROACH -- */
+  .approach {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    padding: 80px 40px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .approach-title {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  .approach-body {
+    font-size: 0.88rem;
+    line-height: 1.85;
+    font-weight: 300;
+    color: var(--text-secondary);
+  }
+  .approach-body p + p { margin-top: 1.4em; }
+
+  /* -- GALLERY PLACEHOLDER -- */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    aspect-ratio: 3/4;
+    background: var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gallery-item:nth-child(3n) { border-right: none; }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    filter: grayscale(10%);
+  }
+  .gallery-item:hover img {
+    transform: scale(1.03);
+    filter: grayscale(0%);
+  }
+
+  .gallery-placeholder {
+    color: var(--mid);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .gallery-note {
+    text-align: center;
+    padding: 48px 40px;
+    font-size: 0.85rem;
+    color: var(--mid);
+    font-style: italic;
+    font-family: var(--serif);
+  }
+
+  /* -- INSTAGRAM SECTION -- */
+  .instagram-section {
+    padding: 80px 40px;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .instagram-section .section-label {
+    margin-bottom: 24px;
+  }
+
+  .instagram-title {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  .instagram-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    max-width: 460px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+
+  .instagram-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--black);
+    border: 1px solid var(--rule);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .instagram-link:hover {
+    border-color: var(--black);
+    background: var(--black);
+    color: var(--white);
+  }
+  .instagram-link svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  /* -- DETAILS -- */
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .detail-card {
+    padding: 48px 36px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .detail-card:nth-child(3n) { border-right: none; }
+
+  .detail-card h3 {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+
+  .detail-card p {
+    font-size: 0.84rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* -- CONTACT -- */
+  .contact-section {
+    padding: 100px 40px;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .contact-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  .contact-subtitle {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    max-width: 420px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+  }
+
+  .contact-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--black);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+  .contact-email:hover { border-color: var(--black); }
+
+  /* -- FOOTER -- */
+  footer {
+    padding: 40px 40px 48px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p {
+    font-size: 0.75rem;
+    color: var(--mid);
+    letter-spacing: 0.03em;
+  }
+  footer a {
+    font-size: 0.75rem;
+    color: var(--black);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  footer a:hover { color: var(--mid); }
+
+  [data-theme="dark"] footer a { color: var(--black); }
+
+  /* -- SCROLL REVEAL -- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .gallery-item.reveal,
+  .detail-card.reveal {
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+
+  /* -- RESPONSIVE -- */
+  @media (max-width: 768px) {
+    nav { padding: 18px 20px; }
+    .nav-links { gap: 20px; }
+    .hero { padding: 100px 24px 80px; min-height: 85vh; }
+    .approach { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .gallery-item:nth-child(3n) { border-right: 1px solid var(--rule); }
+    .gallery-item:nth-child(2n) { border-right: none; }
+    .details-grid { grid-template-columns: 1fr; }
+    .detail-card { border-right: none; }
+    .section { padding: 48px 24px; }
+    .instagram-section { padding: 48px 24px; }
+    .contact-section { padding: 64px 24px; }
+    footer { flex-direction: column; gap: 12px; padding: 32px 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="/weddings/">Harry Winteringham<br>Wedding Photography</a>
+  <ul class="nav-links">
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#contact">Get in Touch</a></li>
+    <li><a href="/" style="color:var(--mid);">Documentary Work</a></li>
+    <li>
+      <button class="theme-toggle" aria-label="Toggle dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">Wedding Photography</div>
+  <h1 class="hero-title">Your story, told honestly.</h1>
+  <p class="hero-subtitle">A documentary filmmaker capturing the real moments of your day. The looks, the smiles, the full story.</p>
+  <a href="#contact" class="hero-cta">Enquire about your date</a>
+  <div class="scroll-hint">
+    <svg width="16" height="24" viewBox="0 0 16 24" fill="none" stroke-width="1" stroke-linecap="round">
+      <rect x="1" y="1" width="14" height="22" rx="7"/>
+      <line x1="8" y1="6" x2="8" y2="10"/>
+    </svg>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<div id="approach" class="approach">
+  <div class="approach-title">Documentary sensibilities, applied to your wedding day.</div>
+  <div class="approach-body">
+    <p>I spend my working life directing documentaries for the BBC and Channel 4, telling real stories about real people. I bring those same instincts to your wedding. A look across the room. A quiet smile when nobody else is watching. The small, honest moments that make up the real story of your day.</p>
+    <p>I'm not interested in pulling you away from your guests for staged shots. I'm there to capture what actually happens, the way it actually feels. The full story of the day, from the nerves in the morning to the chaos on the dance floor.</p>
+    <p>Based in Bristol and London, available across the UK and beyond.</p>
+  </div>
+</div>
+
+<!-- WHAT YOU GET -->
+<div class="details-grid">
+  <div class="detail-card">
+    <h3>Full Day Coverage</h3>
+    <p>From preparations through to the last dance. I stay as long as the story needs telling.</p>
+  </div>
+  <div class="detail-card">
+    <h3>Documentary Approach</h3>
+    <p>The little moments that tell the real story. A look, a smile, the bits you didn't even know were happening.</p>
+  </div>
+  <div class="detail-card">
+    <h3>Your Gallery</h3>
+    <p>A curated set of images delivered in a private online gallery, ready to print and share.</p>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div id="gallery" class="section">
+  <div class="section-label">Selected Work</div>
+  <div class="gallery-grid">
+    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
+    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
+    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
+    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
+    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
+    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
+  </div>
+  <p class="gallery-note">Gallery filling up soon. In the meantime, head to Instagram for the latest work.</p>
+</div>
+
+<!-- INSTAGRAM -->
+<div class="instagram-section">
+  <div class="section-label">Follow Along</div>
+  <h2 class="instagram-title">See the latest on Instagram</h2>
+  <p class="instagram-desc">Behind-the-scenes reels, recent weddings, and the moments in between.</p>
+  <a href="https://www.instagram.com/harryweddingphotography/" target="_blank" rel="noopener" class="instagram-link">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+    @harryweddingphotography
+  </a>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="contact-section">
+  <h2 class="contact-title">Let's talk about your day.</h2>
+  <p class="contact-subtitle">Tell me about your plans and I'll let you know if your date is available.</p>
+  <a href="mailto:hi@harrywinteringham.uk?subject=Wedding%20Photography%20Enquiry" class="contact-email">
+    hi@harrywinteringham.uk
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <p>&copy; 2026 Harry Winteringham</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <a href="https://www.instagram.com/harryweddingphotography/" target="_blank" rel="noopener" style="font-weight:400;">Instagram</a>
+    <a href="/">Documentary Work</a>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll border
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // Scroll reveal
+  const revealTargets = [
+    '.approach-title',
+    '.approach-body',
+    '.detail-card',
+    '.gallery-item',
+    '.instagram-section',
+    '.contact-section',
+  ];
+  revealTargets.forEach(sel => {
+    document.querySelectorAll(sel).forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.setProperty('--i', i);
+    });
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Dark mode
+  const toggle = document.querySelector('.theme-toggle');
+  const saved = localStorage.getItem('theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  toggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>
+
+</body>
+</html>
