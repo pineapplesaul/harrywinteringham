@@ -238,6 +238,44 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
+    max-height: 800px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.6s ease;
+  }
+  .gallery-grid.expanded { max-height: none; }
+
+  .gallery-expand-fade {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to top, var(--white) 0%, transparent 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 32px;
+    z-index: 2;
+    transition: opacity 0.4s;
+  }
+  .gallery-grid.expanded + .gallery-expand-fade { opacity: 0; pointer-events: none; }
+
+  .gallery-expand-btn {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 12px 36px;
+    background: var(--white);
+    color: var(--black);
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .gallery-expand-btn:hover {
+    border-color: var(--black);
+    background: var(--black);
+    color: var(--white);
   }
 
   .gallery-item {
@@ -309,6 +347,86 @@
     line-height: 1.7;
   }
 
+  /* -- INSTAGRAM FEED PILLS -- */
+  .ig-feed {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 0 0 24px;
+    margin-bottom: 36px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .ig-feed::-webkit-scrollbar { display: none; }
+
+  .ig-pill {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 280px;
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  .ig-pill:hover { transform: scale(1.04); }
+
+  .ig-pill img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(10%);
+    transition: filter 0.4s ease;
+  }
+  .ig-pill:hover img { filter: grayscale(0%); }
+
+  .ig-pill-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 24px;
+  }
+  .ig-pill:hover .ig-pill-overlay { opacity: 1; }
+
+  .ig-pill-overlay svg {
+    width: 20px;
+    height: 20px;
+    fill: #fff;
+  }
+
+  .ig-feed-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 40px 0;
+  }
+
+  .ig-feed-loading .ig-pill-skeleton {
+    width: 200px;
+    height: 280px;
+    border-radius: 100px;
+    background: var(--rule);
+    animation: shimmer 1.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes shimmer {
+    0% { opacity: 0.4; }
+    100% { opacity: 0.7; }
+  }
+
+  .ig-feed-error {
+    font-size: 0.82rem;
+    color: var(--mid);
+    padding: 32px 0;
+  }
+
   .instagram-link {
     display: inline-flex;
     align-items: center;
@@ -361,6 +479,49 @@
     font-weight: 300;
     color: var(--text-secondary);
     line-height: 1.7;
+  }
+
+  /* -- STORIES BY CTA -- */
+  .storiesby-section {
+    padding: 80px 40px;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .storiesby-title {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  .storiesby-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+
+  .storiesby-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--black);
+    border: 1px solid var(--rule);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .storiesby-link:hover {
+    border-color: var(--black);
+    background: var(--black);
+    color: var(--white);
   }
 
   /* -- CONTACT -- */
@@ -499,7 +660,7 @@
   <div class="approach-title">Documentary sensibilities, applied to your wedding day.</div>
   <div class="approach-body">
     <p>I spend my working life directing documentaries for the BBC and Channel 4, telling real stories about real people. I bring those same instincts to your wedding. A look across the room. A quiet smile when nobody else is watching. The small, honest moments that make up the real story of your day.</p>
-    <p>I'm not interested in pulling you away from your guests for staged shots. I'm there to capture what actually happens, the way it actually feels. The full story of the day, from the nerves in the morning to the chaos on the dance floor.</p>
+    <p>I'm there to fade into the background and capture what actually happens, the way it actually feels. The full story of the day, from the nerves in the morning to the chaos on the dance floor. Your wedding will be one of the best days of your life, so I want to make sure I capture it without getting in the way.</p>
     <p>Based in Bristol and London, available across the UK and beyond.</p>
   </div>
 </div>
@@ -523,15 +684,70 @@
 <!-- GALLERY -->
 <div id="gallery" class="section">
   <div class="section-label">Selected Work</div>
-  <div class="gallery-grid">
-    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
-    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
-    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
-    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
-    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
-    <div class="gallery-item"><span class="gallery-placeholder">Coming soon</span></div>
+  <div class="gallery-grid" id="gallery-grid">
+    <div class="gallery-item"><img src="images/penny_tom_46_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_5_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_065.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/gabriel_leonie_061.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/sarah_phil-4.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_60_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_20_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_070.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/gabriel_leonie_066.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_66_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_26_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_071.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/_mg_2517.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_98_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_30_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_077.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/gabriel_leonie_072.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/sarah_phil-12.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_100_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_32_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_079.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/_mg_2719.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_104_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_35_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/gabriel_leonie_075.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_093.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/sarah_phil-19.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_106_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_36_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_099.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/_mg_3837.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_128_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_38_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/gabriel_leonie_087.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_101.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_219_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_47_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/nick_alice_104.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_236_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_51_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_55_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_326_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_62_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_86_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_330_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_102_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_119_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/penny_tom_344_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_121_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_161_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_177_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_206_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_243_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_275_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_286_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_289_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_297_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_308_of_352_.jpg" alt="" loading="lazy"></div>
+    <div class="gallery-item"><img src="images/matt_rob_harrywinteringham.uk_lr_313_of_352_.jpg" alt="" loading="lazy"></div>
   </div>
-  <p class="gallery-note">Gallery filling up soon. In the meantime, head to Instagram for the latest work.</p>
+  <div class="gallery-expand-fade">
+    <button class="gallery-expand-btn" onclick="document.getElementById('gallery-grid').classList.add('expanded'); this.parentElement.style.opacity='0'; this.parentElement.style.pointerEvents='none';">See all photos</button>
+  </div>
 </div>
 
 <!-- INSTAGRAM -->
@@ -539,9 +755,32 @@
   <div class="section-label">Follow Along</div>
   <h2 class="instagram-title">See the latest on Instagram</h2>
   <p class="instagram-desc">Behind-the-scenes reels, recent weddings, and the moments in between.</p>
+
+  <!-- Feed pills populated by JS -->
+  <div id="ig-feed" class="ig-feed">
+    <div class="ig-feed-loading">
+      <div class="ig-pill-skeleton"></div>
+      <div class="ig-pill-skeleton"></div>
+      <div class="ig-pill-skeleton"></div>
+      <div class="ig-pill-skeleton"></div>
+      <div class="ig-pill-skeleton"></div>
+    </div>
+  </div>
+
   <a href="https://www.instagram.com/harryweddingphotography/" target="_blank" rel="noopener" class="instagram-link">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
     @harryweddingphotography
+  </a>
+</div>
+
+<!-- STORIES BY -->
+<div class="storiesby-section">
+  <div class="section-label">Keep the story going</div>
+  <h2 class="storiesby-title">Turn your wedding into something you'll keep coming back to</h2>
+  <p class="storiesby-desc">Photos, your first dance song, and what your guests actually said. All woven together in one beautiful album by Stories By.</p>
+  <a href="https://storiesby.app/weddings" target="_blank" rel="noopener" class="storiesby-link">
+    Find out more at storiesby.app
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
   </a>
 </div>
 
@@ -579,6 +818,7 @@
     '.detail-card',
     '.gallery-item',
     '.instagram-section',
+    '.storiesby-section',
     '.contact-section',
   ];
   revealTargets.forEach(sel => {
@@ -607,6 +847,50 @@
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
   });
+
+  // Instagram feed
+  // To set up:
+  // 1. Create a Meta Developer App at https://developers.facebook.com
+  // 2. Add "Instagram" product, set up Instagram Login
+  // 3. Generate a User Token with instagram_basic scope
+  // 4. Exchange for a long-lived token (lasts 60 days, refresh before expiry)
+  // 5. Paste the token below
+  const IG_TOKEN = ''; // <-- paste your Instagram long-lived token here
+  const IG_COUNT = 12;
+
+  async function loadInstagramFeed() {
+    const container = document.getElementById('ig-feed');
+    if (!IG_TOKEN) {
+      container.innerHTML = '<p class="ig-feed-error">Instagram feed not configured yet.</p>';
+      return;
+    }
+    try {
+      const url = `https://graph.instagram.com/me/media?fields=id,media_type,media_url,thumbnail_url,permalink&limit=${IG_COUNT}&access_token=${IG_TOKEN}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Feed request failed');
+      const data = await res.json();
+      const items = (data.data || []).filter(
+        item => item.media_type === 'IMAGE' || item.media_type === 'CAROUSEL_ALBUM' || item.media_type === 'VIDEO'
+      );
+      if (items.length === 0) {
+        container.innerHTML = '<p class="ig-feed-error">No posts found.</p>';
+        return;
+      }
+      container.innerHTML = items.map(item => {
+        const src = item.media_type === 'VIDEO' ? item.thumbnail_url : item.media_url;
+        return `
+          <a href="${item.permalink}" target="_blank" rel="noopener" class="ig-pill">
+            <img src="${src}" alt="" loading="lazy">
+            <div class="ig-pill-overlay">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </div>
+          </a>`;
+      }).join('');
+    } catch (err) {
+      container.innerHTML = '<p class="ig-feed-error">Couldn\'t load Instagram feed.</p>';
+    }
+  }
+  loadInstagramFeed();
 </script>
 
 </body>
