@@ -363,26 +363,46 @@
     justify-content: center;
     text-align: center;
     padding: 40px;
+  }
+
+  /* Full-width cover overlay */
+  .book-cover-full {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
     background-image: url('images/hero/nick_alice_070.jpg');
     background-size: cover;
     background-position: center;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: opacity 0.6s ease;
   }
-  .book-page-content::before {
+  .book-cover-full::before {
     content: '';
     position: absolute;
     inset: 0;
     background: rgba(0,0,0,0.35);
   }
+  .book-cover-full.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .book-cover-full > * {
+    position: relative;
+    z-index: 1;
+  }
 
   .book-cover-title {
     font-family: var(--serif);
-    font-size: clamp(1.4rem, 3vw, 2.4rem);
+    font-size: clamp(1.6rem, 3.5vw, 2.8rem);
     font-weight: 400;
     line-height: 1.15;
     color: #fff;
-    position: relative;
-    z-index: 1;
+    display: block;
   }
 
   .book-cover-sub {
@@ -392,17 +412,15 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.75);
-    position: relative;
-    z-index: 1;
+    display: block;
   }
 
   .book-cover-line {
     width: 40px;
     height: 1px;
     background: rgba(255,255,255,0.4);
-    margin: 20px 0;
-    position: relative;
-    z-index: 1;
+    margin: 20px auto;
+    display: block;
   }
 
   /* Book nav arrows */
@@ -1009,16 +1027,17 @@
   <div class="section-label">Selected Work</div>
   <div class="book-container" id="wedding-book">
     <div class="book-open">
+      <!-- Full-width cover -->
+      <div class="book-cover-full" id="book-cover">
+        <span class="book-cover-sub">Harry Winteringham</span>
+        <span class="book-cover-line"></span>
+        <span class="book-cover-title">Your wedding day</span>
+        <span class="book-cover-line"></span>
+        <span class="book-cover-sub">Selected work</span>
+      </div>
       <div class="book-left" id="book-left">
-        <!-- Left pages (even indices) -->
-        <div class="book-page-content active">
-          <div class="book-cover-sub">Harry Winteringham</div>
-          <div class="book-cover-line"></div>
-          <div class="book-cover-title">Your wedding day</div>
-          <div class="book-cover-line"></div>
-          <div class="book-cover-sub">Selected work</div>
-        </div>
-        <img src="images/hero/penny_tom_66_.jpg" alt="" loading="lazy">
+        <!-- Left pages -->
+        <img src="images/hero/penny_tom_66_.jpg" alt="" loading="lazy" class="active">
         <img src="images/hero/nick_alice_070.jpg" alt="" loading="lazy">
         <img src="images/penny_tom_46_.jpg" alt="" loading="lazy">
         <img src="images/nick_alice_065.jpg" alt="" loading="lazy">
@@ -1030,6 +1049,7 @@
       <div class="book-right" id="book-right">
         <!-- Right pages (odd indices) -->
         <img src="images/hero/sarah_phil-12.jpg" alt="" loading="lazy" class="active">
+        <!-- active on first spread, hidden behind cover -->
         <img src="images/hero/penny_tom_106_.jpg" alt="" loading="lazy">
         <img src="images/hero/nick_alice_077.jpg" alt="" loading="lazy">
         <img src="images/gabriel_leonie_061.jpg" alt="" loading="lazy">
@@ -1263,17 +1283,23 @@
   }, 4000);
 
   // Wedding book
-  const leftPages = document.querySelectorAll('#book-left > *');
-  const rightPages = document.querySelectorAll('#book-right > *');
+  const leftPages = document.querySelectorAll('#book-left > img');
+  const rightPages = document.querySelectorAll('#book-right > img');
+  const bookCover = document.getElementById('book-cover');
   const bookCounter = document.getElementById('book-counter');
   const totalSpreads = Math.max(leftPages.length, rightPages.length);
-  let spread = 0;
+  let spread = -1; // -1 = cover
 
   function showSpread(idx) {
+    if (idx < -1) idx = -1;
+    if (idx >= totalSpreads) idx = 0;
+    // Cover
+    bookCover.classList.toggle('hidden', idx !== -1);
+    // Pages
     leftPages.forEach((p, i) => { p.classList.toggle('active', i === idx); });
     rightPages.forEach((p, i) => { p.classList.toggle('active', i === idx); });
     spread = idx;
-    bookCounter.textContent = `${idx + 1} / ${totalSpreads}`;
+    bookCounter.textContent = idx === -1 ? 'Cover' : `${idx + 1} / ${totalSpreads}`;
   }
 
   document.getElementById('book-next').addEventListener('click', () => {
