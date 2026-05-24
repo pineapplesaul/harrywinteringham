@@ -1018,7 +1018,9 @@
     .approach { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px; }
     .book-section { padding: 40px 0; }
     .book-container { max-width: 100%; }
-    .book-open { aspect-ratio: 5/3; border-radius: 0; }
+    .book-open { aspect-ratio: 3/4; grid-template-columns: 1fr; border-radius: 0; }
+    .book-open::after { display: none; }
+    .book-right { display: none; }
     .book-nav-prev { left: 8px; }
     .book-nav-next { right: 8px; }
     .pricing-section { padding: 48px 24px; }
