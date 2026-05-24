@@ -953,20 +953,79 @@
     transition-delay: calc(var(--i, 0) * 80ms);
   }
 
+  /* -- MOBILE NAV HAMBURGER -- */
+  .nav-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .nav-hamburger svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--black);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  nav:not(.scrolled) .nav-hamburger svg { stroke: #fff; }
+
+  .nav-mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--white);
+    z-index: 200;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+  .nav-mobile-menu.open { display: flex; }
+  .nav-mobile-menu a {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 400;
+    text-decoration: none;
+    color: var(--black);
+  }
+  .nav-mobile-close {
+    position: absolute;
+    top: 22px; right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .nav-mobile-close svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--black);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
   /* -- RESPONSIVE -- */
   @media (max-width: 768px) {
     nav { padding: 18px 20px; }
-    .nav-links { gap: 20px; }
-    .hero { padding: 100px 24px 80px; min-height: 85vh; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .hero { padding: 0 24px 60px; min-height: 100vh; }
+    .hero-subtitle { font-size: 0.84rem; }
     .approach { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px; }
-    .book-container { aspect-ratio: 3/4; }
-    .book-spread { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    .book-section { padding: 40px 0; }
+    .book-container { max-width: 100%; }
+    .book-open { aspect-ratio: auto; min-height: 70vh; border-radius: 0; }
+    .book-nav-prev { left: 8px; }
+    .book-nav-next { right: 8px; }
+    .pricing-section { padding: 48px 24px; }
     .pricing-addons-grid { grid-template-columns: 1fr; }
+    .faq-section { padding: 48px 24px; }
     .details-grid { grid-template-columns: 1fr; }
     .detail-card { border-right: none; }
     .section { padding: 48px 24px; }
     .instagram-section { padding: 48px 24px; }
     .contact-section { padding: 64px 24px; }
+    .storiesby-section { padding: 48px 24px; }
     footer { flex-direction: column; gap: 12px; padding: 32px 20px; text-align: center; }
   }
 </style>
@@ -989,7 +1048,21 @@
       </button>
     </li>
   </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+    <svg viewBox="0 0 24 24" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
 </nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-close" id="nav-mobile-close">
+    <svg viewBox="0 0 24 24" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <a href="#gallery" onclick="document.getElementById('nav-mobile-menu').classList.remove('open')">Gallery</a>
+  <a href="#approach" onclick="document.getElementById('nav-mobile-menu').classList.remove('open')">Approach</a>
+  <a href="#pricing" onclick="document.getElementById('nav-mobile-menu').classList.remove('open')">Pricing</a>
+  <a href="#contact" onclick="document.getElementById('nav-mobile-menu').classList.remove('open')">Get in Touch</a>
+  <a href="/" onclick="document.getElementById('nav-mobile-menu').classList.remove('open')">Documentary Work</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1330,6 +1403,14 @@
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
+  });
+
+  // Mobile menu
+  document.getElementById('nav-hamburger').addEventListener('click', () => {
+    document.getElementById('nav-mobile-menu').classList.add('open');
+  });
+  document.getElementById('nav-mobile-close').addEventListener('click', () => {
+    document.getElementById('nav-mobile-menu').classList.remove('open');
   });
 
   // Hero carousel
