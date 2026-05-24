@@ -716,21 +716,28 @@
     margin-bottom: 32px;
   }
 
-  .pricing-addon {
-    padding: 20px 0;
-    border-bottom: 1px solid var(--rule);
+  .pricing-addons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
   }
-  .pricing-addon:first-of-type { border-top: 1px solid var(--rule); }
+
+  .pricing-addon {
+    padding: 28px 24px;
+    border: 1px solid var(--rule);
+    margin-top: -1px;
+    margin-left: -1px;
+  }
 
   .pricing-addon h3 {
     font-family: var(--serif);
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 400;
     margin-bottom: 6px;
   }
 
   .pricing-addon p {
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     font-weight: 300;
     color: var(--text-secondary);
     line-height: 1.7;
@@ -940,6 +947,7 @@
     .approach { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px; }
     .book-container { aspect-ratio: 3/4; }
     .book-spread { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    .pricing-addons-grid { grid-template-columns: 1fr; }
     .details-grid { grid-template-columns: 1fr; }
     .detail-card { border-right: none; }
     .section { padding: 48px 24px; }
@@ -1092,27 +1100,26 @@
     <p>Built on my background as a broadcast documentary director and cinematographer (BBC, Channel 4, Netflix, Apple TV+). A short, filmic edit of the day — most couples pay considerably more to book a separate film team.</p>
   </div>
 
-  <div class="pricing-addon">
-    <h3>Medium format film set — from £295</h3>
-    <p>A handful of frames shot on real medium format film alongside the digital coverage. Hand-shot, properly developed and scanned.</p>
+  <div class="pricing-addons-grid">
+    <div class="pricing-addon">
+      <h3>Medium format film set — from £295</h3>
+      <p>A handful of frames shot on real medium format film alongside the digital coverage. Hand-shot, properly developed and scanned.</p>
+    </div>
+    <div class="pricing-addon">
+      <h3>Pre-wedding / engagement shoot — £295</h3>
+      <p>A relaxed hour or two to get comfortable before the day itself.</p>
+    </div>
+    <div class="pricing-addon">
+      <h3>Additional shooting day — from £750</h3>
+      <p>E.g. a welcome dinner or day-after coverage.</p>
+    </div>
+    <div class="pricing-addon">
+      <h3><span class="voicebook-lockup">StoriesBy | Voicebook</span> — included free</h3>
+      <p>Included with every full-day booking.</p>
+    </div>
   </div>
 
-  <div class="pricing-addon">
-    <h3>Pre-wedding / engagement shoot — £295</h3>
-    <p>A relaxed hour or two to get comfortable before the day itself.</p>
-  </div>
-
-  <div class="pricing-addon">
-    <h3>Additional shooting day — from £750</h3>
-    <p>E.g. a welcome dinner or day-after coverage.</p>
-  </div>
-
-  <div class="pricing-addon">
-    <h3><span class="voicebook-lockup">StoriesBy | Voicebook</span> — included free</h3>
-    <p>Included with every full-day booking.</p>
-  </div>
-
-  <div class="pricing-addon">
+  <div class="pricing-addon" style="border:1px solid var(--rule);padding:28px 24px;margin-top:16px;">
     <h3>Travel</h3>
     <p>Within 50 miles of Bristol included; UK-wide and destination (incl. Italy) by arrangement.</p>
   </div>
