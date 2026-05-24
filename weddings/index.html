@@ -7,7 +7,9 @@
 <meta name="description" content="Wedding photography by Harry Winteringham. Documentary-style, cinematic wedding coverage across the UK.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/hero/sarah_phil-12.jpg">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet"></noscript>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -878,6 +880,39 @@
     letter-spacing: 0.02em;
   }
 
+  .pricing-addon-featured {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+    background: #f8f5f0;
+    border-color: var(--accent);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  [data-theme="dark"] .pricing-addon-featured {
+    background: #1e1c18;
+  }
+  .pricing-addon-featured:hover {
+    border-color: var(--black);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .pricing-addon-featured h3 {
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .voicebook-cta {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
   /* -- CONTACT -- */
   .contact-section {
     padding: 100px 40px;
@@ -1076,7 +1111,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-carousel" id="hero-carousel">
-    <img src="images/hero/sarah_phil-12.jpg" alt="" class="active">
+    <img src="images/hero/sarah_phil-12.jpg" alt="Wedding photography" class="active" fetchpriority="high" width="1400" height="933">
     <img src="images/hero/matt_rob_harrywinteringham.uk_lr_55_of_352_.jpg" alt="">
     <img src="images/hero/penny_tom_66_.jpg" alt="">
     <img src="images/hero/nick_alice_070.jpg" alt="">
@@ -1202,8 +1237,8 @@
         <img src="images/matt_rob_harrywinteringham.uk_lr_313_of_352_.jpg" alt="" loading="lazy" decoding="async">
       </div>
     </div>
-    <button class="book-nav book-nav-prev" id="book-prev"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <button class="book-nav book-nav-next" id="book-next"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+    <button class="book-nav book-nav-prev" id="book-prev" aria-label="Previous page"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="book-nav book-nav-next" id="book-next" aria-label="Next page"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
   <div class="book-counter" id="book-counter">Cover</div>
   <div class="book-hint">Click to turn pages</div>
@@ -1247,9 +1282,10 @@
       <h3>Additional shooting day — from £750</h3>
       <p>E.g. a welcome dinner or day-after coverage.</p>
     </div>
-    <a href="https://storiesby.app/weddings" target="_blank" rel="noopener" class="pricing-addon" style="text-decoration:none;color:inherit;display:block;cursor:pointer;transition:border-color 0.3s,box-shadow 0.3s;">
-      <h3 style="font-weight:500;"><span class="voicebook-lockup">StoriesBy | Voicebook</span> — included free</h3>
-      <p><strong>Included with every full-day booking.</strong></p>
+    <a href="https://storiesby.app/weddings" target="_blank" rel="noopener" class="pricing-addon pricing-addon-featured">
+      <h3><span class="voicebook-lockup">StoriesBy | Voicebook</span> — included free</h3>
+      <p>We send you beautifully printed Voicebooth cards before the big day. Just open them up and lay them out on the tables. Guests scan the QR code, speak into their phone, and their message is automatically added to your Voicebook. No app, no sign-up. Every recording stays locked until your book is ready, so it's all a secret until you're flicking through your photos and hearing the day come back to life.</p>
+      <span class="voicebook-cta">Find out more &rarr;</span>
     </a>
   </div>
 
@@ -1292,7 +1328,7 @@
 
   <div class="faq-item featured">
     <button class="faq-question">What's the Voicebook? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-    <div class="faq-answer"><div class="faq-answer-inner">Every wedding I cover includes a <span class="voicebook-lockup">StoriesBy | Voicebook</span> at no extra cost. Think of it as an audio guestbook: through the day, your guests record short spoken messages — toasts, well-wishes, the daft and heartfelt things people say at weddings and then forget by morning. You get them all, hosted online to keep, so years from now you can <em>hear</em> your day as well as see it. It's included as standard because I think it's one of the loveliest things you'll come away with.</div></div>
+    <div class="faq-answer"><div class="faq-answer-inner">Every wedding I cover includes a <span class="voicebook-lockup">StoriesBy | Voicebook</span> at no extra cost. Before your wedding, we send you a set of beautifully printed Voicebooth cards. All you do is open them on the day and lay them out on the tables. Guests scan the QR code with their phone, speak into it, and their message is automatically added to your Voicebook. No app, no sign-up. People can record during the day or in their own time afterwards. Every message is transcribed so you can read as well as listen. The recordings stay locked until your book is ready, so it's all a secret until you're flicking through your photos and hearing the day come back to life. It's included as standard because I think it's one of the loveliest things you'll come away with.</div></div>
   </div>
 
   <div class="faq-item">
