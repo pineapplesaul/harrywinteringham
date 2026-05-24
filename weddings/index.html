@@ -51,11 +51,18 @@
     justify-content: space-between;
     align-items: center;
     padding: 22px 40px;
-    background: var(--white);
+    background: transparent;
     border-bottom: 1px solid transparent;
     transition: border-color 0.3s, background 0.4s ease;
   }
-  nav.scrolled { border-color: var(--rule); }
+  nav.scrolled { border-color: var(--rule); background: var(--white); }
+
+  /* Nav over hero - white text */
+  nav:not(.scrolled) .nav-logo,
+  nav:not(.scrolled) .nav-links a { color: #fff; }
+  nav:not(.scrolled) .nav-links a:hover { color: rgba(255,255,255,0.6); }
+  nav:not(.scrolled) .theme-toggle { border-color: rgba(255,255,255,0.3); }
+  nav:not(.scrolled) .theme-toggle svg { stroke: #fff; }
 
   .nav-logo {
     font-family: var(--sans);
@@ -174,13 +181,9 @@
 
   /* -- HERO CAROUSEL -- */
   .hero-carousel {
-    width: 100%;
-    max-width: 900px;
-    margin-top: 48px;
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 16/9;
-    border-radius: 2px;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
   }
 
   .hero-carousel img {
@@ -194,6 +197,37 @@
   }
 
   .hero-carousel img.active { opacity: 1; }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1;
+  }
+
+  .hero .hero-label,
+  .hero .hero-title,
+  .hero .hero-subtitle,
+  .hero .hero-cta,
+  .hero .scroll-hint {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero .hero-label { color: rgba(255,255,255,0.7); }
+  .hero .hero-title { color: #fff; }
+  .hero .hero-subtitle { color: rgba(255,255,255,0.8); }
+  .hero .hero-cta {
+    color: #fff;
+    border-color: rgba(255,255,255,0.4);
+  }
+  .hero .hero-cta:hover {
+    background: #fff;
+    color: #0f0f0f;
+    border-color: #fff;
+  }
+  .hero .scroll-hint { color: rgba(255,255,255,0.5); }
+  .hero .scroll-hint svg { stroke: rgba(255,255,255,0.5); }
 
   .scroll-hint {
     position: absolute;
@@ -919,9 +953,6 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-label">Wedding Photography</div>
-  <h1 class="hero-title">Your story, told honestly.</h1>
-  <p class="hero-subtitle">A documentary filmmaker capturing the real moments of your day. The looks, the smiles, the full story.</p>
   <div class="hero-carousel" id="hero-carousel">
     <img src="images/hero/sarah_phil-12.jpg" alt="" class="active">
     <img src="images/hero/matt_rob_harrywinteringham.uk_lr_55_of_352_.jpg" alt="">
@@ -933,7 +964,11 @@
     <img src="images/hero/nick_alice_077.jpg" alt="">
     <img src="images/hero/penny_tom_106_.jpg" alt="">
   </div>
-  <a href="#contact" class="hero-cta" style="margin-top:32px;">Enquire about your date</a>
+  <div class="hero-overlay"></div>
+  <div class="hero-label">Wedding Photography</div>
+  <h1 class="hero-title">Your story, told honestly.</h1>
+  <p class="hero-subtitle">A documentary filmmaker capturing the real moments of your day. The looks, the smiles, the full story.</p>
+  <a href="#contact" class="hero-cta">Enquire about your date</a>
   <div class="scroll-hint">
     <svg width="16" height="24" viewBox="0 0 16 24" fill="none" stroke-width="1" stroke-linecap="round">
       <rect x="1" y="1" width="14" height="22" rx="7"/>
@@ -1030,13 +1065,11 @@
   <div class="pricing-feature">
     <h3>Hand-designed album — from £495</h3>
     <p>Designed by hand, not ordered from a template. Alongside photography, I'm a graphic designer — so your album is sequenced like a story, with real typographic care. Heavyweight, linen-bound, made to be passed around for years.</p>
-    <span class="price-tag">From £495</span>
   </div>
 
   <div class="pricing-feature">
     <h3>Cinematic wedding film — from £1,500</h3>
     <p>Built on my background as a broadcast documentary director and cinematographer (BBC, Channel 4, Netflix, Apple TV+). A short, filmic edit of the day — most couples pay considerably more to book a separate film team.</p>
-    <span class="price-tag">From £1,500</span>
   </div>
 
   <div class="pricing-addon">
