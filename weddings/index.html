@@ -615,6 +615,7 @@
     padding: 48px 36px;
     border-right: 1px solid var(--rule);
     border-bottom: 1px solid var(--rule);
+    border-radius: 6px;
   }
   .detail-card:nth-child(3n) { border-right: none; }
 
@@ -696,6 +697,7 @@
 
   .pricing-hero-card {
     border: 1px solid var(--rule);
+    border-radius: 6px;
     padding: 48px 40px;
     margin-bottom: 56px;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -737,10 +739,12 @@
   .pricing-addon {
     padding: 28px 24px;
     border: 1px solid var(--rule);
+    border-radius: 6px;
     margin-top: -1px;
     margin-left: -1px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .pricing-addon p {
@@ -764,6 +768,7 @@
   /* Feature add-ons (album + film) */
   .pricing-feature {
     border: 1px solid var(--rule);
+    border-radius: 6px;
     padding: 36px 32px;
     margin-bottom: 24px;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -823,6 +828,7 @@
 
   .faq-item {
     border-bottom: 1px solid var(--rule);
+    border-radius: 6px;
   }
   .faq-item:first-of-type { border-top: 1px solid var(--rule); }
 
@@ -1308,8 +1314,8 @@
     <a href="https://storiesby.app/weddings" target="_blank" rel="noopener" class="pricing-addon pricing-addon-featured" style="grid-column:1/-1;">
       <h3><span class="voicebook-lockup">StoriesBy | Voicebook</span> — included free</h3>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px;">
-        <p>We send you beautifully printed Voicebooth cards before the big day. Just open them up and lay them out on the tables. Guests scan the QR code, speak into their phone, and their message is automatically added to your Voicebook. No app, no sign-up.</p>
-        <p>Every recording stays locked until your book is ready, so it's all a secret until you're flicking through your photos and hearing the day come back to life. Or set up our vintage handset Voicebooth — guests pick up the phone, speak, and their message is recorded.</p>
+        <p>We send you beautifully printed Voicebook cards before the big day. Just open them up and lay them out on the tables. Guests scan the QR code, speak into their phone, and their message is automatically added to your Voicebook. No app, no sign-up.</p>
+        <p>Every recording stays locked until your book is ready, so it's all a secret until you're flicking through your photos and hearing the day come back to life. Or set up our vintage handset Voicebook — guests pick up the phone, speak, and their message is recorded.</p>
       </div>
       <span class="voicebook-cta">Find out more &rarr;</span>
     </a>
@@ -1354,7 +1360,7 @@
 
   <div class="faq-item featured">
     <button class="faq-question">What's the Voicebook? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-    <div class="faq-answer"><div class="faq-answer-inner">Every wedding I cover includes a <span class="voicebook-lockup">StoriesBy | Voicebook</span> at no extra cost. Before your wedding, we send you a set of beautifully printed Voicebooth cards. All you do is open them on the day and lay them out on the tables. Guests scan the QR code with their phone, speak into it, and their message is automatically added to your Voicebook. No app, no sign-up. People can record during the day or in their own time afterwards. Every message is transcribed so you can read as well as listen. The recordings stay locked until your book is ready, so it's all a secret until you're flicking through your photos and hearing the day come back to life. It's included as standard because I think it's one of the loveliest things you'll come away with.</div></div>
+    <div class="faq-answer"><div class="faq-answer-inner">Every wedding I cover includes a <span class="voicebook-lockup">StoriesBy | Voicebook</span> at no extra cost. Before your wedding, we send you a set of beautifully printed Voicebook cards. All you do is open them on the day and lay them out on the tables. Guests scan the QR code with their phone, speak into it, and their message is automatically added to your Voicebook. No app, no sign-up. People can record during the day or in their own time afterwards. Every message is transcribed so you can read as well as listen. The recordings stay locked until your book is ready, so it's all a secret until you're flicking through your photos and hearing the day come back to life. It's included as standard because I think it's one of the loveliest things you'll come away with.</div></div>
   </div>
 
   <div class="faq-item">
@@ -1403,9 +1409,11 @@
 
 <!-- STORIES BY -->
 <div class="storiesby-section">
+  <img src="storiesby-logo.png" alt="Stories By" style="height:32px;margin-bottom:24px;opacity:0.7;">
   <div class="section-label">Keep the story going</div>
   <h2 class="storiesby-title">Turn your wedding into something you'll keep coming back to</h2>
   <p class="storiesby-desc">Photos, your first dance song, and what your guests actually said. All woven together in one beautiful album by Stories By.</p>
+  <img src="images/voicebooth-cards.jpg" alt="Voicebook cards" style="max-width:400px;width:100%;border-radius:8px;margin-bottom:32px;">
   <a href="https://storiesby.app/weddings" target="_blank" rel="noopener" class="storiesby-link">
     Find out more at storiesby.app
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
