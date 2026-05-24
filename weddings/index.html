@@ -172,6 +172,29 @@
     color: var(--white);
   }
 
+  /* -- HERO CAROUSEL -- */
+  .hero-carousel {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 48px;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    border-radius: 2px;
+  }
+
+  .hero-carousel img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+
+  .hero-carousel img.active { opacity: 1; }
+
   .scroll-hint {
     position: absolute;
     bottom: 36px;
@@ -245,73 +268,85 @@
   .book-container {
     position: relative;
     width: 100%;
-    max-width: 800px;
-    aspect-ratio: 4/3;
-    perspective: 1200px;
+    max-width: 960px;
     cursor: pointer;
     user-select: none;
   }
 
-  .book-page {
-    position: absolute;
-    inset: 0;
+  .book-open {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    aspect-ratio: 2/1.35;
+    background: #f5f4f0;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04);
     border-radius: 2px;
     overflow: hidden;
-    opacity: 0;
-    transition: opacity 0.6s ease, transform 0.6s ease;
-    transform: scale(0.97);
-    background: #f5f4f0;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    position: relative;
   }
-  [data-theme="dark"] .book-page {
+  [data-theme="dark"] .book-open {
     background: #1e1e1e;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.15);
   }
 
-  .book-page.active {
-    opacity: 1;
-    transform: scale(1);
-    z-index: 2;
+  /* Centre spine */
+  .book-open::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--rule);
+    z-index: 3;
   }
 
-  .book-page.prev {
-    opacity: 0;
-    transform: scale(1.02);
+  .book-left, .book-right {
+    overflow: hidden;
+    position: relative;
   }
 
-  .book-page img {
+  .book-left img, .book-right img,
+  .book-left .book-page-content, .book-right .book-page-content {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .book-left img.active, .book-right img.active,
+  .book-left .book-page-content.active, .book-right .book-page-content.active {
+    opacity: 1;
   }
 
   /* Cover page */
-  .book-cover {
+  .book-page-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 60px;
+    padding: 40px;
     background: #f5f4f0;
   }
-  [data-theme="dark"] .book-cover {
+  [data-theme="dark"] .book-page-content {
     background: #1e1e1e;
   }
 
   .book-cover-title {
     font-family: var(--serif);
-    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-size: clamp(1.4rem, 3vw, 2.4rem);
     font-weight: 400;
     line-height: 1.15;
     color: var(--black);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .book-cover-sub {
     font-family: var(--sans);
-    font-size: 0.82rem;
+    font-size: 0.72rem;
     font-weight: 300;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -322,21 +357,31 @@
     width: 40px;
     height: 1px;
     background: var(--rule);
-    margin: 28px 0;
+    margin: 20px 0;
   }
 
-  /* Two-image spread */
-  .book-spread {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    height: 100%;
+  /* Book nav arrows */
+  .book-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: border-color 0.2s, background 0.2s;
+    opacity: 0.7;
   }
-  .book-spread img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  .book-nav:hover { opacity: 1; border-color: var(--black); }
+  .book-nav svg { width: 14px; height: 14px; stroke: var(--black); stroke-width: 1.5; fill: none; }
+  .book-nav-prev { left: -48px; }
+  .book-nav-next { right: -48px; }
 
   /* Book page counter */
   .book-counter {
@@ -561,6 +606,190 @@
     color: var(--white);
   }
 
+  /* -- PRICING -- */
+  .pricing-section {
+    padding: 80px 40px;
+    border-top: 1px solid var(--rule);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .pricing-intro {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.85;
+    font-style: italic;
+    font-family: var(--serif);
+    margin-bottom: 56px;
+  }
+  .pricing-intro p + p { margin-top: 1.2em; }
+
+  .pricing-hero-card {
+    border: 1px solid var(--rule);
+    padding: 48px 40px;
+    margin-bottom: 56px;
+  }
+
+  .pricing-hero-card h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  .pricing-hero-card p {
+    font-size: 0.86rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.85;
+  }
+
+  .pricing-addons-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 32px;
+  }
+
+  .pricing-addon {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pricing-addon:first-of-type { border-top: 1px solid var(--rule); }
+
+  .pricing-addon h3 {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+
+  .pricing-addon p {
+    font-size: 0.84rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* Feature add-ons (album + film) */
+  .pricing-feature {
+    border: 1px solid var(--rule);
+    padding: 36px 32px;
+    margin-bottom: 24px;
+  }
+
+  .pricing-feature h3 {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+  }
+
+  .pricing-feature p {
+    font-size: 0.86rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.85;
+  }
+
+  .pricing-feature .price-tag {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .pricing-booking {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.86rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-family: var(--serif);
+    line-height: 1.7;
+  }
+
+  /* -- FAQ -- */
+  .faq-section {
+    padding: 80px 40px;
+    border-top: 1px solid var(--rule);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--rule);
+  }
+  .faq-item:first-of-type { border-top: 1px solid var(--rule); }
+
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 24px 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--black);
+    line-height: 1.4;
+  }
+
+  .faq-question svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    stroke: var(--mid);
+    stroke-width: 1.5;
+    fill: none;
+    transition: transform 0.3s ease;
+  }
+
+  .faq-item.open .faq-question svg {
+    transform: rotate(45deg);
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+  }
+
+  .faq-item.open .faq-answer {
+    max-height: 600px;
+  }
+
+  .faq-answer-inner {
+    padding: 0 0 24px;
+    font-size: 0.86rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.85;
+  }
+
+  /* Featured FAQ answers */
+  .faq-item.featured .faq-question {
+    font-size: 1.05rem;
+  }
+
+  .voicebook-lockup {
+    font-family: var(--sans);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
   /* -- CONTACT -- */
   .contact-section {
     padding: 100px 40px;
@@ -665,6 +894,7 @@
   <ul class="nav-links">
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#approach">Approach</a></li>
+    <li><a href="#pricing">Pricing</a></li>
     <li><a href="#contact">Get in Touch</a></li>
     <li><a href="/" style="color:var(--mid);">Documentary Work</a></li>
     <li>
@@ -680,8 +910,19 @@
 <section class="hero">
   <div class="hero-label">Wedding Photography</div>
   <h1 class="hero-title">Your story, told honestly.</h1>
-  <p class="hero-subtitle">The story of your big day, told authentically.</p>
-  <a href="#contact" class="hero-cta">Enquire about your date</a>
+  <p class="hero-subtitle">A documentary filmmaker capturing the real moments of your day. The looks, the smiles, the full story.</p>
+  <div class="hero-carousel" id="hero-carousel">
+    <img src="images/hero/sarah_phil-12.jpg" alt="" class="active">
+    <img src="images/hero/matt_rob_harrywinteringham.uk_lr_55_of_352_.jpg" alt="">
+    <img src="images/hero/penny_tom_66_.jpg" alt="">
+    <img src="images/hero/nick_alice_070.jpg" alt="">
+    <img src="images/hero/matt_rob_harrywinteringham.uk_lr_275_of_352_.jpg" alt="">
+    <img src="images/hero/penny_tom_330_.jpg" alt="">
+    <img src="images/hero/matt_rob_harrywinteringham.uk_lr_243_of_352_.jpg" alt="">
+    <img src="images/hero/nick_alice_077.jpg" alt="">
+    <img src="images/hero/penny_tom_106_.jpg" alt="">
+  </div>
+  <a href="#contact" class="hero-cta" style="margin-top:32px;">Enquire about your date</a>
   <div class="scroll-hint">
     <svg width="16" height="24" viewBox="0 0 16 24" fill="none" stroke-width="1" stroke-linecap="round">
       <rect x="1" y="1" width="14" height="22" rx="7"/>
@@ -721,49 +962,153 @@
 <div id="gallery" class="book-section">
   <div class="section-label">Selected Work</div>
   <div class="book-container" id="wedding-book">
-    <!-- Cover -->
-    <div class="book-page active">
-      <div class="book-cover">
-        <div class="book-cover-sub">Harry Winteringham</div>
-        <div class="book-cover-line"></div>
-        <div class="book-cover-title">Your<br>wedding day</div>
-        <div class="book-cover-line"></div>
-        <div class="book-cover-sub">Selected work</div>
+    <div class="book-open">
+      <div class="book-left" id="book-left">
+        <!-- Left pages (even indices) -->
+        <div class="book-page-content active">
+          <div class="book-cover-sub">Harry Winteringham</div>
+          <div class="book-cover-line"></div>
+          <div class="book-cover-title">Your<br>wedding day</div>
+          <div class="book-cover-line"></div>
+          <div class="book-cover-sub">Selected work</div>
+        </div>
+        <img src="images/hero/penny_tom_66_.jpg" alt="" loading="lazy">
+        <img src="images/hero/nick_alice_070.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_46_.jpg" alt="" loading="lazy">
+        <img src="images/nick_alice_065.jpg" alt="" loading="lazy">
+        <img src="images/gabriel_leonie_066.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_20_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_98_.jpg" alt="" loading="lazy">
+        <img src="images/_mg_2719.jpg" alt="" loading="lazy">
+      </div>
+      <div class="book-right" id="book-right">
+        <!-- Right pages (odd indices) -->
+        <img src="images/hero/sarah_phil-12.jpg" alt="" loading="lazy" class="active">
+        <img src="images/hero/penny_tom_106_.jpg" alt="" loading="lazy">
+        <img src="images/hero/nick_alice_077.jpg" alt="" loading="lazy">
+        <img src="images/gabriel_leonie_061.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_60_.jpg" alt="" loading="lazy">
+        <img src="images/_mg_2517.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_26_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_100_.jpg" alt="" loading="lazy">
+        <img src="images/sarah_phil-4.jpg" alt="" loading="lazy">
       </div>
     </div>
-    <!-- Single pages -->
-    <div class="book-page"><img src="images/hero/sarah_phil-12.jpg" alt="" loading="lazy"></div>
-    <!-- Spread -->
-    <div class="book-page"><div class="book-spread"><img src="images/hero/penny_tom_66_.jpg" alt="" loading="lazy"><img src="images/hero/penny_tom_106_.jpg" alt="" loading="lazy"></div></div>
-    <!-- Single -->
-    <div class="book-page"><img src="images/hero/matt_rob_harrywinteringham.uk_lr_55_of_352_.jpg" alt="" loading="lazy"></div>
-    <!-- Spread -->
-    <div class="book-page"><div class="book-spread"><img src="images/hero/nick_alice_070.jpg" alt="" loading="lazy"><img src="images/hero/nick_alice_077.jpg" alt="" loading="lazy"></div></div>
-    <!-- Single -->
-    <div class="book-page"><img src="images/hero/matt_rob_harrywinteringham.uk_lr_275_of_352_.jpg" alt="" loading="lazy"></div>
-    <!-- Spread -->
-    <div class="book-page"><div class="book-spread"><img src="images/penny_tom_46_.jpg" alt="" loading="lazy"><img src="images/gabriel_leonie_061.jpg" alt="" loading="lazy"></div></div>
-    <!-- Single -->
-    <div class="book-page"><img src="images/hero/matt_rob_harrywinteringham.uk_lr_243_of_352_.jpg" alt="" loading="lazy"></div>
-    <!-- Spread -->
-    <div class="book-page"><div class="book-spread"><img src="images/nick_alice_065.jpg" alt="" loading="lazy"><img src="images/penny_tom_60_.jpg" alt="" loading="lazy"></div></div>
-    <!-- Single -->
-    <div class="book-page"><img src="images/hero/penny_tom_330_.jpg" alt="" loading="lazy"></div>
-    <!-- Spread -->
-    <div class="book-page"><div class="book-spread"><img src="images/gabriel_leonie_066.jpg" alt="" loading="lazy"><img src="images/_mg_2517.jpg" alt="" loading="lazy"></div></div>
-    <!-- Single -->
-    <div class="book-page"><img src="images/sarah_phil-4.jpg" alt="" loading="lazy"></div>
-    <!-- Spread -->
-    <div class="book-page"><div class="book-spread"><img src="images/matt_rob_harrywinteringham.uk_lr_20_of_352_.jpg" alt="" loading="lazy"><img src="images/matt_rob_harrywinteringham.uk_lr_26_of_352_.jpg" alt="" loading="lazy"></div></div>
-    <!-- Single -->
-    <div class="book-page"><img src="images/nick_alice_099.jpg" alt="" loading="lazy"></div>
-    <!-- Spread -->
-    <div class="book-page"><div class="book-spread"><img src="images/penny_tom_98_.jpg" alt="" loading="lazy"><img src="images/penny_tom_100_.jpg" alt="" loading="lazy"></div></div>
-    <!-- Single -->
-    <div class="book-page"><img src="images/_mg_2719.jpg" alt="" loading="lazy"></div>
+    <button class="book-nav book-nav-prev" id="book-prev"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <button class="book-nav book-nav-next" id="book-next"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
-  <div class="book-counter" id="book-counter">1 / 17</div>
-  <div class="book-hint">Click to turn page</div>
+  <div class="book-counter" id="book-counter">1 / 9</div>
+  <div class="book-hint">Click to turn pages</div>
+</div>
+
+<!-- PRICING -->
+<div id="pricing" class="pricing-section">
+  <div class="section-label">Pricing</div>
+  <div class="pricing-intro">
+    <p>Documentary wedding photography — Bristol, the South West, and wherever the day takes us.</p>
+    <p>I shoot quietly. No long lists of posed group shots, no orchestrating your day around the camera. I'm there to catch it as it actually happens — the moments between the moments — and hand you back something that feels like the day felt.</p>
+  </div>
+
+  <div class="pricing-hero-card">
+    <h2>The Full Day — from £2,200</h2>
+    <p>Ten or more hours, from the morning's quiet preparations through to the evening's celebrations. Full documentary coverage, a private online gallery of 700+ edited images, a licence to print and share freely, and a <span class="voicebook-lockup">StoriesBy | Voicebook</span> included as standard. Most couples land between £2,200 and £2,500 depending on hours, location, and the extras they add.</p>
+  </div>
+
+  <div class="pricing-addons-label">Add to any collection</div>
+
+  <div class="pricing-feature">
+    <h3>Hand-designed album — from £495</h3>
+    <p>Designed by hand, not ordered from a template. Alongside photography, I'm a graphic designer — so your album is sequenced like a story, with real typographic care. Heavyweight, linen-bound, made to be passed around for years.</p>
+    <span class="price-tag">From £495</span>
+  </div>
+
+  <div class="pricing-feature">
+    <h3>Cinematic wedding film — from £1,500</h3>
+    <p>Built on my background as a broadcast documentary director and cinematographer (BBC, Channel 4, Netflix, Apple TV+). A short, filmic edit of the day — most couples pay considerably more to book a separate film team.</p>
+    <span class="price-tag">From £1,500</span>
+  </div>
+
+  <div class="pricing-addon">
+    <h3>Medium format film set — from £295</h3>
+    <p>A handful of frames shot on real medium format film alongside the digital coverage. Hand-shot, properly developed and scanned.</p>
+  </div>
+
+  <div class="pricing-addon">
+    <h3>Pre-wedding / engagement shoot — £295</h3>
+    <p>A relaxed hour or two to get comfortable before the day itself.</p>
+  </div>
+
+  <div class="pricing-addon">
+    <h3>Additional shooting day — from £750</h3>
+    <p>E.g. a welcome dinner or day-after coverage.</p>
+  </div>
+
+  <div class="pricing-addon">
+    <h3><span class="voicebook-lockup">StoriesBy | Voicebook</span> — included free</h3>
+    <p>Included with every full-day booking.</p>
+  </div>
+
+  <div class="pricing-addon">
+    <h3>Travel</h3>
+    <p>Within 50 miles of Bristol included; UK-wide and destination (incl. Italy) by arrangement.</p>
+  </div>
+
+  <div class="pricing-booking">A 25% deposit secures your date, with the balance due four weeks before the wedding.</div>
+</div>
+
+<!-- FAQ -->
+<div id="faq" class="faq-section">
+  <div class="section-label">Questions</div>
+
+  <div class="faq-item">
+    <button class="faq-question">Where are you based, and do you travel? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">I'm based in Bristol and shoot all over the South West as standard — but some of my favourite weddings have been the ones worth travelling for. I've shot UK-wide and abroad, including in Italy, and I'm always happy to go where the day is. Travel within 50 miles of Bristol is included; beyond that I'll add reasonable travel (and accommodation for early starts or far-flung venues), always agreed with you up front so there are no surprises.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">What does coverage cost? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">Full-day documentary coverage starts at £2,200. That covers me for the whole day — from the quiet of the morning through to the evening — plus a private online gallery of 700+ edited images and a licence to print and share them freely. Most couples land between £2,200 and £2,500 depending on hours, location, and the extras they add.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">How do I book, and what do you need up front? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">A 25% deposit secures your date — that's the only upfront cost, and your date isn't held until it's paid (dates go on a first-come basis, so it's worth not sitting on it). The remaining balance is due four weeks before the wedding. I'll send a simple contract alongside the deposit invoice so everything's clear and in writing.</div></div>
+  </div>
+
+  <div class="faq-item featured">
+    <button class="faq-question">Do you design wedding albums? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">This is the part I'm quietly proud of. Alongside photography, I'm a graphic designer — so your album isn't ordered from a template or knocked together by a lab. I design it by hand, sequencing the day like a story, pairing images so they actually talk to each other, and laying it out with real typographic care. It's printed as a heavyweight, linen-bound book made to be passed around the room for years. A designed album is from £495, and honestly it's the thing most couples are happiest they spent on.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">What's the medium format film option? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">For couples who want something with a bit more soul, I shoot a handful of frames on a medium format film camera alongside the main digital coverage. Real film, hand-shot, properly developed and scanned — the grain, the colour, the slight imperfection that digital can't fake. It's a small set of beautiful, tactile images that sit differently to everything else in the gallery. From £295.</div></div>
+  </div>
+
+  <div class="faq-item featured">
+    <button class="faq-question">What's the Voicebook? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">Every wedding I cover includes a <span class="voicebook-lockup">StoriesBy | Voicebook</span> at no extra cost. Think of it as an audio guestbook: through the day, your guests record short spoken messages — toasts, well-wishes, the daft and heartfelt things people say at weddings and then forget by morning. You get them all, hosted online to keep, so years from now you can <em>hear</em> your day as well as see it. It's included as standard because I think it's one of the loveliest things you'll come away with.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">What's your shooting style? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">Documentary, through the day. I come from a background as a broadcast documentary director and cinematographer — BAFTA-nominated, with credits across BBC, Channel 4, Netflix and Apple TV+ — and I bring that same instinct to weddings: read the room, anticipate the moment, stay out of the way. Minimal posing, no endless group-shot lists. I'm there to catch the day as it actually happens and hand you back something that feels like the day felt.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Can we do a shoot before the wedding? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">Yes, and I'd recommend it. A relaxed pre-wedding or engagement shoot (£295) gets you comfortable in front of the camera and lets us get to know each other before the day itself — which always shows in the final photos.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">When do we get our photos? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">You'll get a small preview within a week, and your full edited gallery within four to six weeks. Albums and film scans follow once you've had a chance to choose your favourites.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">What if something goes wrong on the day? <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <div class="faq-answer"><div class="faq-answer-inner">I shoot on professional dual-card cameras (so every frame is backed up the instant it's taken), carry backup bodies and lenses, and I'm fully insured. It's the kind of thing you shouldn't have to think about — so I've thought about it for you.</div></div>
+  </div>
 </div>
 
 <!-- INSTAGRAM -->
@@ -864,48 +1209,72 @@
     localStorage.setItem('theme', next);
   });
 
-  // Wedding book
-  const book = document.getElementById('wedding-book');
-  const pages = book.querySelectorAll('.book-page');
-  const counter = document.getElementById('book-counter');
-  let currentPage = 0;
+  // Hero carousel
+  const heroImgs = document.querySelectorAll('#hero-carousel img');
+  let heroIdx = 0;
+  setInterval(() => {
+    heroImgs[heroIdx].classList.remove('active');
+    heroIdx = (heroIdx + 1) % heroImgs.length;
+    heroImgs[heroIdx].classList.add('active');
+  }, 4000);
 
-  function showPage(index) {
-    pages.forEach((p, i) => {
-      p.classList.remove('active', 'prev');
-      if (i === index) p.classList.add('active');
-      if (i === currentPage && i !== index) p.classList.add('prev');
-    });
-    currentPage = index;
-    counter.textContent = `${index + 1} / ${pages.length}`;
+  // Wedding book
+  const leftPages = document.querySelectorAll('#book-left > *');
+  const rightPages = document.querySelectorAll('#book-right > *');
+  const bookCounter = document.getElementById('book-counter');
+  const totalSpreads = Math.max(leftPages.length, rightPages.length);
+  let spread = 0;
+
+  function showSpread(idx) {
+    leftPages.forEach((p, i) => { p.classList.toggle('active', i === idx); });
+    rightPages.forEach((p, i) => { p.classList.toggle('active', i === idx); });
+    spread = idx;
+    bookCounter.textContent = `${idx + 1} / ${totalSpreads}`;
   }
 
-  book.addEventListener('click', (e) => {
-    const rect = book.getBoundingClientRect();
+  document.getElementById('book-next').addEventListener('click', () => {
+    showSpread((spread + 1) % totalSpreads);
+  });
+  document.getElementById('book-prev').addEventListener('click', () => {
+    if (spread > 0) showSpread(spread - 1);
+  });
+
+  // Click on book itself
+  document.querySelector('.book-open').addEventListener('click', (e) => {
+    if (e.target.closest('.book-nav')) return;
+    const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
-    if (clickX < rect.width * 0.3 && currentPage > 0) {
-      showPage(currentPage - 1);
-    } else {
-      showPage((currentPage + 1) % pages.length);
-    }
+    if (clickX < rect.width * 0.35 && spread > 0) showSpread(spread - 1);
+    else showSpread((spread + 1) % totalSpreads);
   });
 
   // Keyboard nav
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') showPage((currentPage + 1) % pages.length);
-    if (e.key === 'ArrowLeft' && currentPage > 0) showPage(currentPage - 1);
+    if (e.key === 'ArrowRight') showSpread((spread + 1) % totalSpreads);
+    if (e.key === 'ArrowLeft' && spread > 0) showSpread(spread - 1);
   });
 
-  // Swipe support
+  // Swipe
   let touchStartX = 0;
-  book.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  book.addEventListener('touchend', (e) => {
+  document.querySelector('.book-open').addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  document.querySelector('.book-open').addEventListener('touchend', (e) => {
     const dx = e.changedTouches[0].clientX - touchStartX;
     if (Math.abs(dx) > 40) {
-      if (dx < 0) showPage((currentPage + 1) % pages.length);
-      else if (currentPage > 0) showPage(currentPage - 1);
+      if (dx < 0) showSpread((spread + 1) % totalSpreads);
+      else if (spread > 0) showSpread(spread - 1);
     }
   }, { passive: true });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const wasOpen = item.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
 
   // Instagram feed
   // To set up:
