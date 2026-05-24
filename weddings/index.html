@@ -329,10 +329,16 @@
     justify-content: center;
     text-align: center;
     padding: 40px;
-    background: #f5f4f0;
+    background-image: url('images/hero/nick_alice_070.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
   }
-  [data-theme="dark"] .book-page-content {
-    background: #1e1e1e;
+  .book-page-content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
   }
 
   .book-cover-title {
@@ -340,8 +346,9 @@
     font-size: clamp(1.4rem, 3vw, 2.4rem);
     font-weight: 400;
     line-height: 1.15;
-    color: var(--black);
-    margin-bottom: 12px;
+    color: #fff;
+    position: relative;
+    z-index: 1;
   }
 
   .book-cover-sub {
@@ -350,14 +357,18 @@
     font-weight: 300;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--mid);
+    color: rgba(255,255,255,0.75);
+    position: relative;
+    z-index: 1;
   }
 
   .book-cover-line {
     width: 40px;
     height: 1px;
-    background: var(--rule);
+    background: rgba(255,255,255,0.4);
     margin: 20px 0;
+    position: relative;
+    z-index: 1;
   }
 
   /* Book nav arrows */
@@ -968,7 +979,7 @@
         <div class="book-page-content active">
           <div class="book-cover-sub">Harry Winteringham</div>
           <div class="book-cover-line"></div>
-          <div class="book-cover-title">Your<br>wedding day</div>
+          <div class="book-cover-title">Your wedding day</div>
           <div class="book-cover-line"></div>
           <div class="book-cover-sub">Selected work</div>
         </div>
