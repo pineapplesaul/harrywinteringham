@@ -124,10 +124,10 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     text-align: center;
-    padding: 120px 40px 80px;
+    padding: 120px 40px 100px;
     position: relative;
   }
 
@@ -201,7 +201,7 @@
   .hero-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.35);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.5) 100%);
     z-index: 1;
   }
 
@@ -310,7 +310,7 @@
   .book-open {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    aspect-ratio: 2/1.35;
+    aspect-ratio: 2/1.2;
     background: #f5f4f0;
     box-shadow: 0 8px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04);
     border-radius: 2px;
@@ -692,6 +692,11 @@
     border: 1px solid var(--rule);
     padding: 48px 40px;
     margin-bottom: 56px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .pricing-hero-card:hover {
+    border-color: var(--black);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   }
 
   .pricing-hero-card h2 {
@@ -748,6 +753,15 @@
     border: 1px solid var(--rule);
     padding: 36px 32px;
     margin-bottom: 24px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+  }
+  .pricing-feature:hover {
+    border-color: var(--black);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   }
 
   .pricing-feature h3 {
@@ -1044,34 +1058,72 @@
         <span class="book-cover-sub">Selected work</span>
       </div>
       <div class="book-left" id="book-left">
-        <!-- Left pages -->
-        <img src="images/hero/penny_tom_66_.jpg" alt="" loading="lazy" class="active">
-        <img src="images/hero/nick_alice_070.jpg" alt="" loading="lazy">
-        <img src="images/penny_tom_46_.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_66_.jpg" alt="" loading="lazy" class="active">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_10_of_352_.jpg" alt="" loading="lazy">
         <img src="images/nick_alice_065.jpg" alt="" loading="lazy">
-        <img src="images/gabriel_leonie_066.jpg" alt="" loading="lazy">
-        <img src="images/matt_rob_harrywinteringham.uk_lr_20_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/gabriel_leonie_061.jpg" alt="" loading="lazy">
+        <img src="images/sarah_phil-4.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_26_of_352_.jpg" alt="" loading="lazy">
         <img src="images/penny_tom_98_.jpg" alt="" loading="lazy">
+        <img src="images/nick_alice_071.jpg" alt="" loading="lazy">
+        <img src="images/_mg_2517.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_32_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/gabriel_leonie_072.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_104_.jpg" alt="" loading="lazy">
+        <img src="images/nick_alice_079.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_36_of_352_.jpg" alt="" loading="lazy">
         <img src="images/_mg_2719.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_106_.jpg" alt="" loading="lazy">
+        <img src="images/nick_alice_093.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_47_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/gabriel_leonie_075.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_128_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_55_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/nick_alice_101.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_219_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_86_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_236_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_119_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/gabriel_leonie_087.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_326_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_275_of_352_.jpg" alt="" loading="lazy">
       </div>
       <div class="book-right" id="book-right">
-        <!-- Right pages (odd indices) -->
-        <img src="images/hero/sarah_phil-12.jpg" alt="" loading="lazy" class="active">
-        <!-- active on first spread, hidden behind cover -->
-        <img src="images/hero/penny_tom_106_.jpg" alt="" loading="lazy">
-        <img src="images/hero/nick_alice_077.jpg" alt="" loading="lazy">
-        <img src="images/gabriel_leonie_061.jpg" alt="" loading="lazy">
-        <img src="images/penny_tom_60_.jpg" alt="" loading="lazy">
-        <img src="images/_mg_2517.jpg" alt="" loading="lazy">
-        <img src="images/matt_rob_harrywinteringham.uk_lr_26_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_5_of_352_.jpg" alt="" loading="lazy" class="active">
+        <img src="images/nick_alice_070.jpg" alt="" loading="lazy">
+        <img src="images/gabriel_leonie_066.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_20_of_352_.jpg" alt="" loading="lazy">
         <img src="images/penny_tom_100_.jpg" alt="" loading="lazy">
-        <img src="images/sarah_phil-4.jpg" alt="" loading="lazy">
+        <img src="images/_mg_3837.jpg" alt="" loading="lazy">
+        <img src="images/nick_alice_077.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_30_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/sarah_phil-12.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_330_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_35_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/nick_alice_099.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_38_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/penny_tom_344_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_51_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/nick_alice_104.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_62_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/sarah_phil-19.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_102_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_121_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_161_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_177_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_206_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_243_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_286_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_289_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_297_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_308_of_352_.jpg" alt="" loading="lazy">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_313_of_352_.jpg" alt="" loading="lazy">
       </div>
     </div>
     <button class="book-nav book-nav-prev" id="book-prev"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <button class="book-nav book-nav-next" id="book-next"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
-  <div class="book-counter" id="book-counter">1 / 9</div>
+  <div class="book-counter" id="book-counter">Cover</div>
   <div class="book-hint">Click to turn pages</div>
 </div>
 
@@ -1090,15 +1142,15 @@
 
   <div class="pricing-addons-label">Add to any collection</div>
 
-  <div class="pricing-feature">
+  <a href="#contact" class="pricing-feature">
     <h3>Hand-designed album — from £495</h3>
     <p>Designed by hand, not ordered from a template. Alongside photography, I'm a graphic designer — so your album is sequenced like a story, with real typographic care. Heavyweight, linen-bound, made to be passed around for years.</p>
-  </div>
+  </a>
 
-  <div class="pricing-feature">
+  <a href="#contact" class="pricing-feature">
     <h3>Cinematic wedding film — from £1,500</h3>
     <p>Built on my background as a broadcast documentary director and cinematographer (BBC, Channel 4, Netflix, Apple TV+). A short, filmic edit of the day — most couples pay considerably more to book a separate film team.</p>
-  </div>
+  </a>
 
   <div class="pricing-addons-grid">
     <div class="pricing-addon">
