@@ -318,7 +318,7 @@
     aspect-ratio: 5/3;
     background: #f5f4f0;
     box-shadow: 0 8px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04);
-    border-radius: 2px;
+    border-radius: 8px;
     overflow: hidden;
     position: relative;
   }
@@ -731,6 +731,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
+    align-items: stretch;
   }
 
   .pricing-addon {
@@ -738,6 +739,12 @@
     border: 1px solid var(--rule);
     margin-top: -1px;
     margin-left: -1px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pricing-addon p {
+    flex: 1;
   }
 
   .pricing-addon h3 {
@@ -1178,6 +1185,7 @@
       <div class="book-left" id="book-left">
         <img src="images/penny_tom_66_.jpg" alt="" loading="lazy" class="active">
         <img src="images/matt_rob_harrywinteringham.uk_lr_10_of_352_.jpg" alt="" loading="lazy" decoding="async">
+        <img src="images/film_16220014.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/nick_alice_065.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/gabriel_leonie_061.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/sarah_phil-4.jpg" alt="" loading="lazy" decoding="async">
@@ -1207,13 +1215,13 @@
         <img src="images/matt_rob_harrywinteringham.uk_lr_119_of_352_.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/gabriel_leonie_087.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/penny_tom_326_.jpg" alt="" loading="lazy" decoding="async">
-        <img src="images/film_16220014.jpg" alt="" loading="lazy" decoding="async">
-        <img src="images/matt_rob_harrywinteringham.uk_lr_275_of_352_.jpg" alt="" loading="lazy" decoding="async">
+        <img src="images/matt_rob_harrywinteringham.uk_lr_289_of_352_.jpg" alt="" loading="lazy" decoding="async">
       </div>
       <div class="book-right" id="book-right">
         <img src="images/matt_rob_harrywinteringham.uk_lr_5_of_352_.jpg" alt="" loading="lazy" class="active">
         <img src="images/nick_alice_070.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/gabriel_leonie_066.jpg" alt="" loading="lazy" decoding="async">
+        <img src="images/film_16260014.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/matt_rob_harrywinteringham.uk_lr_20_of_352_.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/penny_tom_100_.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/_mg_3837.jpg" alt="" loading="lazy" decoding="async">
@@ -1238,13 +1246,11 @@
         <img src="images/matt_rob_harrywinteringham.uk_206_of_352_.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/matt_rob_harrywinteringham.uk_lr_243_of_352_.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/matt_rob_harrywinteringham.uk_lr_286_of_352_.jpg" alt="" loading="lazy" decoding="async">
-        <img src="images/matt_rob_harrywinteringham.uk_lr_289_of_352_.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/matt_rob_harrywinteringham.uk_lr_297_of_352_.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/matt_rob_harrywinteringham.uk_lr_308_of_352_.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/film_16230012.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/film_16260014.jpg" alt="" loading="lazy" decoding="async">
         <img src="images/film_16220010.jpg" alt="" loading="lazy" decoding="async">
-        <img src="images/matt_rob_harrywinteringham.uk_lr_313_of_352_.jpg" alt="" loading="lazy" decoding="async">
       </div>
     </div>
     <button class="book-nav book-nav-prev" id="book-prev" aria-label="Previous page"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -1283,7 +1289,7 @@
   <div class="pricing-addons-grid">
     <div class="pricing-addon">
       <h3>Medium format film set — from £295</h3>
-      <p>Vintage film photography with a depth, grain and colour that digital can't replicate. A handful of one-of-a-kind frames shot alongside your digital coverage.</p>
+      <p>Vintage film photography with a depth, grain and colour digital can't replicate. One-of-a-kind frames shot alongside your digital coverage. Developed, scanned and included in your gallery.</p>
       <img src="images/film_16230011.jpg" alt="Medium format film example" style="width:calc(100% + 48px);margin:16px -24px -28px;display:block;aspect-ratio:3/2;object-fit:cover;object-position:center 30%;" loading="lazy" decoding="async">
     </div>
     <div class="pricing-addon">
