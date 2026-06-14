@@ -588,6 +588,36 @@
   }
   .award-badge.bafta { color: #8b6914; }
   .award-badge.emmy { color: #2a5a8b; }
+  /* ── AWARD BODY LOGOS ── */
+  .award-logos {
+    display: flex;
+    align-items: flex-end;
+    gap: 48px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .award-logos .al-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .award-logos img {
+    width: auto;
+    object-fit: contain;
+    opacity: 0.9;
+  }
+  .award-logos .logo-bafta { height: 40px; }
+  /* The Broadcast Digital Awards artwork is white — invert it for the light page */
+  .award-logos .logo-broadcast { height: 64px; filter: invert(1); }
+  .award-logos .al-caption {
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+  [data-theme="dark"] .award-logos .logo-bafta { filter: invert(1); }
+  [data-theme="dark"] .award-logos .logo-broadcast { filter: none; }
 
   /* ── ABOUT SECTION ── */
   .about-section {
@@ -795,7 +825,17 @@
 <div class="awards-section">
   <div class="awards-label">Awards &amp;<br>Nominations</div>
   <div>
-    <p style="font-size:0.82rem;font-weight:300;color:var(--text-secondary);line-height:1.7;margin-bottom:28px;">Contributed to these award-winning and nominated broadcasts:</p>
+    <p style="font-size:0.82rem;font-weight:300;color:var(--text-secondary);line-height:1.7;margin-bottom:28px;">I've been fortunate to contribute to a number of award-winning and nominated broadcasts, across a range of roles and stages of production.</p>
+    <div class="award-logos">
+      <div class="al-item">
+        <img class="logo-bafta" src="images/BAFTA-logo.png" alt="BAFTA" />
+        <span class="al-caption">Nominated</span>
+      </div>
+      <div class="al-item">
+        <img class="logo-broadcast" src="images/broadcast-digital-awards.png" alt="Broadcast Digital Awards" />
+        <span class="al-caption">Nominated</span>
+      </div>
+    </div>
     <ul class="awards-list">
       <li>
         <span>Educating Yorkshire — Series 2</span>
