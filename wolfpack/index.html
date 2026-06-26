@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wolf Pack League · The 2026 Season</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face{
+    font-family:'TAY Wingman';
+    src:url('fonts/TAYWingman.woff2') format('woff2'),
+        url('fonts/TAYWingman.woff') format('woff'),
+        url('fonts/TAYWingman.otf') format('opentype');
+    font-weight:400;font-style:normal;font-display:swap;
+  }
+  :root{
+    --paper:#f5f2ea;
+    --paper-2:#ede9dc;
+    --ink:#16130f;
+    --ink-soft:#6e6759;
+    --hair:rgba(22,19,15,.16);
+    --plum:#de8a72;
+    --plum-soft:rgba(222,138,114,.09);
+    --moss:#86a063;
+    --clay:#db6e4b;
+    --gold:#e4b654;
+    --serif:'Inter',sans-serif;
+    --sans:'Inter',sans-serif;
+    --display:'TAY Wingman','Inter',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-size:16px;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--plum);color:var(--paper)}
+  /* TYPE SYSTEM — large/key headers: TAY Wingman, UPPER CASE · medium headers (h3): TAY Wingman, lowercase · body: Inter */
+  h1,h2{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.015em;line-height:1.05}
+  h3{font-family:var(--display);font-weight:400;text-transform:lowercase;letter-spacing:.01em}
+  .eyebrow{
+    font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--plum);display:block;margin-bottom:18px;
+  }
+  .num-mono{font-variant-numeric:tabular-nums}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:100;background:rgba(245,242,234,.92);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 40px;gap:24px;
+  }
+  nav .logo img{height:30px;width:auto;display:block}
+  .nav-links{display:flex;gap:30px;align-items:center;font-size:13px;font-weight:500}
+  .nav-links a{opacity:.65;transition:opacity .2s}
+  .nav-links a:hover,.nav-links a.active{opacity:1}
+  .nav-cta{
+    background:var(--ink);color:var(--paper);font-size:13px;font-weight:600;
+    padding:10px 20px;border-radius:2px;transition:background .2s;
+  }
+  .nav-cta:hover{background:var(--plum)}
+  @media(max-width:860px){.nav-links a:not(.nav-cta){display:none}}
+
+  /* ---------- SPLASH ---------- */
+  .splash{
+    position:relative;min-height:92vh;display:flex;align-items:center;justify-content:center;
+    background:url('stills/splash-tor.jpg') center/cover no-repeat;
+    padding:90px 24px;overflow:hidden;
+  }
+  .splash-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+  .splash::before{
+    content:'';position:absolute;inset:0;z-index:1;
+    background:radial-gradient(ellipse 75% 65% at 50% 55%, rgba(12,9,5,.45), rgba(12,9,5,.1) 72%);
+  }
+  .splash-card{position:relative;z-index:2;text-align:center;max-width:840px}
+  .splash-wolf{
+    height:140px;width:auto;display:block;margin:0 auto 26px;
+    filter:drop-shadow(0 3px 14px rgba(0,0,0,.4));
+  }
+  .splash-title{
+    font-size:clamp(34px,5.4vw,68px);line-height:1.12;margin-bottom:18px;
+    color:var(--paper);text-shadow:0 2px 22px rgba(0,0,0,.45);
+  }
+  .splash-tag{
+    font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(17px,2vw,22px);
+    color:#e9d9a8;text-shadow:0 1px 10px rgba(0,0,0,.55);
+  }
+  .splash-credit{
+    position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;white-space:nowrap;
+    font-size:10px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;
+    color:rgba(245,242,234,.85);text-shadow:0 1px 5px rgba(0,0,0,.6);
+  }
+  @media(max-width:640px){.splash-wolf{height:96px}.splash-credit{white-space:normal;text-align:center;width:90vw}}
+
+  /* watch-the-film button in the hero */
+  .splash-watch{
+    margin-top:30px;display:inline-flex;align-items:center;gap:11px;cursor:pointer;
+    font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--paper);background:rgba(222,138,114,.42);backdrop-filter:blur(3px);
+    border:1.5px solid rgba(245,242,234,.85);border-radius:999px;padding:13px 26px;
+    transition:background .25s ease,transform .25s ease,border-color .25s ease;
+    text-shadow:0 1px 6px rgba(0,0,0,.5);
+  }
+  .splash-watch:hover{background:var(--plum);border-color:var(--gold);transform:translateY(-2px)}
+  .splash-watch .tri{font-size:11px;line-height:1}
+  .splash-watch small{display:block;font-size:9px;font-weight:600;letter-spacing:.22em;color:#e9d9a8;margin-top:3px;text-transform:uppercase}
+
+  /* film lightbox */
+  .film-modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+    background:rgba(10,7,4,.92);padding:clamp(16px,4vw,56px)}
+  .film-modal.open{display:flex}
+  .film-shell{position:relative;width:min(1180px,100%);max-height:90vh;border:2px solid rgba(245,242,234,.85);
+    background:#0c0a07;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+  .film-shell video{display:block;width:100%;max-height:calc(90vh - 46px);background:#0c0a07;object-fit:contain}
+  .film-cap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 16px;
+    font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,242,234,.8)}
+  .film-cap b{color:var(--gold)}
+  .film-close{position:absolute;top:-15px;right:-15px;width:38px;height:38px;border-radius:50%;cursor:pointer;
+    background:var(--clay);color:var(--paper);border:2px solid var(--paper);font-size:18px;line-height:1;
+    display:flex;align-items:center;justify-content:center}
+  .film-close:hover{background:#a64a30}
+
+  /* ---------- GOPRO / UGC SELECTS (social) ---------- */
+  .ugc{background:var(--ink);color:var(--paper);padding:80px 24px 90px;overflow:hidden;max-width:none;width:auto;margin:0}
+  .ugc .sec-head{max-width:1180px;margin:0 auto 40px;text-align:center}
+  .ugc .eyebrow{color:var(--gold)}
+  .ugc h2{color:var(--paper)}
+  .ugc .sub{color:rgba(245,242,234,.62);font-family:var(--sans);max-width:560px;margin:16px auto 0;text-align:center}
+  .ugc-row{max-width:1080px;margin:0 auto;display:flex;gap:30px;justify-content:center;flex-wrap:wrap}
+  .ugc-card{position:relative;width:min(300px,82vw);cursor:pointer;margin:0}
+  .ugc-phone{position:relative;border-radius:28px;overflow:hidden;background:#000;aspect-ratio:9/16;
+    box-shadow:0 20px 54px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1)}
+  .ugc-phone video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .ugc-phone::after{content:'';position:absolute;left:0;right:0;bottom:0;height:46%;z-index:1;
+    background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.55));pointer-events:none}
+  .ugc-top{position:absolute;top:12px;left:12px;right:12px;z-index:3;display:flex;align-items:center;gap:8px}
+  .ugc-avatar{width:28px;height:28px;border-radius:50%;background:var(--gold);color:#16130f;font-weight:800;font-size:12px;
+    display:flex;align-items:center;justify-content:center;font-family:var(--sans);flex:none}
+  .ugc-user{font-family:var(--sans);font-size:12.5px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+  .ugc-live{display:inline-flex;align-items:center;gap:5px;font-family:var(--sans);font-size:9px;font-weight:700;
+    letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.35);padding:3px 8px;border-radius:999px}
+  .ugc-live i{width:6px;height:6px;border-radius:50%;background:var(--clay);animation:ugcpulse 1.8s infinite}
+  @keyframes ugcpulse{0%{box-shadow:0 0 0 0 rgba(219,110,75,.6)}70%{box-shadow:0 0 0 6px rgba(219,110,75,0)}100%{box-shadow:0 0 0 0 rgba(219,110,75,0)}}
+  .ugc-sound{position:absolute;bottom:14px;left:14px;z-index:4;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.5);
+    border:1.5px solid rgba(255,255,255,.65);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+  .ugc-actions{position:absolute;right:12px;bottom:72px;z-index:3;display:flex;flex-direction:column;gap:18px;align-items:center}
+  .ugc-act{display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--sans);font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.85)}
+  .ugc-act svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+  .ugc-cap{position:absolute;left:14px;right:56px;bottom:66px;z-index:3;font-family:var(--sans);font-size:12.5px;line-height:1.35;
+    color:rgba(255,255,255,.95);text-shadow:0 1px 5px rgba(0,0,0,.9)}
+  .ugc-cap b{font-weight:700}
+  .ugc-more{text-align:center;margin-top:26px}
+  .ugc-link{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.04em;
+    color:var(--paper);background:transparent;border:1.5px solid rgba(245,242,234,.5);border-radius:999px;padding:13px 26px;cursor:pointer;transition:all .2s}
+  .ugc-link:hover{background:var(--gold);border-color:var(--gold);color:#16130f}
+  @media(max-width:640px){.ugc-card{width:min(330px,86vw)}}
+
+  /* ---------- INTRO ---------- */
+  .intro{max-width:1180px;margin:0 auto;padding:90px 40px 80px;text-align:center}
+  .intro-sub{
+    font-family:var(--display);text-transform:none;letter-spacing:.01em;
+    font-size:clamp(19px,2.3vw,26px);font-weight:400;line-height:1.42;
+    max-width:840px;margin:0 auto 64px;color:var(--ink);
+  }
+  .intro-sub em{color:var(--plum)}
+  .intro .eyebrow{
+    font-family:var(--display);text-transform:none;letter-spacing:.01em;
+    font-size:clamp(15px,1.7vw,20px);font-weight:400;color:var(--plum);margin-bottom:20px;
+  }
+  .hero-photos{display:flex;gap:20px;align-items:stretch;margin-bottom:72px}
+  .photo{margin:0;flex:1;display:flex;flex-direction:column}
+  .photo.major{flex:1.5}
+  .photo img{display:block;width:100%;height:100%;object-fit:cover}
+  .photo figcaption{
+    font-family:var(--serif);font-style:italic;font-size:13.5px;color:var(--ink-soft);
+    padding-top:12px;text-align:left;line-height:1.5;
+  }
+  @media(max-width:760px){.hero-photos{flex-direction:column}}
+  .hero-stats{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--ink);text-align:left;
+  }
+  .hero-stat{padding:26px 24px 0 0;border-right:1px solid var(--hair);padding-left:24px}
+  .hero-stat:first-child{padding-left:0}
+  .hero-stat:last-child{border-right:none}
+  .hero-stat .num{font-family:var(--serif);font-weight:560;font-size:clamp(30px,3.4vw,46px)}
+  .hero-stat .lbl{font-size:12px;color:var(--ink-soft);margin-top:6px}
+  @media(max-width:680px){.hero-stats{grid-template-columns:1fr 1fr;gap:24px 0}.hero-stat:nth-child(2){border-right:none}}
+
+  /* ---------- DISPATCH BAR ---------- */
+  .dispatch{
+    background:var(--ink);color:var(--paper);overflow:hidden;white-space:nowrap;
+    padding:11px 0;font-size:12px;font-weight:500;letter-spacing:.06em;
+  }
+  .dispatch-inner{display:inline-block;animation:scroll 40s linear infinite}
+  .dispatch span{margin:0 18px}
+  .dispatch i{font-style:normal;color:#d9b15a;margin:0 18px}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:110px 40px;max-width:1180px;margin:0 auto}
+  .sec-head{margin-bottom:56px}
+  .sec-head h2{font-size:clamp(34px,4.6vw,58px);line-height:1.06}
+  .sec-head .sub{
+    font-family:var(--sans);font-style:normal;font-size:16px;color:var(--ink-soft);
+    margin-top:16px;max-width:560px;line-height:1.6;
+  }
+  .sec-head-row{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap}
+  .live-pill{
+    display:inline-flex;align-items:center;gap:8px;flex-shrink:0;
+    font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--plum);
+    border:1px solid rgba(222,138,114,.35);border-radius:99px;padding:7px 16px;
+  }
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--plum);animation:pulse 1.8s ease infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+  /* ---------- LEADERBOARD ---------- */
+  .board{border-top:1px solid var(--ink)}
+  .board-head,.board-row{
+    display:grid;grid-template-columns:64px 1fr 100px 100px 90px 110px;
+    align-items:center;gap:8px;padding:18px 8px;
+  }
+  .board-head{
+    font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-soft);border-bottom:1px solid var(--hair);padding-top:14px;padding-bottom:12px;
+  }
+  .board-row{border-bottom:1px solid var(--hair);opacity:0;transform:translateY(12px);transition:background .2s}
+  .board-row.in{animation:rowIn .5s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes rowIn{to{opacity:1;transform:none}}
+  .board-row:hover{background:var(--plum-soft)}
+  .board-row.podium-1,.board-row.podium-2,.board-row.podium-3{box-shadow:inset 3px 0 0 var(--plum)}
+  .board-row.podium-1{background:var(--plum-soft)}
+  .rank{font-family:var(--serif);font-weight:560;font-size:20px;color:var(--ink-soft);padding-left:10px}
+  .podium-1 .rank,.podium-2 .rank,.podium-3 .rank{color:var(--plum)}
+  .team{display:flex;align-items:center;gap:14px;min-width:0}
+  .team-badge{
+    width:34px;height:34px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;color:var(--ink);
+  }
+  .team-name{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .team-home{font-size:12px;color:var(--ink-soft)}
+  .cell{font-size:13.5px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .pts{font-family:var(--serif);font-weight:640;font-size:22px;text-align:right;padding-right:10px;font-variant-numeric:tabular-nums}
+  .move{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+  .move.up{color:var(--moss)}
+  .move.down{color:var(--clay)}
+  .move.same{color:var(--ink-soft)}
+  .board-foot{
+    padding:18px 10px;font-size:12px;color:var(--ink-soft);letter-spacing:.04em;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+  @media(max-width:820px){
+    .board-head,.board-row{grid-template-columns:44px 1fr 70px 90px;padding:14px 4px}
+    .hide-m{display:none}
+  }
+
+  /* ---------- ROUTE MAP ---------- */
+  .route-wrap{border:1px solid var(--hair);background:var(--paper-2);border-radius:3px;overflow:hidden}
+  .route-tabs{display:flex;border-bottom:1px solid var(--hair);overflow-x:auto}
+  .route-tab{
+    flex:1;min-width:150px;padding:18px 20px;background:none;border:none;cursor:pointer;
+    color:var(--ink-soft);font-family:var(--sans);font-size:13px;font-weight:600;
+    border-right:1px solid var(--hair);transition:all .2s;text-align:left;
+  }
+  .route-tab small{display:block;font-weight:400;font-size:11px;margin-top:4px;opacity:.75}
+  .route-tab:hover{color:var(--ink)}
+  .route-tab.active{color:var(--plum);box-shadow:inset 0 -2px 0 var(--plum);background:var(--paper)}
+  .map-stage{position:relative;padding:20px;background:var(--paper)}
+  .map-stage svg{width:100%;height:auto;display:block}
+  .map-hud{
+    position:absolute;top:36px;left:36px;
+    font-size:12px;line-height:1.9;color:var(--ink-soft);
+    background:rgba(245,242,234,.92);border:1px solid var(--hair);border-radius:3px;
+    padding:12px 18px;backdrop-filter:blur(4px);
+  }
+  .map-hud b{color:var(--ink);font-size:13px}
+  .map-hud .hud-cp{color:var(--plum);font-weight:700}
+  .map-legend{
+    display:flex;gap:24px;padding:16px 24px;border-top:1px solid var(--hair);
+    font-size:11.5px;color:var(--ink-soft);flex-wrap:wrap;align-items:center;
+  }
+  .leg{display:flex;align-items:center;gap:8px}
+  .leg i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .hypo-tag{margin-left:auto;font-family:var(--serif);font-style:italic}
+  @media(max-width:640px){.map-hud{position:static;margin-bottom:16px;display:inline-block}}
+
+  /* ---------- FULL BLEED ---------- */
+  .bleed{position:relative}
+  .bleed img{display:block;width:100%;height:76vh;object-fit:cover}
+  .bleed-cap{
+    position:absolute;bottom:26px;left:40px;
+    font-family:var(--serif);font-style:italic;font-size:15px;color:var(--paper);
+    text-shadow:0 1px 8px rgba(0,0,0,.6);
+  }
+  @media(max-width:640px){.bleed img{height:46vh}.bleed-cap{left:20px}}
+
+  /* ---------- CALENDAR ---------- */
+  .ticker{
+    display:flex;align-items:center;gap:14px;margin-bottom:44px;
+    border:1px solid var(--hair);border-radius:3px;background:var(--paper-2);
+    padding:14px 22px;font-size:13.5px;color:var(--ink-soft);overflow:hidden;
+  }
+  .ticker-no{font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--plum);flex-shrink:0;text-transform:uppercase}
+  .ticker-msg{transition:opacity .4s,transform .4s}
+  .ticker-msg.swap{opacity:0;transform:translateY(8px)}
+  .ticker-msg b{color:var(--ink);font-weight:600}
+
+  .cal-strip{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:64px}
+  .cal-month{
+    border:1px solid var(--hair);border-radius:3px;padding:12px 6px 10px;text-align:center;
+    font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);cursor:default;transition:all .2s;
+  }
+  .cal-month.has-event{color:var(--ink);cursor:pointer;border-color:rgba(222,138,114,.45)}
+  .cal-month.has-event:hover{background:var(--plum-soft)}
+  .cal-month .dots{display:flex;gap:4px;justify-content:center;margin-top:7px;min-height:6px}
+  .cal-month .dots i{width:6px;height:6px;border-radius:50%;background:var(--plum)}
+  .cal-month .dots i.soon{background:none;border:1px solid var(--ink-soft)}
+  @media(max-width:760px){.cal-strip{grid-template-columns:repeat(6,1fr)}}
+
+  .ev-month-label{
+    font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--ink-soft);padding:34px 0 12px;border-bottom:1px solid var(--ink);
+  }
+  .ev-card{
+    display:grid;grid-template-columns:110px 1fr 280px;gap:32px;align-items:center;
+    padding:34px 0;border-bottom:1px solid var(--hair);position:relative;transition:background .2s;
+  }
+  .ev-card:hover{background:linear-gradient(90deg,transparent,var(--plum-soft) 50%,transparent)}
+  .ev-date .dd{font-family:var(--serif);font-weight:560;font-size:48px;line-height:1}
+  .ev-date .mm{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+  .ev-body h3{font-size:clamp(20px,2.4vw,27px);margin-bottom:10px}
+  .ev-body h3 a{transition:color .2s}
+  .ev-body h3 a:hover{color:var(--plum)}
+  .ev-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);margin-bottom:10px}
+  .ev-desc{font-size:14.5px;line-height:1.65;color:var(--ink-soft);max-width:540px}
+  .ev-nb{
+    font-family:var(--serif);font-style:italic;font-size:13.5px;color:var(--plum);
+    margin-top:10px;
+  }
+  .ev-side{display:flex;flex-direction:column;gap:13px;align-items:flex-start}
+  .stamp{
+    font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    padding:5px 12px;border-radius:99px;
+  }
+  .stamp.sold{background:rgba(22,19,15,.07);color:var(--ink-soft)}
+  .stamp.fast{background:rgba(191,91,63,.12);color:var(--clay)}
+  .stamp.soon{border:1px dashed var(--hair);color:var(--ink-soft)}
+  .tally{font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .tally b{font-family:var(--serif);font-size:22px;font-weight:640}
+  .tally .of{color:var(--ink-soft)}
+  .cap-bar{height:4px;background:rgba(22,19,15,.08);border-radius:99px;width:100%;overflow:hidden}
+  .cap-fill{height:100%;border-radius:99px;background:var(--moss);width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+  .cap-fill.hot{background:var(--clay)}
+  .cap-fill.full{background:rgba(22,19,15,.35)}
+  .ev-cta{
+    font-size:13px;font-weight:600;padding:11px 22px;border-radius:2px;transition:all .15s;
+    border:1px solid var(--ink);
+  }
+  .ev-cta.primary{background:var(--ink);color:var(--paper)}
+  .ev-cta.primary:hover{background:var(--plum);border-color:var(--plum)}
+  .ev-cta:not(.primary):hover{background:var(--ink);color:var(--paper)}
+  .league-chip{
+    position:absolute;top:34px;right:0;
+    font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+  }
+  @media(max-width:900px){
+    .ev-card{grid-template-columns:80px 1fr;gap:20px}
+    .ev-side{grid-column:1/-1;flex-direction:row;align-items:center;flex-wrap:wrap;gap:16px}
+    .cap-bar{flex:1;min-width:120px;width:auto}
+    .ev-date .dd{font-size:34px}
+  }
+
+  /* ---------- GALLERY ---------- */
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:36px 24px;align-items:start}
+  .gallery .photo.wide{grid-column:span 2}
+  .gallery .photo img{transition:opacity .3s}
+  .gallery .photo:hover img{opacity:.92}
+  @media(max-width:820px){.gallery{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.gallery{grid-template-columns:1fr}.gallery .photo.wide{grid-column:auto}}
+  .gallery-foot{
+    font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-soft);
+    text-align:center;margin-top:52px;line-height:1.9;
+  }
+
+  /* ---------- RULES ---------- */
+  .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;border-top:1px solid var(--ink);padding-top:48px}
+  .how-card .step{
+    font-family:var(--serif);font-weight:560;font-size:52px;color:var(--plum);
+    line-height:1;margin-bottom:20px;
+  }
+  .how-card h3{font-size:21px;margin-bottom:14px}
+  .how-card p{font-size:14.5px;line-height:1.7;color:var(--ink-soft)}
+  @media(max-width:820px){.how-grid{grid-template-columns:1fr;gap:40px}}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--ink);color:var(--paper);padding:90px 40px 50px;margin-top:110px}
+  .foot-inner{max-width:1180px;margin:0 auto}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap;margin-bottom:70px}
+  .foot-logo{height:46px;width:auto}
+  .foot-tag{
+    font-family:var(--display);text-transform:none;font-size:clamp(22px,2.8vw,32px);font-weight:400;letter-spacing:.01em;
+    max-width:520px;line-height:1.3;color:rgba(245,242,234,.94);
+  }
+  .foot-links{display:flex;gap:26px;font-size:12.5px;color:rgba(245,242,234,.6);flex-wrap:wrap}
+  .foot-links a:hover{color:var(--paper)}
+  .foot-bottom{
+    border-top:1px solid rgba(245,242,234,.15);padding-top:26px;
+    display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    font-size:11.5px;color:rgba(245,242,234,.45);
+  }
+  .foot-wolf{height:64px;width:auto;opacity:.9}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#"><img src="stills/LockUp-WPBlack.webp" alt="Wolf Pack League"></a>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#season" class="active">2026 Events</a>
+    <a href="#league">The League</a>
+    <a href="#routes">Routes</a>
+    <a href="#gopro">Selects</a>
+    <a href="field-notes.html">Field Notes</a>
+    <a href="#">FAQ</a>
+    <a class="nav-cta" href="#season">Join the pack</a>
+  </div>
+</nav>
+
+<header class="splash">
+  <video class="splash-video" autoplay muted loop playsinline poster="stills/splash-tor.jpg">
+    <source src="stills/splash.mp4" type="video/mp4">
+  </video>
+  <div class="splash-card">
+    <img class="splash-wolf" src="stills/wolf-aubergine-white.png" alt="A wolf holding an aubergine, ceremonially">
+    <h1 class="splash-title">Two days. One map.<br>No phones.</h1>
+    <p class="splash-tag">And one ceremonial aubergine.</p>
+    <button class="splash-watch" id="watchFilm" type="button">
+      <span class="tri">▶</span>
+      <span>Rough Cut V1<small>2026 Season · 1m15s</small></span>
+    </button>
+  </div>
+  <span class="splash-credit">Glastonbury Tor · The Final Mile</span>
+</header>
+
+<!-- ROUGH CUT LIGHTBOX -->
+<div class="film-modal" id="filmModal" aria-hidden="true">
+  <div class="film-shell">
+    <button class="film-close" id="filmClose" aria-label="Close">✕</button>
+    <video id="filmPlayer" controls playsinline preload="none" poster="stills/texture-poster.jpg">
+      <source src="stills/gopro-roughcut.mp4?v=3" type="video/mp4">
+    </video>
+    <div class="film-cap"><span><b>Reel 01</b> · Bristol to Glastonbury</span><span>Rough cut — work in progress</span></div>
+  </div>
+</div>
+
+<div class="dispatch" aria-hidden="true">
+  <div class="dispatch-inner">
+    <span>London to Hastings: sold out</span><i>·</i>
+    <span>Worm's Head: sold out</span><i>·</i>
+    <span>Longest Day Edition: 27 places left</span><i>·</i>
+    <span>Autumn races launching soon</span><i>·</i>
+    <span>Expect navigation. Teamwork. Improvisation.</span><i>·</i>
+    <span>London to Hastings: sold out</span><i>·</i>
+    <span>Worm's Head: sold out</span><i>·</i>
+    <span>Longest Day Edition: 27 places left</span><i>·</i>
+    <span>Autumn races launching soon</span><i>·</i>
+    <span>Expect navigation. Teamwork. Improvisation.</span><i>·</i>
+  </div>
+</div>
+
+<section class="intro" style="padding-bottom:40px">
+  <span class="eyebrow reveal in" style="margin-bottom:24px">A curious survival adventure for modern humans who don't want to turn into robots</span>
+  <p class="intro-sub reveal in">A survival race with a soul. Teams navigate wild terrain by map and compass, take on strange and strategic challenges, and camp in back-to-basics wild locations. Part competition, part ritual. <em>Like Duke of Edinburgh for adults in existential crisis.</em></p>
+  <div class="hero-stats reveal in">
+    <div class="hero-stat"><div class="num" data-count="7">0</div><div class="lbl">Races in 2026</div></div>
+    <div class="hero-stat"><div class="num" data-count="841">0</div><div class="lbl">Humans signed up</div></div>
+    <div class="hero-stat"><div class="num" data-count="212">0</div><div class="lbl">Teams in the league</div></div>
+    <div class="hero-stat"><div class="num"><span data-count="186">0</span><small style="font-size:.5em"> mi</small></div><div class="lbl">Combined distance</div></div>
+  </div>
+</section>
+
+<!-- ================= LEAGUE ================= -->
+<section id="league">
+  <div class="sec-head sec-head-row reveal">
+    <div>
+      <span class="eyebrow">Season Two standings</span>
+      <h2>The league table</h2>
+      <p class="sub">Every standard race counts. Finish well, climb the table, earn the patch.</p>
+    </div>
+    <span class="live-pill"><span class="live-dot"></span>Live · after three races</span>
+  </div>
+
+  <div class="board reveal" id="board">
+    <div class="board-head">
+      <span style="padding-left:10px">Pos</span><span>Team</span>
+      <span class="hide-m">Races</span>
+      <span class="hide-m">Best</span>
+      <span>Form</span>
+      <span style="text-align:right;padding-right:10px">Points</span>
+    </div>
+    <!-- rows injected by JS -->
+    <div class="board-foot">
+      <span>Points: 1st 100 · 2nd 88 · 3rd 78, and so on. Every finisher scores.</span>
+      <span>Next update: 21 June, at the Tor</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RULES ================= -->
+<section>
+  <div class="sec-head reveal">
+    <span class="eyebrow">How the league works</span>
+    <h2>Three rules, kept brief on purpose</h2>
+    <p class="sub">You'll laugh. You'll ache. You might cry. And you'll come out of the woods more alive than when you went in.</p>
+  </div>
+  <div class="how-grid reveal">
+    <div class="how-card">
+      <div class="step">1</div>
+      <h3>Attend a race</h3>
+      <p>Every standard adult event counts towards the season. Family and special editions are run purely for the pleasure of it. Your team name is your league identity. Choose it carefully and then live with it.</p>
+    </div>
+    <div class="how-card">
+      <div class="step">2</div>
+      <h3>Collect your points</h3>
+      <p>First place receives 100 points, second receives 88, third receives 78, and so on down the order. Every finishing team scores something. Teams that retire gracefully are awarded 10 points for their trouble.</p>
+    </div>
+    <div class="how-card">
+      <div class="step">3</div>
+      <h3>Count your best four</h3>
+      <p>Your four finest results decide your final standing. The champions, crowned in October, receive the trophy, the patches, and complimentary entry to every race of Season Three. Applause is customary.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GOPRO / UGC SELECTS ================= -->
+<section class="ugc" id="gopro">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Straight off the chest cams</span>
+    <h2>GoPro selects</h2>
+    <p class="sub">No crew, no lighting, no second takes. The race as the pack actually saw it.</p>
+    <div class="ugc-more reveal"><button class="ugc-link" id="goproRough" type="button">▶ View the full rough cut of the GoPro content</button></div>
+  </div>
+  <div class="ugc-row reveal">
+    <figure class="ugc-card">
+      <div class="ugc-phone">
+        <video class="ugc-vid" src="stills/gopro-1.mp4?v=1" poster="stills/gopro-1-poster.jpg" muted loop autoplay playsinline preload="metadata"></video>
+        <div class="ugc-top">
+          <span class="ugc-avatar">W</span><span class="ugc-user">wolfpack</span>
+          <span class="ugc-live"><i></i>Live</span>
+        </div>
+        <div class="ugc-actions">
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="26" height="26" fill="#fff"><path d="M12 21s-7.4-4.55-10-9.28C.7 8.4 2.1 5 5.3 5c2 0 3.2 1.25 3.8 2.25C9.7 6.25 10.9 5 12.9 5 16.1 5 17.5 8.4 16.2 11.72 13.6 16.45 12 21 12 21z"/></svg><b>2.4k</b></span>
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg><b>96</b></span>
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></span>
+        </div>
+        <p class="ugc-cap"><b>@wolfpack</b> waking up on day two</p>
+        <button class="ugc-sound" type="button" aria-label="Toggle sound">🔇</button>
+      </div>
+    </figure>
+    <figure class="ugc-card">
+      <div class="ugc-phone">
+        <video class="ugc-vid" src="stills/gopro-2.mp4?v=1" poster="stills/gopro-2-poster.jpg" muted loop autoplay playsinline preload="metadata"></video>
+        <div class="ugc-top">
+          <span class="ugc-avatar">W</span><span class="ugc-user">wolfpack</span>
+          <span class="ugc-live"><i></i>Live</span>
+        </div>
+        <div class="ugc-actions">
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="26" height="26" fill="#fff"><path d="M12 21s-7.4-4.55-10-9.28C.7 8.4 2.1 5 5.3 5c2 0 3.2 1.25 3.8 2.25C9.7 6.25 10.9 5 12.9 5 16.1 5 17.5 8.4 16.2 11.72 13.6 16.45 12 21 12 21z"/></svg><b>1.8k</b></span>
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg><b>74</b></span>
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></span>
+        </div>
+        <p class="ugc-cap"><b>@wolfpack</b> you shall not pass... the cows</p>
+        <button class="ugc-sound" type="button" aria-label="Toggle sound">🔇</button>
+      </div>
+    </figure>
+    <figure class="ugc-card">
+      <div class="ugc-phone">
+        <video class="ugc-vid" src="stills/gopro-roughcut.mp4?v=3" poster="stills/gopro-3-poster.jpg" muted loop autoplay playsinline preload="metadata"></video>
+        <div class="ugc-top">
+          <span class="ugc-avatar">W</span><span class="ugc-user">wolfpack</span>
+          <span class="ugc-live"><i></i>Live</span>
+        </div>
+        <div class="ugc-actions">
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="26" height="26" fill="#fff"><path d="M12 21s-7.4-4.55-10-9.28C.7 8.4 2.1 5 5.3 5c2 0 3.2 1.25 3.8 2.25C9.7 6.25 10.9 5 12.9 5 16.1 5 17.5 8.4 16.2 11.72 13.6 16.45 12 21 12 21z"/></svg><b>3.1k</b></span>
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.6A8.5 8.5 0 1 1 21 11.5z"/></svg><b>118</b></span>
+          <span class="ugc-act"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></span>
+        </div>
+        <p class="ugc-cap"><b>@wolfpack</b> the whole thing, unfiltered</p>
+        <button class="ugc-sound" type="button" aria-label="Toggle sound">🔇</button>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<div class="bleed reveal">
+  <img src="stills/bleed-9.jpg" alt="A racer smiles mid-climb" loading="lazy">
+  <span class="bleed-cap">Morale, holding.</span>
+</div>
+
+<!-- ================= ROUTES ================= -->
+<section id="routes">
+  <div class="sec-head reveal">
+    <span class="eyebrow">The courses</span>
+    <h2>The routes, approximately</h2>
+    <p class="sub">Watch a hypothetical pack run each course. The real checkpoints stay sealed in an envelope until race morning.</p>
+  </div>
+
+  <div class="route-wrap reveal">
+    <div class="route-tabs" id="routeTabs"></div>
+    <div class="map-stage">
+      <div class="map-hud" id="mapHud"></div>
+      <svg id="mapSvg" viewBox="0 0 1000 520">
+        <g id="contours" fill="none" stroke="rgba(22,19,15,.1)" stroke-width="1">
+          <path d="M0 430 Q 180 380 340 420 T 700 390 T 1000 430"/>
+          <path d="M0 370 Q 200 310 380 360 T 740 310 T 1000 360"/>
+          <path d="M0 310 Q 220 240 420 300 T 780 230 T 1000 290"/>
+          <path d="M0 250 Q 240 180 460 240 T 820 160 T 1000 220"/>
+          <path d="M0 190 Q 260 120 500 180 T 860 100 T 1000 150"/>
+          <ellipse cx="250" cy="150" rx="90" ry="34"/>
+          <ellipse cx="250" cy="150" rx="55" ry="20"/>
+          <ellipse cx="720" cy="400" rx="110" ry="40"/>
+          <ellipse cx="720" cy="400" rx="65" ry="23"/>
+        </g>
+        <g fill="rgba(22,19,15,.35)" font-family="Inter" font-size="11" font-style="italic">
+          <text x="250" y="153" text-anchor="middle">somewhat hilly</text>
+          <text x="720" y="403" text-anchor="middle">rather boggy</text>
+        </g>
+        <path id="routeGhost" fill="none" stroke="rgba(22,19,15,.25)" stroke-width="1.6" stroke-dasharray="2 8" stroke-linecap="round"/>
+        <path id="routeDrawn" fill="none" stroke="#de8a72" stroke-width="2.5" stroke-dasharray="7 6" stroke-linecap="round"/>
+        <g id="cps"></g>
+        <g id="runner">
+          <circle r="9" fill="none" stroke="#de8a72" stroke-width="1.2" opacity=".5"/>
+          <circle r="5" fill="#de8a72" stroke="#f5f2ea" stroke-width="1.6"/>
+        </g>
+        <text id="startLbl" font-family="Inter" font-size="11" font-weight="700" letter-spacing="1" fill="#16130f"></text>
+        <text id="endLbl" font-family="Inter" font-size="11" font-weight="700" letter-spacing="1" fill="#16130f"></text>
+      </svg>
+    </div>
+    <div class="map-legend">
+      <span class="leg"><i style="background:#de8a72"></i>The pack (imagined)</span>
+      <span class="leg"><i style="background:#86a063"></i>Checkpoint, visited</span>
+      <span class="leg"><i style="background:#f5f2ea;border:1px solid #6e6759"></i>Checkpoint, pending</span>
+      <span class="leg"><i style="background:#e4b654"></i>The overnight camp</span>
+      <span class="hypo-tag">Routes are illustrative. The real line stays secret until your blindfold comes off.</span>
+    </div>
+  </div>
+</section>
+
+<div class="bleed reveal">
+  <img src="stills/bleed-17.jpg" alt="Two racers overlook patchwork fields" loading="lazy">
+  <span class="bleed-cap">Somewhere in Somerset, on schedule.</span>
+</div>
+
+<!-- ================= CALENDAR ================= -->
+<section id="season">
+  <div class="sec-head sec-head-row reveal">
+    <div>
+      <span class="eyebrow">Seven races · May to October</span>
+      <h2>The 2026 season</h2>
+      <p class="sub">This isn't about speed. It's about awareness, teamwork, and staying calm when plans dissolve. Here's the year, and a running count of who's already in.</p>
+    </div>
+    <span class="live-pill"><span class="live-dot"></span>Live entry tallies</span>
+  </div>
+
+  <div class="ticker reveal">
+    <span class="ticker-no" id="tickerNo">Dispatch No.1</span>
+    <span class="ticker-msg" id="ticker">Awaiting word from the field…</span>
+  </div>
+
+  <div class="cal-strip reveal" id="calStrip"></div>
+
+  <div id="evList" class="reveal"></div>
+</section>
+
+<!-- ================= FIELD NOTES TEASER ================= -->
+<section id="evidence" style="text-align:center">
+  <div class="reveal">
+    <span class="eyebrow">From the archive</span>
+    <h2 style="font-size:clamp(28px,3.8vw,46px)">Field notes</h2>
+    <p class="sub" style="font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink-soft);margin:16px auto 32px;max-width:480px;line-height:1.6">Scenes from previous races. Hilarious, chaotic, and sometimes quietly profound. Sixteen photographs, one wizard.</p>
+    <a class="ev-cta primary" href="field-notes.html">View the field notes</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <img class="foot-logo" src="stills/LockUp-WPWhite.png" alt="Wolf Pack League" style="margin-bottom:26px;display:block">
+        <p class="foot-tag">A society for people who would rather be lost together than found alone.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-end">
+        <img class="foot-wolf" src="stills/wolf-aubergine-white.png" alt="">
+        <div class="foot-links" style="flex-direction:column;align-items:flex-end;gap:10px">
+          <a href="mailto:hello@wolfpackleague.co.uk">hello@wolfpackleague.co.uk</a>
+          <a href="#">Instagram</a>
+          <a href="#">Facebook</a>
+          <a href="#">Volunteer</a>
+          <a href="#">Jobs</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Wolf Pack League. A redesign concept.</span>
+      <span>Standings, tallies and route lines are illustrative, and should be enjoyed rather than believed.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================= DATA ================= */
+const TEAMS = [
+  {name:'The Reluctant Cartographers', home:'London', races:3, best:1, pts:276, move:0, col:'#e4b654'},
+  {name:'Compass Crisis', home:'Bristol', races:3, best:1, pts:264, move:1, col:'#7e9b8f'},
+  {name:'Feral Office Workers', home:'Manchester', races:3, best:2, pts:241, move:-1, col:'#c98a78'},
+  {name:'The Blister Society', home:'Cardiff', races:2, best:1, pts:188, move:2, col:'#a3899c'},
+  {name:'Sunday Regret', home:'Brighton', races:3, best:4, pts:182, move:0, col:'#9db86b'},
+  {name:'The Wrong Way Round', home:'Leeds', races:2, best:3, pts:156, move:-2, col:'#8fa3b8'},
+  {name:'Moss & Sons', home:'Sheffield', races:2, best:5, pts:134, move:1, col:'#c8a87f'},
+  {name:'Dad Strength', home:'Birmingham', races:3, best:7, pts:129, move:-1, col:'#b3c87f'},
+  {name:'Pack Mentality', home:'Swansea', races:1, best:2, pts:88, move:3, col:'#c87fb3'},
+  {name:'The Soggy Bottoms', home:'Bath', races:2, best:9, pts:74, move:-1, col:'#9a8fb8'},
+];
+
+const EVENTS = [
+  {dd:'02', mm:'May', month:4, name:'London to Hastings Survival Race', sub:'London → the sea', mi:'~30 miles', dates:'2 to 3 May', status:'sold', cap:150, filled:150,
+   desc:'Meet early in central London. Hand in your phone and board a bus south to a secret rural location, roughly 30 miles from the sea. Two days later you arrive at the coast, more alive than when you left.',
+   nb:'The sea is cold. That\'s part of it.'},
+  {dd:'16', mm:'May', month:4, name:"Swansea to Worm's Head Survival Race", sub:'The Gower Peninsula', mi:'~28 miles', dates:'16 to 17 May', status:'sold', cap:120, filled:120,
+   desc:"Two days across the Gower Peninsula, racing to reach the cliffs overlooking Worm's Head by Sunday sunset. Wild coastline, wilder weather, and a camp you'll talk about for years.",
+   nb:'The tide doesn\'t negotiate.'},
+  {dd:'06', mm:'Jun', month:5, name:'Bristol to Glastonbury Survival Race', sub:'Bristol → the Tor', mi:'~29 miles', dates:'6 to 7 June', status:'sold', cap:140, filled:140,
+   desc:"From Bristol's edges across fields, lanes and quiet valleys towards Glastonbury Tor, one of the UK's most myth-soaked landscapes. The original. It sold out in eleven days.",
+   nb:'There\'s a wizard near Wells. Don\'t take his directions.'},
+  {dd:'20', mm:'Jun', month:5, name:'Bristol to Glastonbury · Longest Day Edition', sub:'A solstice arrangement', mi:'~29 miles', dates:'20 to 21 June', status:'fast', cap:160, filled:133,
+   desc:'Timed to the summer solstice. Ancient woodland and mossy winding paths, dramatic gorges carved into limestone, stone circles and caves, and the most daylight of the year to find your way with.',
+   nb:'Maximum daylight. Minimum excuses.'},
+  {dd:'29', mm:'Aug', month:7, name:'Birmingham to Wye Valley Survival Race', sub:'Birmingham → Chepstow', mi:'~32 miles', dates:'29 to 30 August', status:'sold', cap:130, filled:130,
+   desc:'Two days through deep woodland and misty river valleys, following the Wye south towards Chepstow. The hilliest race on the calendar.',
+   nb:'We counted the hills. We\'re not sharing the number.'},
+  {dd:'12', mm:'Sep', month:8, name:'London to Hastings Survival Race · II', sub:'London → the sea, again', mi:'~30 miles', dates:'12 to 13 September', status:'soon', cap:150, filled:0, wait:89,
+   desc:'The Hastings race returns. Same sea, entirely different secret drop point. Entries open soon, and the queue is already forming.',
+   nb:'The secret is a different secret this time.'},
+  {dd:'03', mm:'Oct', month:9, name:'Bristol to Wye Valley Survival Race', sub:'Bristol → Chepstow', mi:'~31 miles', dates:'3 to 4 October', status:'soon', cap:140, filled:0, wait:64,
+   desc:'The season finale. Autumn mist on the Wye, the trophy decided, and one last fire before winter. Then everyone goes back to their inboxes, reluctantly.',
+   nb:'The trophy is heavier than it looks. So is October.'},
+];
+
+const ROUTES = [
+  {key:'hastings', label:'London → Hastings', sub:'~30 mi · the High Weald', start:'THE SECRET DROP', end:'HASTINGS',
+   d:'M 80 90 C 180 130, 220 220, 300 240 S 460 200, 540 260 S 620 380, 740 390 S 880 430, 930 460',
+   cps:[
+     {t:.16,label:'CP1 · The ridgeline riddle'},
+     {t:.34,label:'CP2 · The river question'},
+     {t:.52,label:'THE CAMP · Saturday night',camp:true},
+     {t:.70,label:'CP3 · The woodland maze'},
+     {t:.87,label:'CP4 · The final ridge'},
+   ]},
+  {key:'gower', label:"Swansea → Worm's Head", sub:'~28 mi · the Gower coast', start:'SWANSEA', end:"WORM'S HEAD",
+   d:'M 920 110 C 800 150, 760 240, 660 230 S 520 170, 430 240 S 380 370, 280 380 S 130 420, 70 440',
+   cps:[
+     {t:.18,label:'CP1 · The dunes'},
+     {t:.38,label:'CP2 · The salt marsh'},
+     {t:.55,label:'THE CAMP · a cliff field',camp:true},
+     {t:.74,label:"CP3 · The smugglers' path"},
+     {t:.9,label:'CP4 · The causeway, timed'},
+   ]},
+  {key:'glasto', label:'Bristol → Glastonbury', sub:'~29 mi · the Mendips', start:'BRISTOL', end:'THE TOR',
+   d:'M 120 110 C 240 90, 340 160, 380 250 S 320 360, 430 400 S 640 360, 720 410 S 850 430, 900 440',
+   cps:[
+     {t:.2,label:'CP1 · The gorge'},
+     {t:.4,label:'CP2 · The cave clue'},
+     {t:.55,label:'THE CAMP · Mendip top',camp:true},
+     {t:.72,label:'CP3 · The neolithic ring'},
+     {t:.88,label:'CP4 · The Levels, at pace'},
+   ]},
+  {key:'wye', label:'Birmingham → Wye', sub:'~32 mi · the Wye Valley', start:'BIRMINGHAM', end:'CHEPSTOW',
+   d:'M 500 70 C 430 140, 470 210, 420 270 S 300 300, 320 370 S 460 400, 520 440 S 660 450, 720 470',
+   cps:[
+     {t:.17,label:'CP1 · The orchard gate'},
+     {t:.36,label:'CP2 · The rope ferry'},
+     {t:.54,label:'THE CAMP · the riverbend',camp:true},
+     {t:.72,label:'CP3 · The misty weir'},
+     {t:.88,label:'CP4 · The old railway'},
+   ]},
+];
+
+/* ================= LEADERBOARD ================= */
+const board = document.getElementById('board');
+const foot = board.querySelector('.board-foot');
+TEAMS.forEach((t,i)=>{
+  const row = document.createElement('div');
+  row.className = 'board-row' + (i<3 ? ' podium-'+(i+1) : '');
+  const initials = t.name.replace('The ','').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const mv = t.move>0 ? `<span class="move up">▲ ${t.move}</span>` : t.move<0 ? `<span class="move down">▼ ${-t.move}</span>` : `<span class="move same">·</span>`;
+  row.innerHTML = `
+    <span class="rank">${i+1}</span>
+    <span class="team">
+      <span class="team-badge" style="background:${t.col}55;border:1.5px solid ${t.col}">${initials}</span>
+      <span><span class="team-name">${t.name}</span><br><span class="team-home">of ${t.home}</span></span>
+    </span>
+    <span class="cell hide-m">${t.races} of 3</span>
+    <span class="cell hide-m">${t.best===1?'1st':t.best===2?'2nd':t.best===3?'3rd':t.best+'th'}</span>
+    <span>${mv}</span>
+    <span class="pts" data-count="${t.pts}">0</span>`;
+  board.insertBefore(row, foot);
+});
+
+/* ================= COUNT-UP + REVEAL ================= */
+function countUp(el){
+  const target = +el.dataset.count, dur = 1400, t0 = performance.now();
+  (function tick(now){
+    const p = Math.min((now-t0)/dur,1), e = 1-Math.pow(1-p,3);
+    el.textContent = Math.round(target*e).toLocaleString();
+    if(p<1) requestAnimationFrame(tick);
+  })(t0);
+}
+const io = new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return;
+  e.target.classList.add('in');
+  e.target.querySelectorAll('[data-count]').forEach(countUp);
+  if(e.target.dataset.count) countUp(e.target);
+  if(e.target.id==='board'){
+    [...e.target.querySelectorAll('.board-row')].forEach((r,i)=>setTimeout(()=>r.classList.add('in'), i*70));
+  }
+  e.target.querySelectorAll('.cap-fill').forEach(f=>f.style.width=f.dataset.w);
+  io.unobserve(e.target);
+},{threshold:.15}));
+document.querySelectorAll('.reveal, .hero-stat .num[data-count], .hero-stat span[data-count]').forEach(el=>io.observe(el));
+
+/* ================= ROUTE MAP ================= */
+const tabsEl = document.getElementById('routeTabs');
+const ghost = document.getElementById('routeGhost');
+const drawn = document.getElementById('routeDrawn');
+const cpsG = document.getElementById('cps');
+const runner = document.getElementById('runner');
+const hud = document.getElementById('mapHud');
+const startLbl = document.getElementById('startLbl');
+const endLbl = document.getElementById('endLbl');
+
+let route = ROUTES[0], pathLen = 0, prog = 0, raf;
+
+ROUTES.forEach((r,i)=>{
+  const b = document.createElement('button');
+  b.className = 'route-tab'+(i===0?' active':'');
+  b.innerHTML = `${r.label}<small>${r.sub}</small>`;
+  b.onclick = ()=>{ document.querySelectorAll('.route-tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); loadRoute(r); };
+  tabsEl.appendChild(b);
+});
+
+function loadRoute(r){
+  route = r; prog = 0;
+  ghost.setAttribute('d', r.d);
+  drawn.setAttribute('d', r.d);
+  pathLen = drawn.getTotalLength();
+  cpsG.innerHTML = '';
+  r.cps.forEach((cp)=>{
+    const p = drawn.getPointAtLength(cp.t*pathLen);
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','cp'); g.dataset.t = cp.t; g.dataset.camp = cp.camp?'1':'';
+    const col = cp.camp ? '#e4b654' : '#f5f2ea';
+    g.innerHTML = `
+      <line x1="${p.x}" y1="${p.y}" x2="${p.x}" y2="${p.y-22}" stroke="#16130f" stroke-width="1.3"/>
+      <path class="flag" d="M ${p.x} ${p.y-22} L ${p.x+16} ${p.y-17.5} L ${p.x} ${p.y-13} Z" fill="${col}" stroke="#16130f" stroke-width="1.1"/>
+      <circle class="base" cx="${p.x}" cy="${p.y}" r="4" fill="${col}" stroke="#16130f" stroke-width="1.1"/>
+      <text x="${p.x}" y="${p.y+20}" text-anchor="middle" font-family="Inter" font-size="9.5" font-weight="500" fill="rgba(22,19,15,.6)">${cp.label}</text>`;
+    cpsG.appendChild(g);
+  });
+  const s = drawn.getPointAtLength(0), e = drawn.getPointAtLength(pathLen);
+  startLbl.textContent = '◉ ' + r.start;
+  startLbl.setAttribute('x', Math.min(Math.max(s.x-30, 8), 820)); startLbl.setAttribute('y', s.y - 26);
+  endLbl.textContent = '⚑ ' + r.end;
+  endLbl.setAttribute('x', Math.min(Math.max(e.x-30, 8), 850)); endLbl.setAttribute('y', e.y + 34);
+  cancelAnimationFrame(raf);
+  animate();
+}
+
+function animate(){
+  const SPEED = .00075;
+  let last = performance.now();
+  (function frame(now){
+    const dt = Math.min(now-last, 50); last = now;
+    prog += SPEED * dt/16.7;
+    if(prog > 1.14) prog = -0.08;
+    const p = Math.max(0, Math.min(prog, 1));
+    const pt = drawn.getPointAtLength(p*pathLen);
+    runner.setAttribute('transform', `translate(${pt.x},${pt.y})`);
+    drawn.style.strokeDasharray = `${p*pathLen} ${pathLen}`;
+    let cleared = 0;
+    cpsG.querySelectorAll('.cp').forEach(g=>{
+      const t = +g.dataset.t, camp = g.dataset.camp==='1';
+      const flag = g.querySelector('.flag'), base = g.querySelector('.base');
+      if(t <= p){ cleared++; if(!camp){ flag.setAttribute('fill','#86a063'); base.setAttribute('fill','#86a063'); } }
+      else if(!camp){ flag.setAttribute('fill','#f5f2ea'); base.setAttribute('fill','#f5f2ea'); }
+    });
+    const totalCps = route.cps.length;
+    const mi = Math.round(parseInt(route.sub.replace('~','')) * p * 10)/10 || 0;
+    hud.innerHTML = `<b>${route.label}</b><br>Progress of the pack: <span class="hud-cp">${Math.round(p*100)}%</span> · ~${mi} mi<br>Checkpoints visited: <span class="hud-cp">${cleared} of ${totalCps}</span><br><span style="font-style:italic;opacity:.7">A simulation. The real thing is muddier.</span>`;
+    raf = requestAnimationFrame(frame);
+  })(last);
+}
+loadRoute(ROUTES[0]);
+
+/* ================= CALENDAR ================= */
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const strip = document.getElementById('calStrip');
+MONTHS.forEach((m,i)=>{
+  const evs = EVENTS.filter(e=>e.month===i);
+  const d = document.createElement('div');
+  d.className = 'cal-month'+(evs.length?' has-event':'');
+  d.innerHTML = `${m}<div class="dots">${evs.map(e=>`<i class="${e.status==='soon'?'soon':''}"></i>`).join('')}</div>`;
+  if(evs.length) d.onclick = ()=>document.getElementById('m-'+i).scrollIntoView({behavior:'smooth',block:'center'});
+  strip.appendChild(d);
+});
+
+const list = document.getElementById('evList');
+let curMonth = -1;
+const MONTH_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+EVENTS.forEach(ev=>{
+  if(ev.month !== curMonth){
+    curMonth = ev.month;
+    const lbl = document.createElement('div');
+    lbl.className = 'ev-month-label'; lbl.id = 'm-'+curMonth;
+    lbl.textContent = `${MONTH_FULL[curMonth]} 2026`;
+    list.appendChild(lbl);
+  }
+  const pct = Math.round(ev.filled/ev.cap*100);
+  const card = document.createElement('div');
+  card.className = 'ev-card';
+  const badge = ev.status==='sold' ? '<span class="stamp sold">Fully subscribed</span>'
+    : ev.status==='fast' ? '<span class="stamp fast">Filling briskly</span>'
+    : '<span class="stamp soon">Opening shortly</span>';
+  const tally = ev.status==='soon'
+    ? `<div class="tally"><b class="wl">${ev.wait}</b> <span class="of">in the queue</span></div>
+       <div class="cap-bar"><div class="cap-fill" data-w="${Math.min(ev.wait/ev.cap*100,100)}%" style="background:rgba(22,19,15,.3)"></div></div>`
+    : `<div class="tally"><b class="fillnum" data-cap="${ev.cap}">${ev.filled}</b> <span class="of">of ${ev.cap} places taken</span></div>
+       <div class="cap-bar"><div class="cap-fill ${ev.status==='sold'?'full':pct>70?'hot':''}" data-w="${pct}%"></div></div>`;
+  const cta = ev.status==='fast' ? '<a class="ev-cta primary" href="#">Enter now</a>'
+    : '<a class="ev-cta" href="#">Join the queue</a>';
+  card.innerHTML = `
+    <span class="league-chip">League race</span>
+    <div class="ev-date"><div class="dd">${ev.dd}</div><div class="mm">${ev.mm}</div></div>
+    <div class="ev-body">
+      <h3><a href="#">${ev.name}</a></h3>
+      <div class="ev-meta">
+        <span>${ev.sub}</span><span>·</span><span>${ev.mi}</span><span>·</span><span>${ev.dates}</span><span>·</span><span>one night under canvas</span>
+      </div>
+      <p class="ev-desc">${ev.desc}</p>
+      ${ev.nb ? `<p class="ev-nb">n.b. ${ev.nb}</p>` : ''}
+    </div>
+    <div class="ev-side">${badge}${tally}${cta}</div>`;
+  list.appendChild(card);
+});
+
+/* ================= LIVE TICKER + TALLY SIM ================= */
+const TICKS = [
+  'Team <b>Gravel Gargoyles</b> just entered the <b>Longest Day Edition</b>.',
+  '<b>Three teams</b> joined the <b>Hastings II</b> queue in the last hour.',
+  '<b>Compass Crisis</b> are up to <b>2nd</b>. Nobody is more surprised than them.',
+  '<b>27 places</b> left for the <b>Longest Day Edition</b>.',
+  'Team <b>Soft Lads, Hard Miles</b> have entered. Against advice.',
+  '<b>841 humans</b>, <b>212 teams</b>, one league.',
+  'A <b>wizard</b> was seen near <b>Wells</b>. Unrelated to the standings, probably.',
+  'The <b>pig</b> at checkpoint three has been <b>promoted</b>.',
+  'The <b>horse</b> is still declining interviews.',
+  'The <b>ceremonial aubergine</b> has been polished.',
+];
+const tickerEl = document.getElementById('ticker');
+const tickerNo = document.getElementById('tickerNo');
+let ti = 0;
+function tick(){
+  tickerEl.classList.add('swap');
+  setTimeout(()=>{
+    tickerEl.innerHTML = TICKS[ti % TICKS.length];
+    tickerNo.textContent = 'Dispatch No.' + (ti % TICKS.length + 1);
+    tickerEl.classList.remove('swap');
+    ti++;
+  }, 400);
+}
+tick(); setInterval(tick, 5200);
+
+setInterval(()=>{
+  if(Math.random() < .45){
+    const fast = EVENTS.find(e=>e.status==='fast');
+    document.querySelectorAll('.fillnum').forEach(el=>{
+      const cap = +el.dataset.cap;
+      if(cap===fast.cap && fast.filled < fast.cap - 1){
+        fast.filled++;
+        el.textContent = fast.filled;
+        el.style.color = 'var(--plum)';
+        setTimeout(()=>el.style.color='', 800);
+        const bar = el.closest('.ev-side').querySelector('.cap-fill');
+        bar.style.width = Math.round(fast.filled/fast.cap*100)+'%';
+      }
+    });
+    document.querySelectorAll('.wl').forEach(el=>{
+      if(Math.random()<.5){ el.textContent = +el.textContent + 1; el.style.color='var(--plum)'; setTimeout(()=>el.style.color='',800); }
+    });
+  }
+}, 7000);
+
+/* ---------- rough-cut lightbox ---------- */
+(() => {
+  const modal = document.getElementById('filmModal');
+  const player = document.getElementById('filmPlayer');
+  const openBtn = document.getElementById('watchFilm');
+  const closeBtn = document.getElementById('filmClose');
+  const bgLoop = document.querySelector('.splash-video');
+  const goproBtn = document.getElementById('goproRough');
+  if(!modal || !player || !openBtn) return;
+  function open(src, poster){
+    const sc = player.querySelector('source');
+    if(src && sc.getAttribute('src') !== src){ sc.src = src; if(poster) player.poster = poster; player.load(); }
+    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+    if(bgLoop) bgLoop.pause();
+    player.currentTime = 0; player.play().catch(()=>{});
+  }
+  function close(){
+    modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
+    player.pause();
+    if(bgLoop) bgLoop.play().catch(()=>{});
+  }
+  openBtn.addEventListener('click', () => window.open('https://f.io/u6YxeGPX','_blank','noopener'));
+  if(goproBtn) goproBtn.addEventListener('click', () => open('stills/gopro-roughcut.mp4?v=3','stills/texture-poster.jpg'));
+  closeBtn.addEventListener('click', close);
+  modal.addEventListener('click', e => { if(e.target === modal) close(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('open')) close(); });
+})();
+
+/* ---------- GoPro UGC: tap for sound (one at a time) ---------- */
+(() => {
+  const cards = Array.from(document.querySelectorAll('.ugc-card'));
+  if(!cards.length) return;
+  function setSound(card, on){
+    const v = card.querySelector('.ugc-vid'), btn = card.querySelector('.ugc-sound'), hint = card.querySelector('.ugc-hint');
+    v.muted = !on; btn.textContent = on ? '🔊' : '🔇'; if(hint) hint.style.display = on ? 'none' : '';
+    if(on) v.play().catch(()=>{});
+  }
+  cards.forEach(card => {
+    card.querySelector('.ugc-phone').addEventListener('click', e => {
+      e.preventDefault();
+      const v = card.querySelector('.ugc-vid'), turnOn = v.muted;
+      cards.forEach(c => { if(c !== card) setSound(c, false); });
+      setSound(card, turnOn);
+    });
+  });
+})();
+</script>
+</body>
+</html>

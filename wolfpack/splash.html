@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wolfpack League — The Film</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2e9d3; --ink:#3a2f22; --ink-soft:#6b5d4a;
+    --red:#bd5240; --teal:#5d8d81; --mustard:#cf9c3c;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:var(--paper);font-family:'Jost',sans-serif;color:var(--ink);overflow:hidden}
+
+  .frame{position:fixed;inset:18px;border:2px solid var(--ink);display:flex;flex-direction:column}
+  .frame::after{content:'';position:absolute;inset:6px;border:1px solid var(--ink);pointer-events:none;opacity:.45}
+
+  header{display:flex;align-items:center;justify-content:center;gap:18px;padding:20px 0 14px;flex:none}
+  header .rule{height:1px;background:var(--ink);flex:1;max-width:160px;opacity:.5}
+  header h1{font-weight:600;font-size:clamp(15px,2vw,21px);letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;text-align:center}
+  header h1 span{display:block;font-family:var(--mono);font-weight:400;font-size:.52em;letter-spacing:.34em;color:var(--ink-soft);margin-top:6px}
+
+  .stage{flex:1;position:relative;margin:0 56px 12px;border:2px solid var(--ink);background:#111;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .stage video{width:100%;height:100%;object-fit:contain;background:#111;display:block}
+
+  /* sprocket marks down each side of the player, filmstrip feel */
+  .stage::before,.stage::after{content:'';position:absolute;top:0;bottom:0;width:18px;
+    background:repeating-linear-gradient(to bottom,transparent 0 14px,rgba(242,233,211,.0) 14px 16px);
+    pointer-events:none}
+
+  .caption{flex:none;text-align:center;padding:12px 0 8px;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);min-height:34px}
+  .caption b{color:var(--red);font-weight:500}
+
+  footer{flex:none;display:flex;justify-content:center;align-items:center;gap:18px;padding-bottom:16px}
+  .btn{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
+    background:transparent;border:1px solid var(--ink);border-radius:999px;padding:7px 16px;cursor:pointer}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn.red{border-color:var(--red);color:var(--red)}
+  .btn.red:hover{background:var(--red);color:var(--paper)}
+  footer a{text-decoration:none}
+  .meta{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<div class="frame">
+  <header>
+    <div class="rule"></div>
+    <h1>The Wolfpack<br>League — The Film<span>Bristol to Glastonbury &middot; A Survival Race &middot; Rough Cut</span></h1>
+    <div class="rule"></div>
+  </header>
+
+  <div class="stage" id="stage">
+    <video id="film" controls playsinline preload="metadata" poster="stills/roughcut-poster.jpg?v=2">
+      <source src="stills/roughcut.mp4?v=2" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="caption" id="caption"><b>Reel 01</b> &nbsp; Press play &middot; the aubergine must survive</div>
+
+  <footer>
+    <button class="btn red" id="playBtn">▶ Play the film</button>
+    <span class="meta" id="meta">Rough cut</span>
+    <a class="btn" href="index.html">← Back to the league</a>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const film = document.getElementById('film');
+  const playBtn = document.getElementById('playBtn');
+  const caption = document.getElementById('caption');
+  const meta = document.getElementById('meta');
+
+  function fmt(t){ if(!isFinite(t)) return '--:--'; const m=Math.floor(t/60), s=Math.floor(t%60); return m+':'+String(s).padStart(2,'0'); }
+  film.addEventListener('loadedmetadata', () => { meta.textContent = 'Rough cut · ' + fmt(film.duration); });
+  film.addEventListener('play',  () => { playBtn.textContent = '❚❚ Pause'; });
+  film.addEventListener('pause', () => { playBtn.textContent = '▶ Play the film'; });
+  film.addEventListener('ended', () => { caption.innerHTML = '<b>Fin</b> &nbsp; The pack made it to the Tor'; });
+
+  playBtn.addEventListener('click', () => { film.paused ? film.play() : film.pause(); });
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Space'){ e.preventDefault(); film.paused ? film.play() : film.pause(); }
+    if (e.key === 'ArrowRight') film.currentTime = Math.min(film.duration, film.currentTime + 5);
+    if (e.key === 'ArrowLeft')  film.currentTime = Math.max(0, film.currentTime - 5);
+    if (e.key === 'f' && film.requestFullscreen) film.requestFullscreen();
+  });
+})();
+</script>
+</body>
+</html>
