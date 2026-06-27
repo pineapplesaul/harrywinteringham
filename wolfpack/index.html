@@ -1033,7 +1033,7 @@ setInterval(()=>{
     player.pause();
     if(bgLoop) bgLoop.play().catch(()=>{});
   }
-  openBtn.addEventListener('click', () => window.open('https://f.io/u6YxeGPX','_blank','noopener'));
+  openBtn.addEventListener('click', () => open('stills/roughcut-film.mp4?v=1','stills/roughcut-film-poster.jpg'));
   if(goproBtn) goproBtn.addEventListener('click', () => open('stills/gopro-roughcut.mp4?v=3','stills/texture-poster.jpg'));
   closeBtn.addEventListener('click', close);
   modal.addEventListener('click', e => { if(e.target === modal) close(); });
