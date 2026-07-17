@@ -664,6 +664,74 @@
     margin-bottom: 1.4em;
   }
 
+  /* ── TOOLS / EARWIG ── */
+  :root { --coral: #FF5C4D; }
+  .tools-section {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    padding: 64px 40px;
+    border-top: 1px solid var(--rule);
+    align-items: start;
+    background: var(--coral);
+  }
+  .tools-left {
+    position: relative;
+    align-self: stretch;
+  }
+  .tools-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 300;
+    padding-top: 4px;
+    color: #FFF6F4;
+  }
+  .tools-squiggle {
+    position: absolute;
+    top: 36px;
+    left: 75%;
+    transform: translateX(-50%);
+    height: calc(100% - 36px);
+  }
+  .tools-logo {
+    height: 42px;
+    width: auto;
+    display: block;
+    margin-bottom: 18px;
+    filter: brightness(0) invert(1);
+  }
+  .tools-body {
+    font-size: 0.88rem;
+    line-height: 1.85;
+    font-weight: 300;
+    color: #FFF6F4;
+    max-width: 560px;
+  }
+  .tools-earwig {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    color: #fff;
+  }
+  .tools-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    color: #fff;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 2px;
+    transition: opacity 0.2s;
+  }
+  .tools-link:hover { opacity: 0.7; }
+  .tools-arrow { transition: transform 0.2s; }
+  .tools-link:hover .tools-arrow { transform: translateX(3px); }
+
   /* ── FOOTER ── */
   footer {
     padding: 40px 40px 48px;
@@ -745,6 +813,9 @@
     .work-header { padding: 32px 20px 16px; }
     .awards-section { grid-template-columns: 1fr; gap: 24px; padding: 48px 20px; }
     .about-section { grid-template-columns: 1fr; padding: 48px 20px; }
+    .tools-section { grid-template-columns: 1fr; gap: 20px; padding: 48px 20px; }
+    .tools-left { min-height: 200px; }
+    .tools-squiggle { height: 160px; }
     .stills-grid { grid-template-columns: repeat(2, 1fr); }
     .stills-grid .still-item:nth-child(3n) { border-right: 1px solid var(--rule); }
     .stills-grid .still-item:nth-child(2n) { border-right: none; }
@@ -831,6 +902,21 @@
   <div class="intro-body">
     <p>Harry is a Documentary Producer, Director, DOP and Designer based in Bristol and London. An experienced producer-director with a cinematic eye, specialising in human-interest stories that get under the skin of their subjects. Over the past seven years he has crafted ambitious prime-time factual and observational programmes for the UK's most-watched broadcasters.</p>
     <p>His credits include the BAFTA-nominated <strong><em>Educating Yorkshire</em></strong>, the BAFTA-winning <strong><em>Ambulance</em></strong> (RTS Award for his series), and the BAFTA-nominated <strong><em>Freddie Flintoff's Field of Dreams</em></strong>. He also develops <a href="https://storycopilot.io" target="_blank">tools</a> that help documentary practitioners capture authentic moments.</p>
+  </div>
+</div>
+
+<!-- TOOLS / EARWIG -->
+<div id="tools" class="tools-section">
+  <div class="tools-left">
+    <div class="tools-label">Tools</div>
+    <svg class="tools-squiggle" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path id="squiggle-path" d="M168.03 285.852C168.032 280.972 161.588 264.577 189.175 253.646C198.825 250.827 217.737 240.309 216.175 220.79C214.614 201.272 192.753 203.766 182.018 207.452C173.126 211.465 151.959 219.033 138.427 217.212C121.511 214.935 110.125 211.682 100.691 194.115C91.257 176.548 93.2089 155.729 97.7632 140.439C102.318 125.15 125.74 100.426 141.68 93.9201C157.62 87.4139 172.259 82.209 187.873 92.6189C203.488 103.029 198.934 124.824 182.018 136.21C165.102 147.596 19.3639 218.513 14.159 127.752C8.9541 36.9913 125.74 15.8463 141.68 14.5451C157.62 13.2439 216.501 10.9667 258.791 50.6543C301.081 90.3418 292.623 161.259 241.875 174.597" stroke="#fff" stroke-width="27.9765" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="tools-right">
+    <img class="tools-logo" src="logos/earwig-logo.png" alt="Earwig" loading="lazy">
+    <p class="tools-body">I also enjoy developing and building tools that help film makers. <span class="tools-earwig">Earwig</span> is an on-set companion that lets you mark the moment as it happens, then carries your markers and selects straight into the edit.</p>
+    <a class="tools-link" href="https://earwig.io" target="_blank" rel="noopener">Click here to find out more<span class="tools-arrow">&rarr;</span></a>
   </div>
 </div>
 
@@ -1094,8 +1180,6 @@
 <footer>
   <div>
     <p>© 2026 Harry Winteringham</p>
-    <p style="margin-top:8px;font-size:0.75rem;color:var(--mid);"><a href="https://storycopilot.io" target="_blank" rel="noopener" style="font-weight:400;color:var(--black);text-decoration:none;"><strong>StoryCoPilot</strong></a> — A workflow tool that helps filmmakers and storytellers tell better stories.</p>
-    <p style="margin-top:6px;font-size:0.75rem;color:var(--mid);letter-spacing:0.03em;">If you'd like to, please reach out.</p>
   </div>
   <div style="display:flex;align-items:center;gap:16px;">
     <img src="images/smiley.gif" alt="" style="width:32px;height:32px;filter:grayscale(1);" class="smiley-icon">
@@ -1304,6 +1388,29 @@
       bgMusic.pause();
       btn.classList.remove('playing');
     }
+  }
+
+  // Earwig squiggle — draws as the section scrolls through the viewport
+  const squigglePath = document.getElementById('squiggle-path');
+  if (squigglePath) {
+    const squiggleLen = squigglePath.getTotalLength();
+    squigglePath.style.strokeDasharray = squiggleLen;
+    squigglePath.style.strokeDashoffset = squiggleLen;
+    const toolsSection = document.getElementById('tools');
+    function drawSquiggle() {
+      const rect = toolsSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // How far rect.top can still travel before the page runs out of scroll —
+      // cap the draw distance so the squiggle always completes by max scroll.
+      const maxScrollLeft = document.documentElement.scrollHeight - vh - window.scrollY;
+      const topAtMaxScroll = rect.top - maxScrollLeft;
+      const denom = Math.min(rect.height + vh * 0.35, (vh - topAtMaxScroll) * 0.95);
+      const progress = Math.min(1, Math.max(0, (vh - rect.top) / denom));
+      squigglePath.style.strokeDashoffset = squiggleLen * (1 - progress);
+    }
+    window.addEventListener('scroll', drawSquiggle, { passive: true });
+    window.addEventListener('resize', drawSquiggle, { passive: true });
+    drawSquiggle();
   }
 
   // Showreel modal
