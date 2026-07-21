@@ -52,10 +52,9 @@
     align-items: baseline;
     padding: 22px 40px;
     background: var(--white);
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.3s, background 0.4s ease;
+    transition: box-shadow 0.3s, background 0.4s ease;
   }
-  nav.scrolled { border-color: var(--rule); }
+  nav.scrolled { box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
   .nav-logo {
     font-family: var(--sans);
     font-weight: 300;
@@ -86,18 +85,17 @@
   /* ── DARK MODE TOGGLE ── */
   .theme-toggle {
     background: none;
-    border: 1px solid var(--rule);
-    border-radius: 50%;
+    border: none;
     width: 32px;
     height: 32px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: border-color 0.3s;
+    transition: opacity 0.3s;
     flex-shrink: 0;
   }
-  .theme-toggle:hover { border-color: var(--mid); }
+  .theme-toggle:hover { opacity: 0.5; }
   .theme-toggle svg {
     width: 15px;
     height: 15px;
@@ -122,14 +120,13 @@
     letter-spacing: 0.02em;
     color: var(--black);
     background: none;
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    padding: 6px 14px;
+    border: none;
+    padding: 6px 0;
     cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+    transition: color 0.2s;
     position: relative;
   }
-  .copy-email:hover { border-color: var(--mid); }
+  .copy-email:hover { color: var(--mid); }
   .copy-email svg {
     width: 14px;
     height: 14px;
@@ -179,16 +176,13 @@
   .stills-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    border-top: 1px solid var(--rule);
+    gap: 24px;
+    padding: 0 40px 80px;
   }
   .still-item {
     position: relative;
     overflow: hidden;
-    border-right: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
   }
-  .still-item:nth-child(3n) { border-right: none; }
   .still-item img {
     width: 100%;
     aspect-ratio: 1;
@@ -201,8 +195,7 @@
 
   /* ── FOOTER ── */
   footer {
-    padding: 40px 40px 48px;
-    border-top: 1px solid var(--rule);
+    padding: 56px 40px 48px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -232,9 +225,7 @@
     .nav-links { gap: 20px; }
     nav .copy-email { display: none; }
     .page-header { padding: 110px 20px 20px; }
-    .stills-grid { grid-template-columns: repeat(2, 1fr); }
-    .stills-grid .still-item:nth-child(3n) { border-right: 1px solid var(--rule); }
-    .stills-grid .still-item:nth-child(2n) { border-right: none; }
+    .stills-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px 56px; }
     footer { flex-direction: column; gap: 12px; padding: 32px 20px; text-align: center; }
   }
 </style>
