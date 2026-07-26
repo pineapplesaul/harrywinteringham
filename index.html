@@ -549,6 +549,67 @@
     text-transform: uppercase;
   }
 
+  /* ── SERVICES / CAPABILITIES ── */
+  .craft-intro {
+    padding: 0 40px 8px;
+    max-width: 820px;
+  }
+  .craft-lead {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    font-weight: 400;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .craft-lead .craft-kit {
+    color: var(--mid);
+    display: block;
+    margin-top: 14px;
+    font-size: 0.9rem;
+    font-family: var(--sans);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .craft-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 52px 40px;
+    padding: 48px 40px 0;
+  }
+  .craft-item { position: relative; }
+  .craft-media { position: relative; overflow: hidden; }
+  .craft-item img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(12%);
+    transition: transform 0.6s cubic-bezier(0.25,0.1,0.25,1);
+  }
+  .craft-item:hover img { transform: scale(1.03); }
+  .craft-kicker {
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin: 18px 0 8px;
+  }
+  .craft-title {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .craft-desc {
+    font-size: 0.86rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
   /* ── AWARDS ROW ── */
   .awards-section {
     padding: 80px 40px;
@@ -650,14 +711,14 @@
   }
 
   /* ── TOOLS / EARWIG ── */
-  :root { --indigo: #5D60F2; }
+  :root { --coral: #F0654F; }
   .tools-section {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 80px;
     padding: 64px 40px;
     align-items: start;
-    background: var(--indigo);
+    background: var(--coral);
   }
   .tools-left {
     position: relative;
@@ -813,6 +874,8 @@
     .intro-section { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px; }
     .work-grid { grid-template-columns: 1fr; gap: 48px; padding: 0 20px 64px; }
     .work-header { padding: 48px 20px 24px; }
+    .craft-intro { padding: 0 20px 8px; }
+    .craft-grid { grid-template-columns: 1fr; gap: 44px; padding: 32px 20px 0; }
     .awards-section { grid-template-columns: 1fr; gap: 24px; padding: 48px 20px; }
     .about-section { grid-template-columns: 1fr; padding: 48px 20px; }
     .tools-section { grid-template-columns: 1fr; gap: 20px; padding: 48px 20px; }
@@ -831,8 +894,8 @@
   <a class="nav-logo" href="#">Harry Winteringham<br>Documentary Director</a>
   <ul class="nav-links">
     <li><a href="#work">Work</a></li>
+    <li><a href="#services">Services</a></li>
     <li><a href="stills.html">Stills</a></li>
-    <li><a href="#about">About</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:12px;">
     <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
@@ -1155,6 +1218,76 @@
   </div>
 </div>
 
+<!-- SERVICES / CAPABILITIES -->
+<div id="services">
+  <div class="work-header">
+    <h2>What I Bring to a Shoot</h2>
+    <span style="font-size:0.75rem;color:var(--mid);letter-spacing:0.04em">Self-shooting · Owner-operator</span>
+  </div>
+  <div class="craft-intro">
+    <p class="craft-lead">I self-shoot and own all my own kit, from camera and lenses to lighting and sound. I turn up ready to work, which keeps a production simple and cost-effective.
+      <span class="craft-kit">Sony FX6 · DJI Ronin 4D · Lighting &amp; Sound Package</span>
+    </p>
+  </div>
+  <div class="craft-grid">
+
+    <div class="craft-item">
+      <div class="craft-media">
+        <img src="images/_MG_0551.jpg" alt="Observational documentary moment" loading="lazy">
+      </div>
+      <div class="craft-kicker">01</div>
+      <div class="craft-title">Observational shooting</div>
+      <p class="craft-desc">I shoot observationally, working quietly so people relax and forget the camera is there. I've spent years filming on ambulances, in schools and in family homes, often with sensitive access.</p>
+    </div>
+
+    <div class="craft-item">
+      <div class="craft-media">
+        <img src="images/JESSH.jpg" alt="Lit documentary interview" loading="lazy">
+      </div>
+      <div class="craft-kicker">02</div>
+      <div class="craft-title">Lighting for interviews</div>
+      <p class="craft-desc">I light and shoot interviews myself, with a natural look rather than something that feels staged. People settle quickly in front of the camera.</p>
+    </div>
+
+    <div class="craft-item">
+      <div class="craft-media">
+        <img src="images/HayleyAndJoe.jpg" alt="Recording sound in a real environment" loading="lazy">
+      </div>
+      <div class="craft-kicker">03</div>
+      <div class="craft-title">Sound</div>
+      <p class="craft-desc">I record my own sound on the shoot, using radio mics, a boom and a mixer. That means clean dialogue in the edit without booking a separate recordist.</p>
+    </div>
+
+    <div class="craft-item">
+      <div class="craft-media">
+        <img src="images/gimbal-ronin.jpg" alt="Gimbal moving shot on the DJI Ronin 4D" loading="lazy">
+      </div>
+      <div class="craft-kicker">04</div>
+      <div class="craft-title">Gimbal work on the Ronin 4D</div>
+      <p class="craft-desc">I shoot moving shots on a DJI Ronin 4D, from walk-and-talks to follows and reveals. It's a full cinema camera, so the picture stays stable and sharp.</p>
+    </div>
+
+    <div class="craft-item">
+      <div class="craft-media">
+        <img src="images/drone-aerial.jpg" alt="Aerial drone shot of a river through fields" loading="lazy">
+      </div>
+      <div class="craft-kicker">05</div>
+      <div class="craft-title">Drone operation</div>
+      <p class="craft-desc">I fly a drone for aerials and establishing shots. It adds scale to a sequence without the cost of a second unit.</p>
+    </div>
+
+    <div class="craft-item">
+      <div class="craft-media">
+        <img src="images/Lake_District_01052017-91.jpg" alt="On location in the field" loading="lazy">
+      </div>
+      <div class="craft-kicker">06</div>
+      <div class="craft-title">Flexible, ready to travel</div>
+      <p class="craft-desc">I'm happy to travel, at short notice if needed, in the UK or abroad. I bring my own kit, so I'm self-sufficient wherever the shoot is.</p>
+    </div>
+
+  </div>
+</div>
+
 <!-- CONTACT -->
 <div id="contact" class="contact-section">
   <h2 class="contact-heading">Want to work together?</h2>
@@ -1166,22 +1299,6 @@
       hi@harrywinteringham.uk
       <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
     </button>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<div id="about" class="about-section">
-  <img 
-    class="about-image"
-    src="images/GRE-1.jpg"
-    alt="Harry Winteringham"
-    loading="lazy"
-  >
-  <div class="about-text">
-    <h2>About</h2>
-    <p>Harry is a Documentary Producer, Director, DOP and Designer based in Bristol and London. An experienced producer-director with a cinematic eye, specialising in human-interest stories that get under the skin of their subjects. Over the past seven years he has crafted ambitious prime-time factual and observational programmes for the UK's most-watched broadcasters.</p>
-    <p>His credits include the BAFTA-nominated <strong><em>Educating Yorkshire</em></strong>, the BAFTA-winning <strong><em>Ambulance</em></strong> (RTS Award for his series), and the BAFTA-nominated <strong><em>Freddie Flintoff's Field of Dreams</em></strong>. He also develops tools that help documentary practitioners capture authentic moments.</p>
-    <p>Alongside his directorial work, Harry operates a Sony FX6 on professional productions.</p>
   </div>
 </div>
 
@@ -1216,11 +1333,11 @@
     '.awards-label',
     '.awards-list li',
     '.work-item',
+    '.craft-lead',
+    '.craft-item',
     '.contact-heading',
     '.contact-copy',
     '.contact-actions',
-    '.about-image',
-    '.about-text',
   ];
 
   revealTargets.forEach(sel => {
