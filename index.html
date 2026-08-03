@@ -416,8 +416,27 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 64px 40px;
-    padding: 0 40px 96px;
+    padding: 0 40px 40px;
   }
+  .work-more { padding: 8px 40px 96px; }
+  .work-more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+    border-bottom: 1px solid var(--black);
+    padding-bottom: 4px;
+    transition: opacity 0.2s;
+  }
+  .work-more-link:hover { opacity: 0.6; }
+  .work-more .wm-arrow { transition: transform 0.2s; }
+  .work-more-link:hover .wm-arrow { transform: translateX(4px); }
   .work-item {
     position: relative;
     cursor: pointer;
@@ -893,9 +912,10 @@
 <nav id="main-nav">
   <a class="nav-logo" href="#">Harry Winteringham<br>Documentary Director</a>
   <ul class="nav-links">
-    <li><a href="#work">Work</a></li>
-    <li><a href="#services">Services</a></li>
+    <li><a href="documentary.html">Documentary</a></li>
+    <li><a href="branded.html">Branded</a></li>
     <li><a href="stills.html">Stills</a></li>
+    <li><a href="projects.html">Building</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:12px;">
     <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
@@ -1066,35 +1086,6 @@
       </div>
     </div>
 
-    <div class="work-item" data-trailer-video="images/spartan-trailer.mp4">
-
-      <div class="work-media">
-      <img src="images/BENEATH_PORTRAIT-1.jpg" alt="Spartan Bare Knuckle" loading="lazy">
-      <div class="work-item-overlay">
-        <div class="overlay-role">Producer Director / DOP -- Apple TV+ / Amazon / Vice</div>
-        <div class="overlay-desc">Three-part series. In Bradford, a brutal boxing club is growing in popularity -- the UK's only licensed bare knuckle syndicate set up to combat knife crime.</div>
-      </div>
-      </div>
-      <div class="work-item-caption">
-        <div class="work-item-title">Spartan Bare Knuckle: The Real Life Fight Club</div>
-        <div class="work-item-meta">Broadcast Nominated</div>
-      </div>
-    </div>
-
-    <div class="work-item">
-      <div class="work-media">
-      <img src="images/jamieandsophie.jpeg" alt="Raising Chelsea" loading="lazy" style="object-position: 30% center;">
-      <div class="work-item-overlay">
-        <div class="overlay-role">Producer Director -- Dorothy St Pictures</div>
-        <div class="overlay-desc">Three-part series following Jamie Laing and Sophie Habboo's unfiltered journey into parenthood -- from pregnancy through labour and the chaos of becoming first-time parents.</div>
-      </div>
-      </div>
-      <div class="work-item-caption">
-        <div class="work-item-title">Jamie and Sophie: Raising Chelsea</div>
-        <div class="work-item-meta">Disney+ / Hulu</div>
-      </div>
-    </div>
-
     <div class="work-item" data-trailer-video="videos/murder-247-clip.mp4">
 
       <div class="work-media">
@@ -1110,20 +1101,6 @@
       </div>
       <div class="work-item-caption">
         <div class="work-item-title">Murder 24/7</div>
-        <div class="work-item-meta">BBC One</div>
-      </div>
-    </div>
-
-    <div class="work-item">
-      <div class="work-media">
-      <img src="images/UltimateTest.jpg" alt="Freddie Flintoff Field of Dreams Series 2" loading="lazy">
-      <div class="work-item-overlay">
-        <div class="overlay-role">Producer Director -- South Shore</div>
-        <div class="overlay-desc">Second series following Freddie Flintoff as he returns to inspire young people through cricket.</div>
-      </div>
-      </div>
-      <div class="work-item-caption">
-        <div class="work-item-title">Freddie Flintoff's Field of Dreams, Series 2</div>
         <div class="work-item-meta">BBC One</div>
       </div>
     </div>
@@ -1165,56 +1142,10 @@
       </div>
     </div>
 
-    <div class="work-item">
-      <div class="work-media">
-      <img src="images/CHERRYVALENTINE (17 of 18).jpg" alt="Cherry Valentine: Gypsy Queen and Proud" loading="lazy">
-      <div class="work-item-overlay">
-        <div class="overlay-role">DV Director -- True North</div>
-        <div class="overlay-desc">Intimate documentary following the Drag Race star's return to the Traveller community.</div>
-        <div class="overlay-review">
-          <div class="overlay-review-quote">"A very sweet insight into her journey blending Gypsy heritage with queer identity."</div>
-          <div class="overlay-review-source">Gay Times</div>
-        </div>
-      </div>
-      </div>
-      <div class="work-item-caption">
-        <div class="work-item-title">Cherry Valentine: Gypsy Queen and Proud</div>
-        <div class="work-item-meta">BBC Three</div>
-      </div>
-    </div>
+  </div>
 
-    <div class="work-item">
-      <div class="work-media">
-      <img src="images/IMG_2042 (2)_0009_CB_Grade_JPG_1.49.1.jpg" alt="Brain or Brawn" loading="lazy">
-      <div class="work-item-overlay">
-        <div class="overlay-role">Producer / Director</div>
-        <div class="overlay-desc">BBC Two factual entertainment series.</div>
-      </div>
-      </div>
-      <div class="work-item-caption">
-        <div class="work-item-title">Brain or Brawn</div>
-        <div class="work-item-meta">BBC Two</div>
-      </div>
-    </div>
-
-    <div class="work-item">
-      <div class="work-media">
-      <img src="images/ce39222c-7502-4a0b-839e-9106b4429511.jpg" alt="Emergency Channel 4" loading="lazy">
-      <div class="work-item-overlay">
-        <div class="overlay-role">Producer / Director -- The Garden</div>
-        <div class="overlay-desc">Self-shot on the road with the London Ambulance Service's Advanced Paramedic Practitioners and Air Ambulance operating within the London Trauma Network.</div>
-        <div class="overlay-review">
-          <div class="overlay-review-quote">"Essential programming that really ought to find a large audience."</div>
-          <div class="overlay-review-source">The Guardian</div>
-        </div>
-      </div>
-      </div>
-      <div class="work-item-caption">
-        <div class="work-item-title">Emergency</div>
-        <div class="work-item-meta">Channel 4</div>
-      </div>
-    </div>
-
+  <div class="work-more">
+    <a class="work-more-link" href="documentary.html">See all documentary work <span class="wm-arrow">&rarr;</span></a>
   </div>
 </div>
 

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building | Harry Winteringham</title>
+<meta name="description" content="Tools and products Harry Winteringham builds in his spare time, at the intersection of transcription and artificial intelligence — Earwig, Stories By, Snapsketch and ListenIn.">
+<script>
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0f0f0f;
+    --white: #fafaf8;
+    --mid: #888;
+    --rule: #d0cfc9;
+    --text-secondary: #444;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Karla', sans-serif;
+  }
+
+  [data-theme="dark"] {
+    --black: #e8e6e1;
+    --white: #141414;
+    --mid: #777;
+    --rule: #2a2a2a;
+    --text-secondary: #aaa;
+  }
+
+  html { font-size: 16px; }
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 22px 40px;
+    background: var(--white);
+    transition: box-shadow 0.3s, background 0.4s ease;
+  }
+  nav.scrolled { box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+  .nav-logo {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--black);
+    line-height: 1.3;
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    color: var(--black);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--mid); }
+  .nav-links a.active { color: var(--mid); }
+
+  /* ── DARK MODE TOGGLE ── */
+  .theme-toggle {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { opacity: 0.5; }
+  .theme-toggle svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: var(--black);
+    stroke-width: 1.5;
+    transition: stroke 0.3s;
+  }
+  .theme-toggle .icon-moon { display: block; }
+  .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+
+  /* ── COPY EMAIL ── */
+  .copy-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--black);
+    background: none;
+    border: none;
+    padding: 6px 0;
+    cursor: pointer;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .copy-email:hover { color: var(--mid); }
+  .copy-email svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--mid);
+    fill: none;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+  }
+  .copy-email .copied-msg {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  .copy-email .copied-msg.show { opacity: 1; }
+  [data-theme="dark"] footer a { color: var(--black); }
+  [data-theme="dark"] .smiley-icon { filter: grayscale(1) invert(1); }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    padding: 140px 40px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .page-header h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  .page-header span {
+    font-size: 0.75rem;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── INTRO ── */
+  .projects-intro {
+    padding: 24px 40px 8px;
+    max-width: 760px;
+  }
+  .projects-intro p {
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--black);
+  }
+  .projects-intro .sub {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text-secondary);
+    margin-top: 22px;
+    max-width: 620px;
+  }
+
+  /* ── PROJECT GRID ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 44px 40px;
+    padding: 56px 40px 40px;
+  }
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--black);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--white);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1),
+                box-shadow 0.4s cubic-bezier(0.16,1,0.3,1),
+                border-color 0.4s ease;
+  }
+  /* only interactive cards (live link or playable video) lift + show a pointer */
+  a.project-card, .project-card[data-video] { cursor: pointer; }
+  a.project-card:hover, .project-card[data-video]:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 48px rgba(0,0,0,0.12);
+    border-color: transparent;
+  }
+
+  /* branded visual plate */
+  .project-plate {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--plate);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .project-mark {
+    width: auto;
+    max-width: 58%;
+    max-height: 40%;
+    object-fit: contain;
+    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  /* the Earwig PNG carries extra internal padding — let it sit a little larger */
+  .project-card[data-mark="compact"] .project-mark {
+    max-width: 66%;
+    max-height: 52%;
+  }
+  /* the ListenIn wordmark is squarer than the rest, so at the shared 58% it reads taller;
+     trim it to match the optical size of the Stories By tile sitting directly above it */
+  .project-card[data-mark="listenin"] .project-mark {
+    max-width: 38%;
+    max-height: 26%;
+  }
+  /* the Snapsketch mark is a full illustration — let it read as a framed picture */
+  .project-card[data-mark="illustration"] .project-mark {
+    max-width: none;
+    max-height: 84%;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  }
+  .project-card:hover .project-mark { transform: scale(1.04); }
+
+  /* body */
+  .project-body {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .project-kicker {
+    font-family: var(--sans);
+    font-size: 0.66rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 12px;
+  }
+  .project-name {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .project-desc {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    margin-bottom: 22px;
+  }
+  .project-link {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--brand);
+  }
+  .project-link .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand);
+    flex-shrink: 0;
+  }
+  .project-link .p-arrow {
+    transition: transform 0.25s ease;
+    color: var(--brand);
+  }
+  .project-card:hover .p-arrow { transform: translateX(4px); }
+
+  /* static identity caption for the non-live projects (no navigation) */
+  .project-tag {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--mid);
+  }
+  .project-tag .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand);
+    flex-shrink: 0;
+  }
+
+  /* click-to-play button — always visible, bottom-right, on cards that carry a video */
+  .project-play {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    z-index: 6;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15,15,15,0.58);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 8px 26px rgba(0,0,0,0.28);
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), background 0.25s ease;
+  }
+  .project-card:hover .project-play {
+    transform: scale(1.1);
+    background: var(--brand);
+  }
+  .project-play .pp-tri {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 0 8px 13px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 3px;
+  }
+
+  /* ── VIDEO LIGHTBOX ── */
+  .video-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.82);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  .video-overlay.active { opacity: 1; visibility: visible; }
+  .video-modal {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .video-modal video {
+    max-width: 92vw;
+    max-height: 86vh;
+    width: auto;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  }
+  .video-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 10;
+    transition: color 0.3s;
+  }
+  .video-close:hover { color: #fff; }
+
+  /* ── CLOSING ── */
+  .projects-outro {
+    padding: 48px 40px 96px;
+    max-width: 760px;
+  }
+  .projects-outro h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .projects-outro p {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin-bottom: 28px;
+  }
+  .outro-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .outro-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 13px 32px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--white);
+    background: var(--black);
+    border: 1px solid var(--black);
+    border-radius: 2px;
+    transition: opacity 0.25s ease;
+  }
+  .outro-btn:hover { opacity: 0.75; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 56px 40px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--rule);
+  }
+  footer p {
+    font-size: 0.75rem;
+    color: var(--mid);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .project-card.reveal { transition-delay: calc(var(--i, 0) * 90ms); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 18px 20px; }
+    .nav-links { gap: 18px; }
+    nav .copy-email { display: none; }
+    .page-header { padding: 110px 20px 8px; }
+    .projects-intro { padding: 18px 20px 4px; }
+    .projects-grid { grid-template-columns: 1fr; gap: 32px; padding: 40px 20px 32px; }
+    .projects-outro { padding: 32px 20px 64px; }
+    footer { flex-direction: column; gap: 12px; padding: 32px 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="index.html">Harry Winteringham<br>Documentary Director</a>
+  <ul class="nav-links">
+    <li><a href="documentary.html">Documentary</a></li>
+    <li><a href="branded.html">Branded</a></li>
+    <li><a href="stills.html">Stills</a></li>
+    <li><a href="projects.html" class="active">Building</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
+      <span class="copied-msg">Copied</span>
+      hi@harrywinteringham.uk
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+    <button class="theme-toggle" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <h1>Building</h1>
+  <span>Made with Claude</span>
+</div>
+
+<!-- INTRO -->
+<div class="projects-intro">
+  <p>In my spare time I build my own products with Claude, blending my documentary sensibilities with a design background focused on the intersection of transcription and artificial intelligence.</p>
+  <p class="sub">I love building tools that help filmmakers work, help people connect over their shared stories, and help others learn a language visually. Here are a few of them.</p>
+</div>
+
+<!-- PROJECT GRID -->
+<div class="projects-grid">
+
+  <a class="project-card" data-mark="compact" data-video="videos/earwig-demo.mp4" href="https://earwig.io" target="_blank" rel="noopener"
+     style="--brand:#F0654F; --plate:#FBEBE6;">
+    <div class="project-plate">
+      <img class="project-mark" src="images/projects/earwig-logo.png" alt="Earwig" loading="lazy">
+    </div>
+    <div class="project-body">
+      <div class="project-kicker">On-set companion</div>
+      <div class="project-name">Earwig</div>
+      <p class="project-desc">Mark the moment as it happens, and your selects build the edit for you. Earwig turns long interviews into usable chunks, so you can cut faster and communicate clearly with the edit.</p>
+      <span class="project-link"><span class="dot"></span>earwig.io<span class="p-arrow">&rarr;</span></span>
+    </div>
+  </a>
+
+  <div class="project-card"
+     style="--brand:#D98A3D; --plate:#F5F0E8;">
+    <div class="project-plate">
+      <img class="project-mark" src="images/projects/storiesby-logo.png" alt="Stories By" loading="lazy">
+    </div>
+    <div class="project-body">
+      <div class="project-kicker">Shared stories</div>
+      <div class="project-name">Stories By</div>
+      <p class="project-desc">A place for loved ones to gather stories from their relatives, learn more about their lives, and turn what they hear into a lasting keepsake.</p>
+      <span class="project-tag"><span class="dot"></span>storiesby.app</span>
+    </div>
+  </div>
+
+  <div class="project-card" data-mark="illustration" data-video="videos/snapsketch-demo.mp4"
+     style="--brand:#3E9FD4; --plate:#EAF2F6;">
+    <div class="project-plate">
+      <img class="project-mark" src="images/projects/snapsketch-logo.png" alt="Snapsketch" loading="lazy">
+    </div>
+    <div class="project-body">
+      <div class="project-kicker">Colour &amp; learn</div>
+      <div class="project-name">Snapsketch</div>
+      <p class="project-desc">Turns your world into a colouring book that then teaches you the language of your choosing — learning to see and to speak, one drawing at a time.</p>
+      <span class="project-tag"><span class="dot"></span>snapsketch.uk</span>
+    </div>
+  </div>
+
+  <div class="project-card" data-mark="listenin"
+     style="--brand:#3FA46F; --plate:#E9F3EC;">
+    <div class="project-plate">
+      <img class="project-mark" src="images/projects/listenin-logo.png" alt="ListenIn" loading="lazy">
+    </div>
+    <div class="project-body">
+      <div class="project-kicker">Meeting notes</div>
+      <div class="project-name">ListenIn</div>
+      <p class="project-desc">A note taker that keeps you on track through your meetings, simplifies difficult language, and lets you ask questions about what was said.</p>
+      <span class="project-tag"><span class="dot"></span>listenin.uk</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- CLOSING -->
+<div class="projects-outro">
+  <h2>Fancy a chat?</h2>
+  <p>If you'd like to talk to me about building, filmmaking, or whatever else, then reach out. I'd love to hear from you.</p>
+  <div class="outro-actions">
+    <a class="outro-btn" href="mailto:hi@harrywinteringham.uk?subject=Hello">Say hello</a>
+    <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
+      <span class="copied-msg">Copied</span>
+      hi@harrywinteringham.uk
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- VIDEO LIGHTBOX -->
+<div class="video-overlay" id="video-overlay" onclick="if(event.target===this)closeVideo()">
+  <div class="video-modal">
+    <button class="video-close" onclick="closeVideo()">Close</button>
+    <video id="video-player" controls playsinline preload="none"></video>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <p>© 2026 Harry Winteringham</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <img src="images/smiley.gif" alt="" style="width:32px;height:32px;filter:grayscale(1);" class="smiley-icon">
+    <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
+      <span class="copied-msg">Copied</span>
+      hi@harrywinteringham.uk
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+  </div>
+</footer>
+
+<script>
+  // Scroll-triggered nav border
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // Scroll reveal
+  document.querySelectorAll('.project-card').forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.setProperty('--i', i % 2);
+  });
+  document.querySelectorAll('.projects-intro p, .projects-outro h2, .projects-outro p, .outro-actions').forEach(el => el.classList.add('reveal'));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Copy email to clipboard
+  function copyEmail(btn) {
+    const email = btn.getAttribute('data-email');
+    navigator.clipboard.writeText(email).then(() => {
+      const msg = btn.querySelector('.copied-msg');
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 1500);
+    });
+  }
+
+  // Video lightbox — any card with data-video gets a "Watch" button
+  const vOverlay = document.getElementById('video-overlay');
+  const vPlayer = document.getElementById('video-player');
+  function openVideo(src) {
+    vPlayer.src = src;
+    vOverlay.classList.add('active');
+    vPlayer.currentTime = 0;
+    vPlayer.play();
+  }
+  function closeVideo() {
+    vPlayer.pause();
+    vOverlay.classList.remove('active');
+    vPlayer.removeAttribute('src');
+    vPlayer.load();
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeVideo(); });
+  document.querySelectorAll('.project-card[data-video]').forEach(card => {
+    const plate = card.querySelector('.project-plate');
+    if (!plate) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'project-play';
+    btn.setAttribute('aria-label', 'Play video');
+    btn.innerHTML = '<span class="pp-tri"></span>';
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openVideo(card.getAttribute('data-video'));
+    });
+    plate.appendChild(btn);
+    // non-link tiles (Stories By, Snapsketch, ListenIn) are fully clickable to play;
+    // the Earwig tile stays a link to the live site, so only its play button plays.
+    if (card.tagName !== 'A') {
+      card.addEventListener('click', () => openVideo(card.getAttribute('data-video')));
+    }
+  });
+
+  // Dark mode toggle
+  const toggle = document.querySelector('.theme-toggle');
+  toggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>
+
+</body>
+</html>

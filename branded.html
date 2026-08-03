@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Branded Content | Harry Winteringham</title>
+<meta name="description" content="Commercial and branded content directed by Harry Winteringham — brand films, promos and campaign work with a documentary sensibility.">
+<script>
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0f0f0f;
+    --white: #fafaf8;
+    --mid: #888;
+    --rule: #d0cfc9;
+    --text-secondary: #444;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Karla', sans-serif;
+  }
+
+  [data-theme="dark"] {
+    --black: #e8e6e1;
+    --white: #141414;
+    --mid: #777;
+    --rule: #2a2a2a;
+    --text-secondary: #aaa;
+  }
+
+  html { font-size: 16px; }
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 22px 40px;
+    background: var(--white);
+    transition: box-shadow 0.3s, background 0.4s ease;
+  }
+  nav.scrolled { box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+  .nav-logo {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--black);
+    line-height: 1.3;
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    color: var(--black);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--mid); }
+  .nav-links a.active { color: var(--mid); }
+
+  /* ── DARK MODE TOGGLE ── */
+  .theme-toggle {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { opacity: 0.5; }
+  .theme-toggle svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: var(--black);
+    stroke-width: 1.5;
+    transition: stroke 0.3s;
+  }
+  .theme-toggle .icon-moon { display: block; }
+  .theme-toggle .icon-sun { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+
+  /* ── COPY EMAIL ── */
+  .copy-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--black);
+    background: none;
+    border: none;
+    padding: 6px 0;
+    cursor: pointer;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .copy-email:hover { color: var(--mid); }
+  .copy-email svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--mid);
+    fill: none;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+  }
+  .copy-email .copied-msg {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  .copy-email .copied-msg.show { opacity: 1; }
+  [data-theme="dark"] .work-item-overlay { background: var(--white); }
+  [data-theme="dark"] footer a { color: var(--black); }
+  [data-theme="dark"] .smiley-icon { filter: grayscale(1) invert(1); }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    padding: 140px 40px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .page-header h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  .page-header span {
+    font-size: 0.75rem;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── INTRO ── */
+  .commercial-intro {
+    padding: 24px 40px 8px;
+    max-width: 760px;
+  }
+  .commercial-intro p {
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--black);
+  }
+  .commercial-intro .sub {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text-secondary);
+    margin-top: 22px;
+    max-width: 620px;
+  }
+
+  /* ── WORK GRID ── */
+  .work-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px 40px;
+    padding: 56px 40px 96px;
+  }
+  .work-item {
+    position: relative;
+    cursor: pointer;
+  }
+  .work-media {
+    position: relative;
+    overflow: hidden;
+  }
+  .work-item img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25,0.1,0.25,1);
+    filter: grayscale(10%);
+  }
+  .work-item:hover img { transform: scale(1.03); }
+
+  .work-media iframe,
+  .work-media video.trailer-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 5;
+    object-fit: cover;
+  }
+  .work-item-unmute {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .work-item-unmute:hover { background: rgba(0,0,0,0.85); }
+  .work-item-unmute svg {
+    width: 16px;
+    height: 16px;
+    fill: #fff;
+  }
+
+  /* hover overlay */
+  .work-item-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--white);
+    padding: 24px 28px 26px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 10;
+    max-height: 70%;
+    overflow: hidden;
+  }
+  .work-item:hover .work-item-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .work-item-overlay .overlay-role {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+  }
+  .work-item-overlay .overlay-desc {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .work-item-caption {
+    padding: 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .work-item-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.3;
+    max-width: 70%;
+  }
+  .work-item-meta {
+    font-size: 0.72rem;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── SINGLE FEATURE (cinematic, one film) ── */
+  .work-feature { padding: 48px 40px 80px; }
+  .work-feature .work-item { max-width: 1080px; margin: 0 auto; }
+  .work-feature .work-item img,
+  .work-feature .work-media video.trailer-video { aspect-ratio: 16 / 9; }
+
+  /* ── CLOSING ── */
+  .commercial-outro {
+    padding: 8px 40px 96px;
+    max-width: 760px;
+  }
+  .commercial-outro h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .commercial-outro p {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin-bottom: 28px;
+  }
+  .outro-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .outro-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 13px 32px;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--white);
+    background: var(--black);
+    border: 1px solid var(--black);
+    border-radius: 2px;
+    transition: opacity 0.25s ease;
+  }
+  .outro-btn:hover { opacity: 0.75; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 56px 40px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--rule);
+  }
+  footer p {
+    font-size: 0.75rem;
+    color: var(--mid);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .work-item.reveal { transition-delay: calc(var(--i, 0) * 80ms); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 18px 20px; }
+    .nav-links { gap: 18px; }
+    nav .copy-email { display: none; }
+    .page-header { padding: 110px 20px 8px; }
+    .commercial-intro { padding: 18px 20px 4px; }
+    .work-grid { grid-template-columns: 1fr; gap: 48px; padding: 40px 20px 64px; }
+    .work-feature { padding: 32px 20px 56px; }
+    .commercial-outro { padding: 8px 20px 64px; }
+    footer { flex-direction: column; gap: 12px; padding: 32px 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="index.html">Harry Winteringham<br>Documentary Director</a>
+  <ul class="nav-links">
+    <li><a href="documentary.html">Documentary</a></li>
+    <li><a href="branded.html" class="active">Branded</a></li>
+    <li><a href="stills.html">Stills</a></li>
+    <li><a href="projects.html">Building</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
+      <span class="copied-msg">Copied</span>
+      hi@harrywinteringham.uk
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+    <button class="theme-toggle" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <h1>Branded Content</h1>
+  <span>Brand films</span>
+</div>
+
+<!-- INTRO -->
+<div class="commercial-intro">
+  <p>The same documentary eye, pointed at brands — long, unhurried takes that put you in the guest's seat and let the place speak for itself.</p>
+  <p class="sub">Hover the film to watch.</p>
+</div>
+
+<!-- FEATURE -->
+<div class="work-feature">
+  <div class="work-item feature" data-trailer-video="videos/belmond-demo.mp4">
+    <div class="work-media">
+      <img src="images/commercial/belmond.jpg" alt="Belmond, aboard the Amaryllis and the Orient Express" loading="lazy">
+      <div class="work-item-overlay">
+        <div class="overlay-role">For Belmond, with Jonangelo Molinari</div>
+        <div class="overlay-desc">Long, unhurried takes aboard Belmond's Amaryllis and the Orient Express, showing exactly what guests experience as the journey winds through the countryside.</div>
+      </div>
+    </div>
+    <div class="work-item-caption">
+      <div class="work-item-title">Belmond</div>
+      <div class="work-item-meta">Luxury travel</div>
+    </div>
+  </div>
+</div>
+
+<!-- CLOSING -->
+<div class="commercial-outro">
+  <h2>Have a brief?</h2>
+  <p>If you're looking for a director to bring a documentary sensibility to a brand film or campaign, I'd love to hear about it.</p>
+  <div class="outro-actions">
+    <a class="outro-btn" href="mailto:hi@harrywinteringham.uk?subject=Commercial%20brief">Get in touch</a>
+    <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
+      <span class="copied-msg">Copied</span>
+      hi@harrywinteringham.uk
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <p>© 2026 Harry Winteringham</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <img src="images/smiley.gif" alt="" style="width:32px;height:32px;filter:grayscale(1);" class="smiley-icon">
+    <button class="copy-email" data-email="hi@harrywinteringham.uk" onclick="copyEmail(this)">
+      <span class="copied-msg">Copied</span>
+      hi@harrywinteringham.uk
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+  </div>
+</footer>
+
+<script>
+  // Scroll-triggered nav border
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // Scroll reveal
+  document.querySelectorAll('.work-item').forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.setProperty('--i', i % 2);
+  });
+  document.querySelectorAll('.commercial-intro p, .commercial-outro h2, .commercial-outro p, .outro-actions').forEach(el => el.classList.add('reveal'));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Copy email to clipboard
+  function copyEmail(btn) {
+    const email = btn.getAttribute('data-email');
+    navigator.clipboard.writeText(email).then(() => {
+      const msg = btn.querySelector('.copied-msg');
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 1500);
+    });
+  }
+
+  // Trailer autoplay on hover
+  const mutedSvg = '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15" stroke="#fff" stroke-width="2"/><line x1="17" y1="9" x2="23" y2="15" stroke="#fff" stroke-width="2"/></svg>';
+  const unmutedSvg = '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="#fff" stroke-width="1.5"/></svg>';
+
+  // Local video trailers
+  document.querySelectorAll('.work-item[data-trailer-video]').forEach(item => {
+    let hoverTimer;
+    item.addEventListener('mouseenter', () => {
+      hoverTimer = setTimeout(() => {
+        const src = item.getAttribute('data-trailer-video');
+        if (!src || item.querySelector('video.trailer-video')) return;
+        const media = item.querySelector('.work-media') || item;
+        const video = document.createElement('video');
+        video.className = 'trailer-video';
+        video.src = src;
+        video.muted = true;
+        video.autoplay = true;
+        video.loop = true;
+        video.playsInline = true;
+        media.appendChild(video);
+        const btn = document.createElement('button');
+        btn.className = 'work-item-unmute';
+        btn.innerHTML = mutedSvg;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          video.muted = !video.muted;
+          btn.innerHTML = video.muted ? mutedSvg : unmutedSvg;
+        });
+        media.appendChild(btn);
+      }, 400);
+    });
+    item.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimer);
+      const video = item.querySelector('video.trailer-video');
+      const btn = item.querySelector('.work-item-unmute');
+      if (video) video.remove();
+      if (btn) btn.remove();
+    });
+  });
+
+  // YouTube trailers (fallback)
+  document.querySelectorAll('.work-item[data-trailer]').forEach(item => {
+    let hoverTimer;
+    let isMuted = true;
+    item.addEventListener('mouseenter', () => {
+      hoverTimer = setTimeout(() => {
+        const videoId = item.getAttribute('data-trailer');
+        if (!videoId || item.querySelector('iframe')) return;
+        isMuted = true;
+        const media = item.querySelector('.work-media') || item;
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&origin=' + window.location.origin;
+        iframe.allow = 'autoplay; encrypted-media';
+        iframe.allowFullscreen = true;
+        media.appendChild(iframe);
+        const btn = document.createElement('button');
+        btn.className = 'work-item-unmute';
+        btn.innerHTML = mutedSvg;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const f = item.querySelector('iframe');
+          if (!f) return;
+          if (isMuted) {
+            f.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+            btn.innerHTML = unmutedSvg;
+            isMuted = false;
+          } else {
+            f.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+            btn.innerHTML = mutedSvg;
+            isMuted = true;
+          }
+        });
+        media.appendChild(btn);
+      }, 400);
+    });
+    item.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimer);
+      const iframe = item.querySelector('iframe');
+      const btn = item.querySelector('.work-item-unmute');
+      if (iframe) iframe.remove();
+      if (btn) btn.remove();
+    });
+  });
+
+  // Dark mode toggle
+  const toggle = document.querySelector('.theme-toggle');
+  toggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>
+
+</body>
+</html>
