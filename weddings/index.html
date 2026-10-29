@@ -42,7 +42,12 @@
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
     transition: background 0.4s ease, color 0.4s ease;
+    animation: page-in 0.6s ease-out both;
   }
+
+  /* Page fades in on load, same as the main site */
+  @keyframes page-in { from { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { body { animation: none; } }
 
   /* -- NAV -- */
   nav {
