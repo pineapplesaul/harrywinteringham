@@ -127,33 +127,24 @@
       });
     });
 
-    // Stills: rack focus. Each photo drifts at its own depth and is sharpest at the centre of the
-    // screen, softening (and dimming slightly) the further it is from it, like a focus pull.
-    const stillEls = gsap.utils.toArray('.still');
-    if (stillEls.length) {
-      stillEls.forEach(el => {
-        const speed = parseFloat(el.dataset.speed) || 1;
-        gsap.fromTo(el, { y: 160 * speed }, {
-          y: -160 * speed, ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
-        });
-      });
+    // Stills in the page gaps: they don't move; each one is sharpest at the middle of the screen
+    // and softens the further it is from it, like a focus pull
+    const dots = gsap.utils.toArray('.dot');
+    if (dots.length) {
       const focus = () => {
         const mid = innerHeight / 2;
-        stillEls.forEach(el => {
+        dots.forEach(el => {
           const r = el.getBoundingClientRect();
+          if (r.bottom < -200 || r.top > innerHeight + 200) return;
           const off = Math.abs(r.top + r.height / 2 - mid) / innerHeight;   // 0 at centre, ~0.5 at the edges
-          const blur = Math.min(14, Math.max(0, (off - 0.08) * 34));
-          el.style.filter = `blur(${blur.toFixed(1)}px) brightness(${(1 - Math.min(0.35, off * 0.6)).toFixed(2)})`;
+          const blur = Math.min(12, Math.max(0, (off - 0.12) * 30));
+          el.style.filter = `blur(${blur.toFixed(1)}px)`;
+          el.style.opacity = (1 - Math.min(0.5, Math.max(0, off - 0.12) * 1.1)).toFixed(2);
         });
       };
-      ScrollTrigger.create({ trigger: '.stills', start: 'top bottom', end: 'bottom top', onUpdate: focus, onRefresh: focus });
+      addEventListener('scroll', focus, { passive: true });
+      addEventListener('resize', focus);
       focus();
-      // The outlined title fades up as the wall arrives
-      gsap.fromTo('.stills-title span', { autoAlpha: 0, scale: 0.9 }, {
-        autoAlpha: 1, scale: 1, ease: 'none',
-        scrollTrigger: { trigger: '.stills', start: 'top 80%', end: 'top 20%', scrub: true },
-      });
     }
 
     // Get in touch: words rise one after another (the bubbles pop in via CSS)

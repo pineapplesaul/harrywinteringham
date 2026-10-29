@@ -414,3 +414,16 @@ h3, h4, .hero-line, .about-line, .row-quote, blockquote, .press-item blockquote,
 p, .p-body p, .about-body p, .craft p, li { text-wrap: pretty; }
 /* Short paragraphs: fully balanced so no lone last word (Chrome balances up to 6 lines) */
 .about-body p, .p-body p, .craft p, .press-meta { text-wrap: balance; }
+
+/* Stills placed in the page's gaps: straight, still, they just come into focus */
+.dot { margin: 0; will-change: filter, opacity; }
+.dot img { display: block; width: 100%; height: auto; }
+.dot-col .dot { margin-top: 40px; }
+.dot-gap { display: flex; align-items: flex-start; padding: 0 var(--gutter) 120px; }
+.dot-gap .dot:nth-child(2) { margin-top: 18vh; }
+@media (max-width: 760px) {
+  .dot-col .dot { width: 70vw !important; margin-left: 0 !important; }
+  .dot-gap { padding-bottom: 72px; gap: 16px; }
+  .dot-gap .dot { width: 44vw !important; margin-left: 0 !important; }
+  .dot-gap .dot:nth-child(2) { margin-top: 12vh; }
+}
