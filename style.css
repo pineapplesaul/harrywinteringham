@@ -435,3 +435,12 @@ p, .p-body p, .about-body p, .craft p, li { text-wrap: pretty; }
 @media (max-width: 760px) {
   .dot-pair .dot { width: 42vw !important; }
 }
+
+/* Tighter About rhythm: less space after each section, shorter stagger in the photo pairs */
+@media (min-width: 761px) {
+  .about-hero { padding-bottom: 80px; }
+  .about-split, .about-facts, .about-craft { padding-bottom: 64px; }
+  .craft-head { padding-bottom: 48px; }
+  .dot-pair { margin-top: 20px; }
+  .dot-pair .dot:nth-child(2) { margin-top: 24px; }
+}
