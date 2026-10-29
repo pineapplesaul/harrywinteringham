@@ -427,3 +427,11 @@ p, .p-body p, .about-body p, .craft p, li { text-wrap: pretty; }
   .dot-gap .dot { width: 44vw !important; margin-left: 0 !important; }
   .dot-gap .dot:nth-child(2) { margin-top: 12vh; }
 }
+
+/* Stills only in the empty left columns, two side by side, so the page doesn't get longer */
+.dot-pair { display: flex; gap: 14px; align-items: flex-start; margin-top: 28px; }
+.dot-pair .dot { margin-top: 0; }
+.dot-pair .dot:nth-child(2) { margin-top: 48px; }
+@media (max-width: 760px) {
+  .dot-pair .dot { width: 42vw !important; }
+}

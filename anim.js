@@ -137,9 +137,9 @@
           const r = el.getBoundingClientRect();
           if (r.bottom < -200 || r.top > innerHeight + 200) return;
           const off = Math.abs(r.top + r.height / 2 - mid) / innerHeight;   // 0 at centre, ~0.5 at the edges
-          const blur = Math.min(12, Math.max(0, (off - 0.12) * 30));
+          const blur = Math.min(12, Math.max(0, (off - 0.22) * 30));
           el.style.filter = `blur(${blur.toFixed(1)}px)`;
-          el.style.opacity = (1 - Math.min(0.5, Math.max(0, off - 0.12) * 1.1)).toFixed(2);
+          el.style.opacity = (1 - Math.min(0.5, Math.max(0, off - 0.22) * 1.1)).toFixed(2);
         });
       };
       addEventListener('scroll', focus, { passive: true });
