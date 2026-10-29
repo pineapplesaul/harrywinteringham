@@ -367,3 +367,29 @@ cite { display: block; margin-top: 10px; font-style: normal; font-size: 13px; te
   .still:nth-of-type(odd) { left: 4% !important; }
   .still:nth-of-type(even) { left: 50% !important; }
 }
+
+/* Desktop: award logos and stars sit just above the title and appear on hover, one by one */
+@media (hover: hover) and (pointer: fine) {
+  .row .row-awards { position: absolute; top: auto; right: auto; left: 0; bottom: 100%; margin-bottom: 18px; pointer-events: none; }
+  .row .row-awards .award {
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 0.45s ease, transform 0.6s cubic-bezier(.2, .7, .2, 1);
+  }
+  .row:hover .row-awards .award { opacity: 1; transform: none; }
+  .row:hover .row-awards .award:nth-child(2) { transition-delay: 0.08s; }
+  .row:hover .row-awards .award:nth-child(3) { transition-delay: 0.16s; }
+}
+
+/* Review quote, shown with the hover reveal (desktop only; phones keep just logos and stars) */
+.row-quote { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .row .row-awards { flex-wrap: wrap; row-gap: 14px; max-width: 760px; }
+  .row-quote {
+    display: block; flex-basis: 100%; order: 2; margin: 0;
+    font-size: clamp(16px, 1.4vw, 21px); line-height: 1.35; max-width: 46ch;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 0.45s ease 0.2s, transform 0.6s cubic-bezier(.2, .7, .2, 1) 0.2s;
+  }
+  .row:hover .row-quote { opacity: 1; transform: none; }
+}

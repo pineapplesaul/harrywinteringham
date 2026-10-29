@@ -88,7 +88,8 @@
         scrollTrigger: { trigger: row, start: 'top 75%' },
       });
       const badges = row.querySelectorAll('.row-awards .award');
-      if (badges.length) gsap.fromTo(badges, { y: 16, autoAlpha: 0 }, {
+      // With a mouse the badges are revealed by hover (CSS); only animate them in on touch screens
+      if (badges.length && !matchMedia('(hover: hover) and (pointer: fine)').matches) gsap.fromTo(badges, { y: 16, autoAlpha: 0 }, {
         y: 0, autoAlpha: 1, duration: 1, ease, stagger: 0.1, clearProps: 'transform',
         scrollTrigger: { trigger: row, start: 'top 75%' },
       });
