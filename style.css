@@ -444,3 +444,28 @@ p, .p-body p, .about-body p, .craft p, li { text-wrap: pretty; }
   .dot-pair { margin-top: 20px; }
   .dot-pair .dot:nth-child(2) { margin-top: 24px; }
 }
+
+/* About: alternating rows. A cluster of stills on one side, the text on the other;
+   .flip swaps sides. Stills stay straight and still; they only come into focus. */
+.zig {
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 7vw; align-items: center;
+  padding: 0 var(--gutter) 140px;
+}
+.zig.flip .cluster { order: 2; }
+.zig .about-body h4 { margin-bottom: 14px; }
+.about-craft .zig { padding-left: 0; padding-right: 0; padding-bottom: 100px; }
+.cluster { position: relative; padding: 0 0 12% 0; }
+.cluster .dot { margin: 0; }
+.cluster .big { width: 82%; }
+.cluster .small { position: absolute; width: 40%; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6); }
+.cluster .s1 { right: 0; bottom: 0; }
+.cluster .s2 { right: 6%; top: -10%; width: 28%; }
+.zig.flip .cluster .big { margin-left: auto; }
+.zig.flip .cluster .s1 { right: auto; left: 0; }
+.zig.flip .cluster .s2 { right: auto; left: 8%; }
+@media (max-width: 760px) {
+  .zig { grid-template-columns: 1fr; gap: 40px; padding-bottom: 80px; }
+  .zig.flip .cluster { order: 0; }
+  .cluster .big { width: 86%; }
+  .cluster .small { width: 44%; }
+}
