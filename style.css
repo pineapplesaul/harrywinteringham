@@ -469,3 +469,15 @@ p, .p-body p, .about-body p, .craft p, li { text-wrap: pretty; }
   .cluster .big { width: 86%; }
   .cluster .small { width: 44%; }
 }
+
+/* Commercial page: "Have a brief?" sits in the right column after the films */
+.brief { padding-top: 100px; }
+@media (max-width: 760px) {
+  .nav-links { gap: 10px; font-size: 11px; }
+  .brief > div:first-child { display: none; }
+}
+/* Phones: six nav links don't fit beside the logo, so the links take their own line */
+@media (max-width: 760px) {
+  .nav { flex-direction: column; align-items: stretch; gap: 12px; }
+  .nav-links { justify-content: space-between; gap: 0; font-size: 11px; }
+}
