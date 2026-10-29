@@ -1,15 +1,9 @@
 // © 2026 Harry Winteringham. All rights reserved. Earwig is a trademark of Harry Winteringham. Unauthorised copying, modification or distribution of this file is prohibited.
 // v2 site behaviour.
 
-// Address assembled at runtime so it never appears in the static HTML for scrapers
-const emailAddr = ['harry', 'winteringham'].join('.') + String.fromCharCode(64) + ['gmail', 'com'].join('.');
-document.querySelectorAll('.email-addr').forEach(el => {
-  el.textContent = emailAddr;
-  el.dataset.t = emailAddr;
-});
-document.querySelectorAll('a[data-subject]').forEach(a => {
-  a.href = 'mailto:' + emailAddr + '?subject=' + encodeURIComponent(a.dataset.subject);
-});
+// Contact goes through a form relay (Web3Forms), so no email address appears anywhere on the site.
+// The access key only lets the relay deliver to Harry's inbox; it does not reveal the address.
+const FORM_KEY = '32ada5f9-3d59-4652-aa74-f5bc963aa4da';
 
 // London clock in the footer
 const clocks = document.querySelectorAll('.clock');
@@ -97,17 +91,42 @@ const stage = player.querySelector('.player-stage');
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Clip the player to the clicked element's box so it grows from there and shrinks back into it
-function setOrigin(el) {
+// Clip an overlay to the clicked element's box so it grows from there and shrinks back into it
+function setOrigin(overlay, el) {
   const r = el.getBoundingClientRect();
   const radius = el.classList.contains('play-btn') ? r.width / 2 : 4;
-  player.style.setProperty('--from',
+  overlay.style.setProperty('--from',
     `inset(${r.top}px ${innerWidth - r.right}px ${innerHeight - r.bottom}px ${r.left}px round ${radius}px)`);
 }
 
+function openOverlay(overlay, fromEl) {
+  if (fromEl) setOrigin(overlay, fromEl);
+  overlay._from = fromEl;
+  overlay.hidden = false;
+  overlay.getBoundingClientRect(); // commit the start clip before animating
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.querySelectorAll('video[data-src]').forEach(v => v.pause());
+}
+
+function closeOverlay(overlay, cleanup) {
+  const finish = () => {
+    if (cleanup) cleanup();
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+    loops.forEach(v => { if (v.src) v.play().catch(() => {}); });
+  };
+  if (overlay._from) setOrigin(overlay, overlay._from);
+  overlay.classList.remove('open');
+  if (reducedMotion) return finish();
+  overlay.addEventListener('transitionend', function done(e) {
+    if (e.target !== overlay || e.propertyName !== 'clip-path') return;
+    overlay.removeEventListener('transitionend', done);
+    finish();
+  });
+}
+
 function openPlayer(src, youtube, fromEl) {
-  if (fromEl) setOrigin(fromEl);
-  player._from = fromEl;
   if (youtube) {
     stage.innerHTML = '<iframe src="https://www.youtube.com/embed/' + youtube +
       '?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>';
@@ -119,30 +138,13 @@ function openPlayer(src, youtube, fromEl) {
     v.playsInline = true;
     stage.replaceChildren(v);
   }
-  player.hidden = false;
-  player.getBoundingClientRect(); // commit the start clip before animating
-  player.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  document.querySelectorAll('video[data-src]').forEach(v => v.pause());
+  openOverlay(player, fromEl);
 }
 
 function closePlayer() {
-  const finish = () => {
-    stage.replaceChildren();
-    player.hidden = true;
-    document.body.style.overflow = '';
-    loops.forEach(v => { if (v.src) v.play().catch(() => {}); });
-  };
   const v = stage.querySelector('video');
   if (v) v.pause();
-  if (player._from) setOrigin(player._from);
-  player.classList.remove('open');
-  if (reducedMotion) return finish();
-  player.addEventListener('transitionend', function done(e) {
-    if (e.target !== player || e.propertyName !== 'clip-path') return;
-    player.removeEventListener('transitionend', done);
-    finish();
-  });
+  closeOverlay(player, () => stage.replaceChildren());
 }
 
 document.querySelectorAll('[data-play], [data-youtube]').forEach(el => {
@@ -152,8 +154,59 @@ document.querySelectorAll('[data-play], [data-youtube]').forEach(el => {
   });
 });
 player.querySelector('.player-close').addEventListener('click', closePlayer);
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !player.hidden) closePlayer(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!player.hidden) closePlayer();
+  if (!sheet.hidden) closeOverlay(sheet);
+});
 
 // Deep link: /#showreel opens the showreel
 const reel = document.querySelector('[data-play$="showreel.mp4"]');
 if (location.hash === '#showreel' && reel) reel.click();
+
+// Contact form: every "Get in touch" link opens it, carrying that link's subject
+const sheet = document.querySelector('.contact-sheet');
+const form = sheet.querySelector('.contact-form');
+const status = form.querySelector('.form-status');
+const send = form.querySelector('.form-send');
+
+document.querySelectorAll('a[data-subject]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    form.subject.value = a.dataset.subject;
+    status.textContent = '';
+    openOverlay(sheet, a);
+    setTimeout(() => form.name.focus({ preventScroll: true }), reducedMotion ? 0 : 500);
+  });
+});
+sheet.querySelector('.player-close').addEventListener('click', () => closeOverlay(sheet));
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!form.reportValidity()) return;
+  if (form.botcheck.checked) return;
+  send.disabled = true;
+  status.textContent = 'Sending...';
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: FORM_KEY,
+        from_name: 'harrywinteringham.uk',
+        subject: form.subject.value + ' (from ' + form.name.value + ')',
+        name: form.name.value,
+        email: form.email.value,
+        message: form.message.value,
+      }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    form.reset();
+    status.textContent = "Thanks, that's sent. I'll get back to you soon.";
+  } catch (err) {
+    status.textContent = "That didn't send. Please try again in a minute.";
+  } finally {
+    send.disabled = false;
+  }
+});
