@@ -36,7 +36,7 @@
         <span class="plat"><img src="assets/app-icon.svg" alt="">For Mac</span>
         <h1>Scoopi</h1>
         <p class="desc">Drop in receipts, photos and PDFs, pick what you want back, and Scoopi fills in the form: your expense claim, an invoice, or your company's own template. The receipts come bundled in a PDF, numbered to match.</p>
-        <p class="compat"><b>Works on</b> macOS 14 or later · Apple silicon &amp; Intel</p>
+        <p class="compat"><b>Works on</b> macOS 14 or later · Apple silicon &amp; Intel · <a href="#windows">Windows coming soon</a></p>
         <div class="price"><strong data-price="scoopi">£19</strong><span>one-off, with <span data-price="scoopiScans">300</span> scans. Founder price while we launch.</span></div>
         <div class="buy">
           <a class="btn btn-primary" href="account.html">Buy · <span data-price="scoopi">£19</span></a>
@@ -58,6 +58,30 @@
         </div>
         <div class="shot clip">
           <video src="assets/scoopi-drop.mp4" poster="assets/scoopi-drop.jpg" autoplay muted loop playsinline aria-label="Four receipts dragged onto the dial, Excel picked on the right, then the centre pressed: Scoopi reads them and the spreadsheet lands next to the dial"></video>
+        </div>
+      </article>
+
+      <article class="card">
+        <div>
+          <h3>Scan with your iPhone.</h3>
+          <p>Press Photo on the dial and pick your iPhone. It opens straight into the document scanner, which finds each receipt's edges and flattens it, then sends it to Scoopi. Scan a handful in a row and they land in the tray one by one. There's nothing to install on the phone.</p>
+        </div>
+        <div class="shot">
+          <div class="phonescan" role="img" aria-label="An iPhone scanning three receipts in a row: each is outlined, straightened and sent into Scoopi's tray">
+            <div class="phone">
+              <div class="screen">
+                <div class="paper p1"><b>CASA CAFE</b><i></i><i></i><i></i><em>£18.70</em></div>
+                <div class="paper p2"><b>BP BORDESLEY</b><i></i><i></i><em>£11.30</em></div>
+                <div class="paper p3"><b>PREMIER INN</b><i></i><i></i><i></i><em>£89.00</em></div>
+                <span class="flash"></span>
+                <span class="shutter"></span>
+              </div>
+            </div>
+            <div class="arrive">
+              <div class="tray"><span class="t t1"><i></i><i></i></span><span class="t t2"><i></i><i></i></span><span class="t t3"><i></i><i></i></span></div>
+              <span class="label">In Scoopi</span>
+            </div>
+          </div>
         </div>
       </article>
 
@@ -113,6 +137,23 @@
       <p class="note">This demo reads four example receipts, and the file it makes is real. In the app, Claude reads your own photos, screen grabs and PDFs.</p>
     </section>
 
+    <section class="wrap windows" id="windows">
+      <div class="band">
+        <div>
+          <h2>Coming to Windows</h2>
+          <p>Scoopi is Mac only for now. Leave your email and we'll tell you when it's ready for Windows. Just that one email.</p>
+        </div>
+        <form class="waitlist" id="waitlist">
+          <div class="field">
+            <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" aria-label="Your email">
+            <button class="btn btn-cream" type="submit">Tell me</button>
+          </div>
+          <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <p class="waitlist-note" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
     <section class="wrap faq" id="questions">
       <h2>Questions</h2>
       <details>
@@ -133,7 +174,7 @@
       </details>
       <details>
         <summary>Is it on Windows or iPhone?</summary>
-        <p>Mac only for now, but your iPhone does the scanning: press Photo on the dial, pick your iPhone, and it opens its document scanner. The scans land straight in Scoopi.</p>
+        <p>Mac only for now. Windows is on its way: <a href="#windows">leave your email</a> and we'll tell you when. Your iPhone does the scanning, though: press Photo on the dial, pick your iPhone, and it opens its document scanner. The scans land straight in Scoopi.</p>
       </details>
     </section>
   </main>
@@ -243,6 +284,34 @@
     if (seen) play(); else if (fragment.classList.contains("staged")) finish();
   });
   fragment.addEventListener("focusin", take);
+  // The Windows waitlist. Until the server is set up, it opens an email instead.
+  const waitlist = document.getElementById("waitlist"), waitNote = waitlist.querySelector(".waitlist-note");
+  waitlist.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = waitlist.email.value.trim(), button = waitlist.querySelector("button"), cfg = window.SCOOPI;
+    if (waitlist.website.value) return;  // only bots fill in the hidden field
+    if (cfg.anonKey.startsWith("YOUR-")) {
+      location.href = "mailto:hi@harrywinteringham.uk?subject=" + encodeURIComponent("Scoopi for Windows") +
+        "&body=" + encodeURIComponent("Please tell me when Scoopi is ready for Windows: " + email);
+      return;
+    }
+    button.disabled = true;
+    try {
+      const res = await fetch(cfg.supabaseUrl + "/rest/v1/waitlist", {
+        method: "POST",
+        headers: { apikey: cfg.anonKey, authorization: "Bearer " + cfg.anonKey, "content-type": "application/json", prefer: "return=minimal" },
+        body: JSON.stringify({ email, platform: "windows" }),
+      });
+      // 409 means that email is already on the list, which is fine.
+      if (!res.ok && res.status !== 409) throw new Error(res.status);
+      waitlist.querySelector(".field").remove();
+      waitNote.textContent = "Thanks. We'll email " + email + " when Scoopi is ready for Windows.";
+    } catch {
+      waitNote.textContent = "That didn't go through. Try again, or email hi@harrywinteringham.uk.";
+      button.disabled = false;
+    }
+  });
+
   found.addEventListener("click", (e) => {
     const button = e.target.closest("button");
     if (!button) return;
