@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Scoopi</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+</head>
+<body>
+  <header class="top solid">
+    <div class="wrap nav">
+      <a class="brand" href="./"><img src="assets/favicon.svg" alt="">Scoopi</a>
+      <nav class="links" aria-label="Main"><a href="./#how">How it works</a></nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="panel" id="panel" aria-live="polite">
+      <p>Loading…</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Harry Winteringham</span>
+      <nav aria-label="Legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="mailto:hi@harrywinteringham.uk">hi@harrywinteringham.uk</a></nav>
+    </div>
+  </footer>
+
+  <script>
+  (() => {
+    const cfg = window.SCOOPI, prices = cfg.prices;
+    const panel = document.getElementById("panel");
+    const params = new URLSearchParams(location.search);
+    const fromApp = params.get("app") === "1";
+    const paid = params.get("paid");
+
+    const el = (tag, attrs = {}, ...kids) => {
+      const n = document.createElement(tag);
+      for (const [k, v] of Object.entries(attrs)) k === "onclick" ? n.addEventListener("click", v) : n.setAttribute(k, v);
+      for (const kid of kids) if (kid != null) n.append(kid);
+      return n;
+    };
+    const show = (...kids) => panel.replaceChildren(...kids);
+    const note = (text, bad) => el("div", { class: "msg" + (bad ? " bad" : "") }, text);
+
+    if (!window.supabase || cfg.anonKey.startsWith("YOUR-")) {
+      show(el("h1", {}, "Almost ready"), el("p", {}, "Sign-in opens soon. Check back shortly, or email hi@harrywinteringham.uk."));
+      return;
+    }
+    const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.anonKey);
+
+    // Messages from the server come back as { error: { message } }.
+    async function call(fn, body) {
+      const { data, error } = await sb.functions.invoke(fn, { body: body || {} });
+      if (!error) return data;
+      let message = "Something went wrong. Try again.";
+      try { message = (await error.context.json()).error.message || message; } catch {}
+      throw new Error(message);
+    }
+
+    // The Mac app signs in through a scoopi://auth link carrying this session.
+    function appLink(session) {
+      const left = Math.max(60, (session.expires_at || 0) - Math.floor(Date.now() / 1000));
+      return "scoopi://auth#access_token=" + encodeURIComponent(session.access_token) +
+        "&refresh_token=" + encodeURIComponent(session.refresh_token) +
+        "&expires_in=" + left + "&email=" + encodeURIComponent(session.user.email || "");
+    }
+
+    function signedOut(message) {
+      const input = el("input", { type: "email", required: "", autocomplete: "email", placeholder: "you@example.com", "aria-label": "Email" });
+      const button = el("button", { class: "btn btn-primary", type: "submit" }, "Email me a link");
+      const form = el("form", { class: "field" }, input, button);
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        button.disabled = true;
+        const redirect = new URL("account.html" + (fromApp ? "?app=1" : ""), location.href).href;
+        const { error } = await sb.auth.signInWithOtp({ email: input.value.trim(), options: { emailRedirectTo: redirect } });
+        if (error) { signedOut(error.message); return; }
+        show(el("h1", {}, "Check your email"), el("p", {}, "We've sent a sign-in link to " + input.value.trim() + ". Open it on this computer."));
+      });
+      show(
+        message ? note(message, true) : null,
+        el("h1", {}, fromApp ? "Sign in to Scoopi" : "Get Scoopi"),
+        el("p", {}, "Enter your email and we'll send you a link. No password needed. New accounts get " + prices.free + " free scans."),
+        form,
+      );
+    }
+
+    async function signedIn(session) {
+      const { data: rows } = await sb.from("accounts").select("credits,unlocked").limit(1);
+      const acct = (rows && rows[0]) || { credits: 0, unlocked: false };
+      const status = el("div");
+      const busy = (btn, fn) => async () => {
+        btn.disabled = true;
+        try { await fn(); } catch (e) { status.replaceChildren(note(e.message, true)); } finally { btn.disabled = false; }
+      };
+
+      const download = el("button", { class: "btn btn-primary" }, "Download Scoopi for Mac");
+      download.addEventListener("click", busy(download, async () => { location.href = (await call("download")).url; }));
+
+      const connect = el("a", { class: "btn btn-quiet", href: appLink(session) }, "Open Scoopi and sign it in");
+
+      const buy = acct.unlocked
+        ? el("button", { class: "btn btn-quiet" }, "Top up · " + prices.topup)
+        : el("button", { class: "btn btn-primary" }, "Get Scoopi · " + prices.scoopi);
+      buy.addEventListener("click", busy(buy, async () => {
+        location.href = (await call("checkout", { pack: acct.unlocked ? "topup" : "scoopi" })).url;
+      }));
+
+      const signOut = el("button", { class: "linkish" }, "Sign out");
+      signOut.addEventListener("click", async () => { await sb.auth.signOut(); signedOut(); });
+
+      show(
+        paid ? note("Thank you! Your scans are on their way; they'll appear here in a moment.") : null,
+        status,
+        el("h1", {}, "Your Scoopi"),
+        el("p", {}, "Signed in as " + (session.user.email || "you") + ". ", signOut),
+        el("div", { class: "balance" }, el("strong", {}, String(acct.credits)), el("span", {}, acct.credits === 1 ? "scan left" : "scans left")),
+        el("div", { class: "stack" },
+          el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, "The app"), el("div", { class: "why" }, "macOS 14 or later")), download),
+          el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, "Already installed?"), el("div", { class: "why" }, "Signs the app in with this account")), connect),
+          el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, acct.unlocked ? "More scans" : "Unlock Scoopi"),
+            el("div", { class: "why" }, acct.unlocked ? prices.topupScans + " more scans" : "One-off, with " + prices.scoopiScans + " scans")), buy),
+        ),
+      );
+      // Credits arrive once Stripe confirms the payment, usually within seconds.
+      if (paid && !signedIn.polled) {
+        signedIn.polled = true;
+        let tries = 0;
+        const poll = setInterval(async () => {
+          const { data } = await sb.from("accounts").select("credits").limit(1);
+          if ((data && data[0] && data[0].credits !== acct.credits) || ++tries > 10) { clearInterval(poll); signedIn(session); }
+        }, 2000);
+      }
+      if (fromApp && !signedIn.opened) { signedIn.opened = true; location.href = appLink(session); }
+    }
+
+    sb.auth.onAuthStateChange((event, session) => {
+      if (event === "INITIAL_SESSION" || event === "SIGNED_IN") session ? signedIn(session) : signedOut();
+      if (event === "SIGNED_OUT") signedOut();
+    });
+  })();
+  </script>
+</body>
+</html>

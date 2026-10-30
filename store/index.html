@@ -1,0 +1,58 @@
+<!doctype html>
+<!-- © 2026 Harry Winteringham. All rights reserved. Unauthorised copying, modification or distribution of this file is prohibited. -->
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Store · Harry Winteringham</title>
+  <meta name="description" content="Apps and tools by Harry Winteringham.">
+  <meta property="og:title" content="Store · Harry Winteringham">
+  <meta property="og:image" content="https://harrywinteringham.uk/store/scoopi/assets/scoopi-demo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="scoopi/style.css">
+  <script src="scoopi/config.js"></script>
+  <style>
+    .store { padding: 56px 0 96px; }
+    .store h1 { font-size: clamp(44px, 6vw, 64px); line-height: 1; letter-spacing: -.035em; margin: 0 0 12px; }
+    .store .lead { color: var(--ink-muted); margin: 0 0 40px; }
+    .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 32px 24px; }
+    .tile { display: grid; gap: 14px; color: inherit; text-decoration: none; }
+    .tile .pic { border-radius: 20px; overflow: hidden; background: var(--wall); aspect-ratio: 1200 / 1040; }
+    .tile .pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+    .tile:hover .pic img { transform: scale(1.02); }
+    .tile .name { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .tile h2 { font-size: 22px; line-height: 1.25; letter-spacing: -.01em; margin: 0; }
+    .tile .name span { font-weight: 600; }
+    .tile p { margin: 0; color: var(--ink-muted); }
+    .tile:focus-visible { outline: 3px solid var(--indigo); outline-offset: 6px; border-radius: 20px; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap nav">
+      <a class="brand" href="../index.html">Harry Winteringham</a>
+    </div>
+  </header>
+
+  <main class="wrap store">
+    <h1>Store</h1>
+    <p class="lead">Apps and tools by Harry Winteringham.</p>
+    <div class="tiles">
+      <a class="tile" href="scoopi/">
+        <div class="pic"><img src="scoopi/assets/scoopi-demo.jpg" alt="The Scoopi dial, with a filled-in expense claim next to it"></div>
+        <div class="name"><h2>Scoopi for Mac</h2><span data-price="scoopi">£15</span></div>
+        <p>Drop in receipts, and Scoopi fills in the form.</p>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Harry Winteringham</span>
+      <nav aria-label="Contact"><a href="mailto:hi@harrywinteringham.uk">hi@harrywinteringham.uk</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

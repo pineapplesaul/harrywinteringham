@@ -1,0 +1,1531 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<style>[hidden]{display:none !important}</style>
+</head>
+<body>
+<title>Scoopi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* Layout: the dial starts as one centre button. Press it and slide left to fan out the ways to add things, or right to fan out the outputs; tap it to make the file. The form type and what you've added sit in a tray underneath. */
+:root{
+  --wall-a:#FF6A4D; --wall-b:#F9A83C; --wall-c:#8E5BA8; --wall-d:#E8434F;
+  --seg-in:#FFE3CF; --seg-out:#FFF4EA; --seg-hot:#FFFFFF; --seg-ink:#4A2E20; --seg-muted:#8A6A58;
+  --rim:rgba(255,255,255,.26); --rim-line:rgba(255,255,255,.55);
+  --hub:#FFF5EC;
+  --accent:#4346CD; --accent-fg:#FFFFFF;
+  --pill:rgba(255,248,242,.8); --pill-ink:#3A2418;
+  --ok:#17784A; --bad:#B42318;
+  --shadow:0 24px 70px rgba(90,20,10,.35);
+  --ease:cubic-bezier(.22,1,.36,1); --spring:cubic-bezier(.34,1.3,.64,1);
+  --font-ui:"DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-data:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --wall-a:#5C1F2A; --wall-b:#7C3B17; --wall-c:#2B1839; --wall-d:#3E1421;
+    --seg-in:#3D2423; --seg-out:#2B1E23; --seg-hot:#58393B; --seg-ink:#F7E6D8; --seg-muted:#C9A995;
+    --rim:rgba(255,255,255,.07); --rim-line:rgba(255,255,255,.2); --hub:#2F1E21;
+    --accent:#9AA8FF; --accent-fg:#14111A;
+    --pill:rgba(32,21,23,.8); --pill-ink:#F7E6D8; --ok:#5CC892; --bad:#FF8B80;
+    --shadow:0 24px 70px rgba(0,0,0,.55);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --wall-a:#5C1F2A; --wall-b:#7C3B17; --wall-c:#2B1839; --wall-d:#3E1421;
+  --seg-in:#3D2423; --seg-out:#2B1E23; --seg-hot:#58393B; --seg-ink:#F7E6D8; --seg-muted:#C9A995;
+  --rim:rgba(255,255,255,.07); --rim-line:rgba(255,255,255,.2); --hub:#2F1E21;
+  --accent:#9AA8FF; --accent-fg:#14111A;
+  --pill:rgba(32,21,23,.8); --pill-ink:#F7E6D8; --ok:#5CC892; --bad:#FF8B80;
+  --shadow:0 24px 70px rgba(0,0,0,.55);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{height:100%}
+body{
+  margin:0;
+  background-color:var(--wall-a);
+  background-image:radial-gradient(circle at 18% 18%, var(--wall-b), transparent 55%), radial-gradient(circle at 88% 92%, var(--wall-c), transparent 58%), linear-gradient(140deg, var(--wall-d), var(--wall-a));
+  background-attachment:fixed;
+  color:var(--seg-ink);
+  font:14px/1.4 var(--font-ui);
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+button,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.desk{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding-block:40px 110px}
+
+/* The dial. --pl and --pr say how far the left and right halves are open (0 to 1). */
+.ring{--pl:0;--pr:0;--pg:0;position:relative;width:min(480px, 100%);aspect-ratio:1;transition:transform .6s var(--spring)}
+.ring.awake{transform:scale(1.03)}
+#ringSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.seg,.seg:focus{cursor:pointer;outline:none;transition:transform .55s var(--spring)}
+.seg.in{--p:var(--pl);--turn:-16deg}
+.seg.out{--p:var(--pr);--turn:16deg}
+.ring.open-left .seg.in,.ring.open-right .seg.out{pointer-events:auto}
+.bloom{transform-box:fill-box;transform-origin:center;opacity:var(--p);transform:translate(calc(var(--dx) * -5 * (1 - var(--p))), calc(var(--dy) * -5 * (1 - var(--p)))) scale(calc(.5 + .5 * var(--p)));filter:drop-shadow(0 10px 16px rgba(90,20,10,.22));transition:opacity .4s var(--ease), transform .6s var(--spring);transition-delay:calc(var(--j) * 70ms)}
+.ring.scrub .bloom{transition:none}
+.seg path.shape{fill:var(--seg-out);stroke:var(--seg-out);stroke-width:12;stroke-linejoin:round;transition:fill .35s var(--ease), stroke .35s var(--ease)}
+.seg.in path.shape{fill:var(--seg-in);stroke:var(--seg-in)}
+.seg:hover path.shape,.seg.hot path.shape{fill:var(--seg-hot);stroke:var(--seg-hot)}
+.seg:focus-visible path.shape{stroke:var(--accent)}
+.seg .ico{fill:none;stroke:var(--seg-ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transform-box:fill-box;transform-origin:center;transition:transform .5s var(--spring)}
+.seg text{fill:var(--seg-ink);font:700 11px var(--font-ui);letter-spacing:.1em;text-anchor:middle}
+.seg text.small{font:500 11px var(--font-ui);letter-spacing:0;fill:var(--seg-muted)}
+.seg.on path.shape{fill:var(--accent);stroke:var(--accent)}
+.seg.on .ico{stroke:var(--accent-fg)}
+.seg.on text,.seg.on text.small{fill:var(--accent-fg)}
+.seg:hover,.seg.hot{transform:translate(var(--dx), var(--dy))}
+.seg:hover .ico,.seg.hot .ico{transform:scale(1.16)}
+.ring.awake .seg.hot{transform:translate(calc(var(--dx) * 1.8), calc(var(--dy) * 1.8))}
+.seg:active{transform:translate(calc(var(--dx) * -.3), calc(var(--dy) * -.3));transition-duration:.12s}
+.bloom.pop{animation:pop .6s var(--spring)}
+@keyframes pop{35%{transform:scale(1.04)}}
+
+/* The centre button */
+.hub{position:absolute;left:50%;top:50%;width:43.5%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:var(--hub);box-shadow:0 18px 50px rgba(90,20,10,.3), inset 0 0 0 1px var(--rim-line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:14px;color:var(--seg-ink);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;outline:none;transition:box-shadow .3s var(--ease)}
+.hub:active{cursor:grabbing}
+.hub:focus-visible{box-shadow:0 18px 50px rgba(90,20,10,.3), 0 0 0 3px #fff}
+.go{width:50%;aspect-ratio:1;border-radius:50%;background:var(--accent);color:var(--accent-fg);font-weight:600;font-size:14px;line-height:1.15;box-shadow:0 8px 20px rgba(67,70,205,.35), inset 0 1px 0 rgba(255,255,255,.25);display:grid;place-items:center;padding:8px;transition:transform .25s var(--spring), filter .2s, box-shadow .3s var(--ease)}
+.hub:active .go{transform:scale(.95)}
+.go.idle{filter:saturate(.35) opacity(.7)}
+.hub .go.ready{animation:swap .45s 50ms var(--ease) backwards, breathe 3.2s 1s ease-in-out infinite}
+@keyframes breathe{50%{box-shadow:0 10px 30px rgba(67,70,205,.5), 0 0 0 8px rgba(67,70,205,.12), inset 0 1px 0 rgba(255,255,255,.25)}}
+.hub .sub{font-size:12px;font-weight:500;color:var(--seg-muted);line-height:16px;height:16px;max-width:82%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hub .sub .lnk{font-size:12px}
+.hub .sub.low{height:24px;line-height:24px}
+.hub .kind{display:inline-flex;align-items:center;gap:5px;height:24px;max-width:84%;padding:0 10px;border-radius:999px;border:1px solid color-mix(in srgb, var(--seg-ink) 22%, transparent);font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;cursor:pointer;transition:border-color .2s, background .2s}
+.hub .kind span{overflow:hidden;text-overflow:ellipsis}
+.hub .kind:hover{border-color:color-mix(in srgb, var(--seg-ink) 50%, transparent);background:color-mix(in srgb, var(--seg-ink) 5%, transparent)}
+.hub .kind svg{flex:none;width:9px;height:9px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
+.hub .kind.fixed{cursor:default;border-color:transparent;font-weight:500;color:var(--seg-muted)}
+.hub .kind.flip{animation:flip .5s var(--ease)}
+.hub .msg{font-size:13px;font-weight:600;line-height:1.3;text-wrap:balance}
+.chev{position:absolute;top:50%;width:14px;height:14px;margin-top:-7px;fill:none;stroke:var(--seg-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.7;pointer-events:none}
+.chev.l{left:9%;animation:nudgeL 3.4s 2s ease-in-out infinite}
+.chev.r{right:9%;animation:nudgeR 3.4s 2s ease-in-out infinite}
+@keyframes nudgeL{0%,70%,100%{transform:none}80%{transform:translateX(-4px)}}
+@keyframes nudgeR{0%,70%,100%{transform:none}80%{transform:translateX(4px)}}
+.ring.open-left .chev,.ring.open-right .chev,.ring.scrub .chev{opacity:0;transition:opacity .2s}
+.lnk{border:0;background:none;padding:0;font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.spin{width:30px;height:30px;animation:rot 1s linear infinite}
+.spin circle{fill:none;stroke:var(--accent-fg);stroke-width:3;stroke-linecap:round;stroke-dasharray:60 200}
+@keyframes rot{to{transform:rotate(360deg)}}
+.result{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:grab;touch-action:none;user-select:none;border:0;background:none;padding:0;max-width:100%;animation:pullup .8s var(--spring) backwards}
+.result:active{cursor:grabbing}
+.hub .result{animation:pullup .8s var(--spring) backwards}
+@keyframes pullup{from{transform:translateY(26px) scale(.55) rotate(-6deg);opacity:.15}}
+.doc{position:relative;width:42px;height:54px;border-radius:4px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.22);display:grid;place-items:end center;padding-bottom:6px}
+.doc::before{content:"";position:absolute;left:8px;right:8px;top:9px;height:16px;background:repeating-linear-gradient(#D7DBE2 0 2px, transparent 2px 5px)}
+.doc b{font:600 8.5px var(--font-data);color:#fff;background:#4346CD;padding:1px 4px;border-radius:3px;letter-spacing:.04em}
+.result .nm{font-size:12px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.copybtn{border:0;border-radius:999px;background:var(--accent);color:var(--accent-fg);font-weight:600;font-size:13px;padding:8px 14px;cursor:pointer}
+.bad{color:var(--bad)}
+.ok{color:var(--ok)}
+.check{width:34px;height:34px}
+.check path{fill:none;stroke:var(--ok);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;animation:draw .55s .1s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.hub > *:not(.chev){animation:swap .45s var(--ease) backwards}
+.hub > :nth-child(2){animation-delay:50ms}
+.hub > :nth-child(3){animation-delay:100ms}
+@keyframes swap{from{transform:translateY(8px);opacity:.15}}
+/* The made file sits just right of the centre; if the outputs open it slides out past them. */
+.filed{position:absolute;left:calc(71.75% + 20px + 28.25% * var(--pr));top:50%;transform:translateY(-50%);z-index:5;transition:left .55s var(--ease), opacity .3s var(--ease)}
+.ring.scrub .filed{transition:opacity .3s var(--ease)}
+.filed .result{width:132px;padding:16px 12px 12px;gap:6px;border-radius:18px;background:var(--pill);color:var(--pill-ink);box-shadow:var(--shadow);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);font:inherit;animation:none;transition:transform .35s var(--spring), opacity .3s var(--ease)}
+.filed .result:hover{transform:translateY(-3px) rotate(-1.5deg)}
+.filed .result:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.filed .doc{width:48px;height:62px;margin-bottom:4px}
+.filed .nm{color:inherit;font-size:12px}
+.filed .how{font-size:11px;font-weight:500;opacity:.65;white-space:nowrap}
+.filed.out .result{transition:transform .35s var(--ease), opacity .3s var(--ease);transform:translateY(10px) scale(.85);opacity:0}
+@media (max-width:620px){
+  .filed{left:calc(71.75% + 8px)}
+  .ring.open-right .filed,.ring.scrub .filed{opacity:0;pointer-events:none}
+  .filed .result{width:94px;padding:10px 8px 9px;border-radius:14px;gap:4px}
+  .filed .doc{width:36px;height:47px;margin-bottom:2px}
+  .filed .nm{font-size:11px}
+  .filed .how{display:none}
+}
+.ghost{position:fixed;left:0;top:0;z-index:60;pointer-events:none;width:54px;height:70px;border-radius:4px;background:#fff;box-shadow:0 10px 24px rgba(0,0,0,.35);display:grid;place-items:center;font:600 10px var(--font-data);color:#7A7E88}
+.ghost.fly{transition:transform .45s var(--ease), opacity .45s var(--ease);opacity:0}
+
+/* Working and finishing */
+.orbit{opacity:0;transition:opacity .4s var(--ease)}
+.ring.working .orbit{opacity:1;animation:orbit 1.6s linear infinite}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.orbit .track{fill:none;stroke:var(--hub);stroke-opacity:.45;stroke-width:4}
+.orbit .arc{fill:none;stroke:var(--hub);stroke-width:4;stroke-linecap:round;stroke-dasharray:110 581}
+.wave{fill:none;stroke:var(--hub);stroke-width:3;vector-effect:non-scaling-stroke;opacity:0;animation:wave 1s var(--ease) forwards}
+@keyframes wave{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(2.15)}}
+.spark{fill:var(--accent);opacity:0;animation:spark 1s var(--ease) forwards}
+.spark.alt{fill:#FFD84D}
+.spark.soft{fill:#FFFFFF}
+@keyframes spark{0%{transform:translate(0,0) scale(.3);opacity:0}15%{opacity:1}100%{transform:translate(var(--x), var(--y)) scale(1);opacity:0}}
+
+/* The tray */
+.tray{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:16px;background:var(--pill);box-shadow:0 8px 30px rgba(0,0,0,.15);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);max-width:100%;color:var(--pill-ink);animation:rise .7s .45s var(--ease) backwards}
+/* With the dial closed the tray tucks up under the centre; as a half opens it moves down under the ring.
+   It only moves on screen (--lift is set from the script), so the dial itself never shifts. */
+.ring + .tray{transform:translateY(var(--lift, 0px));transition:transform .55s var(--ease)}
+.ring.scrub + .tray{transition:none}
+@keyframes rise{from{transform:translateY(14px);opacity:.25}}
+.formchip{flex:none;border:1px solid color-mix(in srgb, var(--pill-ink) 30%, transparent);background:transparent;border-radius:999px;padding:5px 12px;font:500 12.5px var(--font-ui);cursor:pointer;white-space:nowrap}
+.formchip:hover{border-color:var(--pill-ink)}
+.formchip:disabled{cursor:default;opacity:.7}
+.formchip.flip{animation:flip .5s var(--ease)}
+@keyframes flip{from{transform:translateY(-8px) scale(.94);opacity:.2}}
+.thumbs{display:flex;gap:6px;overflow-x:auto;min-width:0;padding:2px}
+.tin{position:relative;flex:none;width:34px;height:44px}
+.tin.new{animation:tinin .6s var(--spring) backwards}
+@keyframes tinin{from{transform:translateY(-18px) scale(.6) rotate(-8deg);opacity:.15}}
+.tin img,.tin span.ph{width:34px;height:44px;border-radius:3px;object-fit:cover;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);display:grid;place-items:center;font:600 8px var(--font-data);color:#7A7E88}
+.tin button{position:absolute;right:-5px;top:-5px;width:16px;height:16px;border-radius:50%;border:0;background:var(--pill-ink);color:var(--pill);font:600 11px/16px var(--font-ui);padding:0;cursor:pointer;opacity:0;transition:opacity .12s}
+.tin:hover button,.tin button:focus-visible{opacity:1}
+.tray .empty{font-size:12.5px;opacity:.8;white-space:nowrap}
+.tray .ex{font-size:12px;font-weight:500;opacity:.65;white-space:nowrap}
+
+/* Hints */
+.pill{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:9px 16px;border-radius:999px;background:var(--pill);color:var(--pill-ink);font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.18);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);width:max-content;max-width:calc(100vw - 32px);z-index:4;animation:pillrise .7s .6s var(--ease) backwards}
+@keyframes pillrise{from{transform:translate(-50%, 14px);opacity:.25}}
+.pill strong{font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.pill span{min-width:0}
+.sheet{position:fixed;inset:auto 16px calc(70px + env(safe-area-inset-bottom, 0px)) 16px;margin:0 auto;max-width:520px;padding:14px;border-radius:16px;background:var(--pill);color:var(--pill-ink);box-shadow:0 12px 40px rgba(0,0,0,.25);z-index:5;display:flex;flex-direction:column;gap:8px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.sheet textarea{width:100%;min-height:120px;font:12px var(--font-data);border-radius:8px;border:1px solid var(--seg-muted);background:transparent;padding:8px}
+.ring.intro{animation:ringin .9s var(--ease) backwards}
+@keyframes ringin{from{transform:scale(.8);filter:blur(10px);opacity:.3}}
+@media (max-width:520px){
+  .seg text{font-size:9.5px;letter-spacing:.06em}
+  .go{font-size:12px}
+  .hub{gap:5px;padding:10px}
+  .tray{flex-wrap:wrap;justify-content:center}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
+</style>
+
+<main class="desk" id="desk">
+  <div class="ring intro" id="ring">
+    
+    <svg id="ringSvg" viewBox="-230 -230 460 460" role="group" aria-label="Scoopi options"></svg>
+    <div class="hub" id="hub" role="button" tabindex="0" aria-live="polite"></div>
+    <div class="filed" id="filed" hidden></div>
+  </div>
+  <div class="tray" id="tray"></div>
+</main>
+<div class="pill" id="pill"><strong>Scoopi</strong><span id="pillText"></span></div>
+<div class="sheet" id="copySheet" hidden><strong>Copy this into your sheet</strong><span>It's selected. Press Cmd-C or Ctrl-C, click into your sheet, then paste.</span><textarea id="copyBox" readonly aria-label="Table to copy"></textarea><button class="lnk" type="button" id="copyClose">Done</button></div>
+
+<input type="file" id="filePick" multiple accept="image/*,application/pdf,.pdf,.txt,.csv,.xlsx,.xls,.heic" hidden>
+<input type="file" id="photoPick" accept="image/*" capture="environment" hidden>
+<input type="file" id="tplPick" accept=".xlsx,.xlsm,.xls,.ods,.csv,.pdf,application/pdf" hidden>
+
+<script>
+// Website demo: stands in for Claude so the dial works on the website without an account.
+// It "reads" the four example receipts only, and hands back what's printed on them; the files it makes are real.
+(() => {
+  const RECEIPTS = {
+    "receipt-1.png": { date: "22/02/2026", merchant: "BP Bordesley", category: "Fuel", total: "11.30" },
+    "receipt-2.png": { date: "24/02/2026", merchant: "Casa Cafe Loughborough", category: "Meals", total: "18.70" },
+    "receipt-3.png": { date: "24/02/2026", merchant: "Charnwood Council Parking", category: "Parking", total: "14.00" },
+    "receipt-4.png": { date: "26/02/2026", merchant: "Welcome Break Telford", category: "Meals", total: "52.47" },
+  };
+  const wait = (ms, signal) => new Promise((resolve, reject) => {
+    const t = setTimeout(resolve, ms);
+    signal?.addEventListener("abort", () => { clearTimeout(t); reject(Object.assign(new Error("Stopped."), { code: "cancelled" })); });
+  });
+  const sample = {
+    limits: async () => ({ images: { maxCount: 20 } }),
+    async json(prompt, opts = {}) {
+      if (/someone's own/.test(prompt)) throw new Error("The demo fills Scoopi's own forms. Your templates work in the app.");
+      const docs = [...prompt.matchAll(/^\[(\d+)\] (.+?)(?: —|$)/gm)].map(m => ({ n: Number(m[1]), name: m[2].trim() }));
+      if (!docs.length || docs.some(d => !RECEIPTS[d.name])) throw new Error("The demo reads the example receipts only. Get the app to read your own.");
+      await wait(2200, opts.signal);
+      const found = docs.map(d => ({ ...RECEIPTS[d.name], doc: d.n }));
+      const today = new Date(), fmt = d => d.toLocaleDateString("en-GB");
+      if (/called "Invoice"/.test(prompt)) {
+        return { fields: { issue_date: fmt(today), due_date: fmt(new Date(today.getTime() + 30 * 864e5)), project: "Expenses, Feb 2026" },
+          rows: found.map(r => ({ date: r.date, description: `${r.category}, ${r.merchant}`, qty: 1, unit: r.total, doc: r.doc })) };
+      }
+      if (/called "Supplier details"/.test(prompt)) {
+        const r = found[found.length - 1];
+        return { fields: { company: r.merchant, trading: r.merchant }, rows: [] };
+      }
+      return { fields: { period: "22–26 Feb 2026" },
+        rows: found.map(r => ({ date: r.date, merchant: r.merchant, category: r.category, total: r.total, paid: "Card", doc: r.doc })) };
+    },
+  };
+  // Saving downloads the real file the demo made.
+  const downloads = {
+    async save({ filename, data }) {
+      const url = URL.createObjectURL(data instanceof Blob ? data : new Blob([data]));
+      const a = Object.assign(document.createElement("a"), { href: url, download: filename });
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    },
+  };
+  window.claude = { use: async name => (name === "sample" ? sample : name === "downloads" ? downloads : null) };
+})();
+</script>
+<script>
+(() => {
+"use strict";
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const SVGNS = "http://www.w3.org/2000/svg";
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k === "text") el.textContent = v;
+    else if (k.startsWith("on") && typeof v === "function") el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, "");
+    else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) {
+    if (kid == null || kid === false || kid === "") continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+function s(tag, attrs, ...kids) {
+  const el = document.createElementNS(SVGNS, tag);
+  for (const [k, v] of Object.entries(attrs || {})) if (v != null) el.setAttribute(k, v);
+  for (const kid of kids.flat()) if (kid) el.append(kid);
+  return el;
+}
+const num = v => {
+  if (typeof v === "number") return isFinite(v) ? v : null;
+  if (v == null) return null;
+  const t = String(v).replace(/[£$€,\s]/g, "");
+  return /^-?\d*\.?\d+$/.test(t) ? parseFloat(t) : null;
+};
+const round2 = n => Math.round(n * 100) / 100;
+const money = n => "£" + n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const bytes = n => n < 1024 ? n + " B" : n < 1048576 ? Math.round(n / 1024) + " KB" : (n / 1048576).toFixed(1) + " MB";
+const isoToday = () => new Date().toISOString().slice(0, 10);
+const colName = i => { let t = ""; i++; while (i > 0) { const m = (i - 1) % 26; t = String.fromCharCode(65 + m) + t; i = Math.floor((i - 1) / 26); } return t; };
+const extOf = name => (String(name).split(".").pop() || "").toLowerCase();
+const baseOf = name => String(name).replace(/\.[^.]+$/, "");
+const hasType = (e, t) => [...(e.dataTransfer?.types || [])].includes(t);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
+};
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const el = document.createElement("script");
+    el.src = src; el.async = true;
+    el.onload = () => res(); el.onerror = () => rej(new Error("Part of the app didn't load. Reload the page."));
+    document.head.appendChild(el);
+  });
+}
+function dataUrlBlob(u) {
+  const [head, b64] = u.split(","), bin = atob(b64), a = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+  return new Blob([a], { type: head.slice(5).split(";")[0] });
+}
+
+/* ---------- capabilities ---------- */
+const useCap = n => (window.claude && typeof window.claude.use === "function") ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
+const sampleP = useCap("sample");
+const downloadsP = useCap("downloads");
+let caps = null;
+sampleP.then(x => { if (x) x.limits().then(c => { caps = c; }).catch(() => {}); });
+
+/* ---------- libraries loaded on demand ---------- */
+const PDFJS_V = "3.11.174";
+const PDFJS = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_V}/pdf.min.js`;
+const PDFJS_WORKER = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_V}/pdf.worker.min.js`;
+const PDFLIB = "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js";
+let pdfjsP = null, pdfLibP = null;
+function getPdfjs() {
+  // The worker build runs on the page itself (no Web Worker), which this frame allows.
+  return pdfjsP ||= (async () => {
+    if (!window.pdfjsWorker) await loadScript(PDFJS_WORKER);
+    if (!window.pdfjsLib) await loadScript(PDFJS);
+    const lib = window.pdfjsLib;
+    if (!lib) throw new Error("The PDF reader didn't load. Reload the page.");
+    lib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+    return lib;
+  })().catch(e => { pdfjsP = null; throw e; });
+}
+function getPdfLib() {
+  return pdfLibP ||= (async () => {
+    if (!window.PDFLib) await loadScript(PDFLIB);
+    if (!window.PDFLib) throw new Error("The PDF writer didn't load. Reload the page.");
+    return window.PDFLib;
+  })().catch(e => { pdfLibP = null; throw e; });
+}
+
+/* ---------- forms ---------- */
+const MONEY_FMT = '"£"#,##0.00';
+const CATS = ["Meals", "Travel", "Fuel", "Parking", "Accommodation", "Kit hire", "Other"];
+const TEMPLATES = {
+  expenses: {
+    id: "expenses", name: "Expense claim", label: "EXPENSES", layout: "table",
+    fields: [
+      { key: "claimant", label: "Claimant" },
+      { key: "production", label: "Production", hint: "the show or client the costs are for" },
+      { key: "period", label: "Period", hint: "e.g. 22–26 Feb 2026" }
+    ],
+    rowsHint: "one row per receipt or transaction (one document can hold several)",
+    columns: [
+      { key: "date", label: "Date", hint: "DD/MM/YYYY" },
+      { key: "merchant", label: "Merchant" },
+      { key: "category", label: "Category", hint: "one of " + CATS.join(", ") },
+      { key: "net", label: "Net", type: "money", hint: "before VAT, only if printed" },
+      { key: "vat", label: "VAT", type: "money", hint: "only if printed" },
+      { key: "total", label: "Total", type: "money", hint: "the amount paid" },
+      { key: "paid", label: "Paid with", hint: "e.g. card, cash" }
+    ]
+  },
+  invoice: {
+    id: "invoice", name: "Invoice", label: "INVOICE", layout: "form",
+    fields: [
+      { key: "invoice_no", label: "Invoice no", hint: "e.g. INV-0196" },
+      { key: "issue_date", label: "Issue date", hint: "DD/MM/YYYY" },
+      { key: "due_date", label: "Due date", hint: "DD/MM/YYYY" },
+      { key: "client", label: "Billed to", hint: "client name or company" },
+      { key: "client_email", label: "Client email" },
+      { key: "client_address", label: "Client address" },
+      { key: "project", label: "Project / PO" }
+    ],
+    rowsHint: "one row per billable day, item or expense",
+    columns: [
+      { key: "date", label: "Date", hint: "DD/MM/YYYY" },
+      { key: "description", label: "Description" },
+      { key: "qty", label: "Qty", type: "number" },
+      { key: "unit", label: "Unit cost", type: "money" },
+      { key: "amount", label: "Amount", type: "money", product: ["qty", "unit"] }
+    ]
+  },
+  supplier: {
+    id: "supplier", name: "Supplier details", label: "SUPPLIER", layout: "form",
+    fields: [
+      { key: "company", label: "Company name" }, { key: "trading", label: "Trading name" },
+      { key: "address", label: "Address" }, { key: "postcode", label: "Postcode" },
+      { key: "contact", label: "Contact name" }, { key: "email", label: "Email" },
+      { key: "phone", label: "Phone" }, { key: "company_no", label: "Company number" },
+      { key: "vat_no", label: "VAT number" }, { key: "bank", label: "Bank" },
+      { key: "sort_code", label: "Sort code" }, { key: "account_no", label: "Account number" }
+    ],
+    rowsHint: "", columns: []
+  }
+};
+function computed(c, row) {
+  if (!c.product) return null;
+  const [a, b] = c.product.map(k => num(row[k]));
+  return a != null && b != null ? round2(a * b) : null;
+}
+function cellValue(c, row) {
+  const comp = computed(c, row);
+  const v = comp != null ? comp : row[c.key];
+  if (c.type === "money" || c.type === "number") { const n = num(v); return n == null ? (v ?? "") : n; }
+  return v ?? "";
+}
+const hasData = rec => Object.values(rec.fields).some(Boolean) || rec.rows.length > 0;
+
+/* ---------- inputs ---------- */
+const inputs = [];
+let nextId = 1, example = false;
+const EXAMPLE = [
+  { merchant: "BP Bordesley", date: "22/02/2026", total: 11.30, items: 2 },
+  { merchant: "Casa Cafe Loughborough", date: "24/02/2026", total: 18.70, items: 3 },
+  { merchant: "Charnwood Council Parking", date: "24/02/2026", total: 14.00, items: 1 },
+  { merchant: "Welcome Break Telford", date: "26/02/2026", total: 52.47, items: 3 }
+];
+function drawReceipt(e, seed) {
+  const W = 360, H = 480, c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  x.fillStyle = "#FBFAF3"; x.fillRect(0, 0, W, H);
+  x.fillStyle = "#26262A"; x.textAlign = "center";
+  x.font = '600 26px Menlo, "SF Mono", Consolas, monospace';
+  const words = e.merchant.toUpperCase().split(" "); const ls = []; let cur = "";
+  for (const w of words) { if ((cur + " " + w).trim().length > 14) { ls.push(cur.trim()); cur = w; } else cur += " " + w; }
+  ls.push(cur.trim());
+  let y = 52; for (const l of ls.slice(0, 2)) { x.fillText(l, W / 2, y); y += 32; }
+  x.font = '500 19px Menlo, "SF Mono", Consolas, monospace'; x.fillStyle = "#55555C";
+  x.fillText(e.date + "  " + String(9 + (seed % 9)).padStart(2, "0") + ":" + String(10 + seed * 7 % 49), W / 2, y + 8);
+  y += 34;
+  const dash = yy => { x.fillStyle = "#9A9AA0"; for (let i = 24; i < W - 24; i += 12) x.fillRect(i, yy, 6, 2); };
+  dash(y); y += 28;
+  x.textAlign = "left";
+  for (let i = 0; i < e.items; i++) { x.fillStyle = "#C3C3BC"; x.fillRect(26, y - 12, 110 + ((seed * 31 + i * 17) % 80), 12); x.fillRect(W - 96, y - 12, 70, 12); y += 30; }
+  dash(y); y += 40;
+  x.fillStyle = "#26262A"; x.font = '600 26px Menlo, "SF Mono", Consolas, monospace';
+  x.fillText("TOTAL", 26, y); x.textAlign = "right"; x.fillText("£" + e.total.toFixed(2), W - 26, y);
+  x.textAlign = "center"; x.font = '500 16px Menlo, "SF Mono", Consolas, monospace'; x.fillStyle = "#77777E";
+  x.fillText("CARD PAYMENT", W / 2, y + 44); x.fillText("THANK YOU", W / 2, y + 70);
+  return c.toDataURL("image/png");
+}
+function seedExample() {
+  example = true;
+  EXAMPLE.forEach((e, i) => {
+    const thumb = drawReceipt(e, i + 1);
+    inputs.push({ id: "f" + nextId++, name: `receipt-${i + 1}.png`, kind: "image", thumb, blob: dataUrlBlob(thumb), example: true, ready: Promise.resolve() });
+  });
+}
+const IMG_EXT = ["jpg", "jpeg", "png", "webp", "gif", "heic", "heif"];
+const SHEET_EXT = ["xlsx", "xlsm", "xls", "ods"];
+function addInputs(list) {
+  if (example) clearInputs();
+  const skipped = [];
+  let added = 0;
+  for (const f of list) {
+    const ext = extOf(f.name), type = f.type || "";
+    let kind;
+    if (type === "application/pdf" || ext === "pdf") kind = "pdf";
+    else if (type.startsWith("image/") || IMG_EXT.includes(ext)) kind = "image";
+    else if (SHEET_EXT.includes(ext) || /spreadsheet|ms-excel/.test(type)) kind = "sheet";
+    else if (type.startsWith("text/") || ["txt", "csv", "md", "eml", "tsv"].includes(ext)) kind = "text";
+    else { skipped.push(f.name); continue; }
+    const inp = { id: "f" + nextId++, name: f.name, kind, blob: f, text: "" };
+    if (kind === "image") inp.thumb = URL.createObjectURL(f);
+    inp.ready = prepare(inp).catch(err => { inp.error = err.message || "Couldn't open this file"; }).finally(renderTray);
+    inputs.push(inp); added++;
+  }
+  if (skipped.length) say(`Can't read ${skipped.join(", ")} yet. Save it as a PDF or image.`);
+  clearResult();
+  renderTray(); hubRest();
+  if (added) wave();
+  return added;
+}
+function removeInput(id) {
+  const i = inputs.findIndex(f => f.id === id);
+  if (i < 0) return;
+  const f = inputs[i];
+  if (f.thumb && f.thumb.startsWith("blob:")) URL.revokeObjectURL(f.thumb);
+  inputs.splice(i, 1);
+  if (!inputs.some(x => x.example)) example = false;
+  clearResult(); renderTray(); hubRest();
+}
+function clearInputs() {
+  for (const f of inputs) if (f.thumb && f.thumb.startsWith("blob:")) URL.revokeObjectURL(f.thumb);
+  inputs.length = 0; example = false;
+}
+async function prepare(f) {
+  if (f.kind === "text") { f.text = (await f.blob.text()).slice(0, 60000); return; }
+  if (f.kind === "sheet") {
+    if (!window.XLSX) throw new Error("The spreadsheet reader didn't load");
+    const wb = XLSX.read(await f.blob.arrayBuffer(), { type: "array" });
+    f.text = wb.SheetNames.slice(0, 3).map(n => `Sheet "${n}":\n` + XLSX.utils.sheet_to_csv(wb.Sheets[n])).join("\n\n").slice(0, 60000);
+    return;
+  }
+  if (f.kind === "pdf") {
+    const lib = await getPdfjs();
+    const doc = await lib.getDocument({ data: new Uint8Array(await f.blob.arrayBuffer()), isEvalSupported: false }).promise;
+    const pages = []; let text = "";
+    for (let i = 1; i <= Math.min(doc.numPages, 12); i++) {
+      const page = await doc.getPage(i);
+      try { const tc = await page.getTextContent(); text += tc.items.map(it => it.str || "").join(" ").replace(/\s+/g, " ") + "\n\n"; } catch {}
+      if (i <= 3) {
+        const cv = await renderPage(page, 1400);
+        pages.push(await new Promise(r => cv.toBlob(r, "image/jpeg", 0.86)));
+        if (i === 1) { const t = document.createElement("canvas"); t.width = 90; t.height = Math.round(cv.height * 90 / cv.width); t.getContext("2d").drawImage(cv, 0, 0, t.width, t.height); f.thumb = t.toDataURL("image/jpeg", 0.8); }
+      }
+    }
+    f.text = text.trim(); f.pages = pages.filter(Boolean);
+    doc.destroy?.();
+  }
+}
+async function renderPage(page, targetW) {
+  const vp1 = page.getViewport({ scale: 1 });
+  const vp = page.getViewport({ scale: Math.min(2.5, targetW / vp1.width) });
+  const cv = document.createElement("canvas");
+  cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height);
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, cv.width, cv.height);
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  cv._vp = vp;
+  return cv;
+}
+async function imageBlob(f) {
+  const ok = caps?.images?.mediaTypes || ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  const max = caps?.images?.maxInputBytes || 20e6;
+  if (ok.includes(f.blob.type) && f.blob.size <= max) return f.blob;
+  let bmp;
+  try { bmp = await createImageBitmap(f.blob); } catch { throw new Error("This image type can't be read here. Save it as JPEG or PNG."); }
+  const k = Math.min(1, 2400 / Math.max(bmp.width, bmp.height));
+  const cv = document.createElement("canvas"); cv.width = Math.round(bmp.width * k); cv.height = Math.round(bmp.height * k);
+  cv.getContext("2d").drawImage(bmp, 0, 0, cv.width, cv.height);
+  return await new Promise(r => cv.toBlob(r, "image/jpeg", 0.9));
+}
+
+/* ---------- your template (kept in this browser) ---------- */
+const TPL_KEY = "scoopi.template";
+const savedTemplate = () => store.get(TPL_KEY, null);
+function templateFile() {
+  const t = savedTemplate();
+  if (!t) return null;
+  const bin = atob(t.b64), u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new File([u8], t.name, { type: t.type });
+}
+async function setTemplate(file) {
+  const ext = extOf(file.name);
+  if (!["pdf", "csv", ...SHEET_EXT].includes(ext) && file.type !== "application/pdf") { say("A template needs to be an Excel, CSV or PDF file."); return; }
+  if (file.size > 1500000) { say("That template is over 1.5 MB, too big to keep here."); return; }
+  const u8 = new Uint8Array(await file.arrayBuffer());
+  let bin = ""; for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  if (!store.set(TPL_KEY, { name: file.name, type: file.type || "", b64: btoa(bin) })) { say("This browser wouldn't keep the template. Try a smaller file."); return; }
+  setOut("template"); wave();
+  say(`${file.name} is your template. Tap the centre to fill it.`);
+}
+
+/* ---------- a plain PDF of the form ---------- */
+async function pdfReport(t, rec) {
+  const PL = await getPdfLib();
+  const doc = await PL.PDFDocument.create();
+  const font = await doc.embedFont(PL.StandardFonts.Helvetica), bold = await doc.embedFont(PL.StandardFonts.HelveticaBold);
+  const W = 595.28, H = 841.89, M = 48, ink = PL.rgb(0.12, 0.13, 0.16), grey = PL.rgb(0.45, 0.47, 0.52);
+  let page = doc.addPage([W, H]), y = H - M;
+  const fit = (txt, f, size, w) => { let v = winAnsi(txt); while (v.length > 1 && f.widthOfTextAtSize(v, size) > w) v = v.slice(0, -2) + "…"; return v; };
+  const need = h => { if (y - h < M) { page = doc.addPage([W, H]); y = H - M; } };
+  page.drawText(winAnsi(t.name), { x: M, y: y - 20, size: 20, font: bold, color: ink }); y -= 30;
+  page.drawText(winAnsi("Made with Scoopi · " + new Date().toLocaleDateString("en-GB")), { x: M, y: y - 10, size: 9, font, color: grey }); y -= 30;
+  for (const f of t.fields) {
+    const v = rec.fields[f.key]; if (!v) continue;
+    need(18);
+    page.drawText(winAnsi(f.label), { x: M, y: y - 11, size: 9, font: bold, color: grey });
+    page.drawText(fit(v, font, 10.5, W - M * 2 - 130), { x: M + 130, y: y - 11, size: 10.5, font, color: ink });
+    y -= 18;
+  }
+  if (t.columns.length && rec.rows.length) {
+    y -= 14;
+    const fixed = c => c.type === "money" ? 72 : c.type === "number" ? 40 : 0;
+    const flex = t.columns.filter(c => !fixed(c));
+    const free = W - M * 2 - t.columns.reduce((a, c) => a + fixed(c), 0);
+    const widths = t.columns.map(c => fixed(c) || free / flex.length);
+    const row = (vals, f, shade) => {
+      need(20);
+      if (shade) page.drawRectangle({ x: M - 4, y: y - 15, width: W - M * 2 + 8, height: 19, color: PL.rgb(0.94, 0.95, 0.96) });
+      let x = M;
+      vals.forEach((v, i) => {
+        const c = t.columns[i], w = widths[i] - 8, txt = fit(String(v ?? ""), f, 9.5, w);
+        const tx = c.type ? x + w - f.widthOfTextAtSize(txt, 9.5) : x;
+        page.drawText(txt, { x: tx, y: y - 11, size: 9.5, font: f, color: ink });
+        x += widths[i];
+      });
+      y -= 20;
+    };
+    row(t.columns.map(c => c.label), bold, true);
+    for (const r of rec.rows) row(t.columns.map(c => { const v = cellValue(c, r); return typeof v === "number" && c.type === "money" ? v.toFixed(2) : v; }), font, false);
+    const totals = t.columns.map((c, i) => {
+      if (i === 0) return "Total";
+      if (c.type !== "money") return "";
+      const vals = rec.rows.map(r => num(cellValue(c, r))).filter(n => n != null);
+      return vals.length ? money(round2(vals.reduce((a, b) => a + b, 0))) : "";
+    });
+    row(totals, bold, true);
+  }
+  return new Blob([await doc.save()], { type: "application/pdf" });
+}
+/* ---------- reading documents ---------- */
+async function gatherDocs(list, maxImg) {
+  const docs = [], images = [];
+  let left = 0;
+  for (const f of list) {
+    await f.ready;
+    if (f.error) continue;
+    const d = { n: docs.length + 1, f, from: 0, to: 0, text: "" };
+    if (f.kind === "text" || f.kind === "sheet") d.text = f.text.slice(0, 15000);
+    else if (f.kind === "pdf") {
+      d.text = (f.text || "").slice(0, 12000);
+      for (const b of f.pages || []) { if (images.length < maxImg) { images.push(b); d.from ||= images.length; d.to = images.length; } else left++; }
+    } else {
+      if (!maxImg) continue;
+      try { const b = await imageBlob(f); if (images.length < maxImg) { images.push(b); d.from = d.to = images.length; } else { left++; continue; } }
+      catch { continue; }
+    }
+    docs.push(d);
+  }
+  if (!docs.length) throw new Error("There was nothing Claude could read in those files.");
+  return { docs, images, left };
+}
+function docsSection(docs) {
+  let p = "";
+  for (const d of docs) {
+    p += `[${d.n}] ${d.f.name}`;
+    if (d.from) p += d.from === d.to ? ` — attached image ${d.from}` : ` — attached images ${d.from} to ${d.to}`;
+    p += "\n";
+    if (d.text && d.text.trim()) p += `Text of this document:\n"""\n${d.text.trim()}\n"""\n`;
+  }
+  return p;
+}
+function buildReadPrompt(t, docs) {
+  let p = `Read the documents below and fill in a form called "${t.name}".\n\nDOCUMENTS\n${docsSection(docs)}`;
+  p += "\nFORM FIELDS (one value each)\n" + t.fields.map(f => `- ${f.key}: ${f.label}${f.hint ? " (" + f.hint + ")" : ""}`).join("\n");
+  if (t.columns.length) p += `\n\nTABLE ROWS: ${t.rowsHint}. Columns:\n` + t.columns.map(c => `- ${c.key}: ${c.label}${c.hint ? " (" + c.hint + ")" : ""}`).join("\n");
+  p += "\n\nRULES\n- Use only what the documents show. If a value isn't there, use \"\". Don't guess.\n- Dates as DD/MM/YYYY. Money as a plain number like 18.70, with no currency sign.\n";
+  if (t.columns.length) p += "- Give every row \"doc\": the number of the document it came from.\n";
+  const ex = t.fields.slice(0, 2).map(f => `"${f.key}": "..."`).join(", ");
+  const rowEx = t.columns.length ? `{${t.columns.slice(0, 2).map(c => `"${c.key}": "..."`).join(", ")}, "doc": 1}` : "";
+  p += `\nReply with only JSON in this shape:\n{"fields": {${ex}${t.fields.length > 2 ? ", ..." : ""}}, "rows": [${rowEx}]}`;
+  return p;
+}
+function toRecord(t, res) {
+  const rec = { fields: {}, rows: [] };
+  const f = (res && typeof res === "object" && res.fields) || {};
+  for (const fld of t.fields) { const v = f[fld.key]; if (v != null && String(v).trim()) rec.fields[fld.key] = String(v).trim(); }
+  for (const r of Array.isArray(res?.rows) ? res.rows : []) {
+    if (!r || typeof r !== "object") continue;
+    const row = {}; let any = false;
+    for (const c of t.columns) {
+      let v = r[c.key];
+      v = v == null ? "" : typeof v === "number" ? (c.type === "money" ? v.toFixed(2) : String(v)) : String(v).trim();
+      row[c.key] = v; if (v) any = true;
+    }
+    if (any) rec.rows.push(row);
+  }
+  return rec;
+}
+
+/* ---------- building the spreadsheet ---------- */
+function buildAOA(t, rec) {
+  const cols = t.columns, aoa = [], fmt = [];
+  const pushTable = off => {
+    const head = aoa.length;
+    aoa.push([...(off ? t.fields.map(f => f.label) : []), ...cols.map(c => c.label)]);
+    const fv = t.fields.map(f => rec.fields[f.key] || "");
+    rec.rows.forEach(row => {
+      const r = aoa.length;
+      aoa.push([...(off ? fv : []), ...cols.map((c, ci) => {
+        const cell = { r, c: off + ci };
+        if (c.type === "money") cell.z = MONEY_FMT;
+        if (c.product && computed(c, row) != null) {
+          const [a, b] = c.product.map(k => colName(off + cols.findIndex(x => x.key === k)));
+          cell.f = `${a}${r + 1}*${b}${r + 1}`;
+        }
+        if (cell.z || cell.f) fmt.push(cell);
+        return cellValue(c, row);
+      })]);
+    });
+    if (!rec.rows.length) { if (off) aoa.push(fv); return; }
+    const r = aoa.length, line = new Array(off + cols.length).fill("");
+    line[0] = "Total";
+    cols.forEach((c, ci) => {
+      if (c.type !== "money") return;
+      const vals = rec.rows.map(row => num(cellValue(c, row))).filter(n => n != null);
+      if (!vals.length) return;
+      const L = colName(off + ci);
+      line[off + ci] = round2(vals.reduce((a, b) => a + b, 0));
+      fmt.push({ r, c: off + ci, z: MONEY_FMT, f: `SUM(${L}${head + 2}:${L}${r})` });
+    });
+    aoa.push(line);
+  };
+  if (t.layout === "table" && cols.length) pushTable(t.fields.length);
+  else {
+    aoa.push([t.name]); aoa.push([]);
+    t.fields.forEach(f => aoa.push([f.label, rec.fields[f.key] || ""]));
+    if (cols.length) { aoa.push([]); pushTable(0); }
+  }
+  return { aoa, fmt };
+}
+function sheetFile(t, rec, kind) {
+  if (!window.XLSX) throw new Error("The spreadsheet part didn't load. Reload the page.");
+  const { aoa, fmt } = buildAOA(t, rec);
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  for (const { r, c, z, f } of fmt) { const cell = ws[XLSX.utils.encode_cell({ r, c })]; if (!cell) continue; if (z) cell.z = z; if (f) cell.f = f; }
+  const width = [];
+  aoa.forEach(row => row.forEach((v, i) => { const l = typeof v === "number" ? 12 : String(v ?? "").length + 2; width[i] = Math.min(48, Math.max(width[i] || 10, l)); }));
+  ws["!cols"] = width.map(w => ({ wch: w || 10 }));
+  const base = `${t.name} ${isoToday()}`;
+  if (kind === "csv") return { name: base + ".csv", blob: new Blob([XLSX.utils.sheet_to_csv(ws, { rawNumbers: true })], { type: "text/csv" }) };
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, t.name.slice(0, 31));
+  return { name: base + ".xlsx", blob: new Blob([XLSX.write(wb, { bookType: "xlsx", type: "array" })]) };
+}
+function summaryOf(t, rec) {
+  if (t.columns.length && rec.rows.length) {
+    const mc = [...t.columns].reverse().find(c => c.type === "money");
+    const vals = mc ? rec.rows.map(r => num(cellValue(mc, r))).filter(x => x != null) : [];
+    return `${rec.rows.length} row${rec.rows.length > 1 ? "s" : ""}${vals.length ? " · " + money(round2(vals.reduce((a, b) => a + b, 0))) : ""}`;
+  }
+  return `${t.fields.filter(f => rec.fields[f.key]).length} of ${t.fields.length} fields`;
+}
+
+/* ---------- filling your own form straight from the documents ---------- */
+async function fillSheet(sample, file, docs, images, signal) {
+  if (!window.XLSX) throw new Error("The spreadsheet part didn't load. Reload the page.");
+  const isCsv = extOf(file.name) === "csv";
+  const wb = isCsv ? XLSX.read(await file.text(), { type: "string" }) : XLSX.read(await file.arrayBuffer(), { type: "array" });
+  let listing = "", count = 0;
+  outer: for (const name of wb.SheetNames.slice(0, 3)) {
+    const ws = wb.Sheets[name];
+    if (!ws || !ws["!ref"]) continue;
+    const rg = XLSX.utils.decode_range(ws["!ref"]);
+    listing += `\nSheet "${name}" (used range ${ws["!ref"]}):\n`;
+    for (let r = rg.s.r; r <= Math.min(rg.e.r, rg.s.r + 160); r++) for (let c = rg.s.c; c <= Math.min(rg.e.c, 30); c++) {
+      const a = XLSX.utils.encode_cell({ r, c }), cell = ws[a];
+      if (!cell || cell.v == null || cell.v === "") continue;
+      listing += `${a}: ${JSON.stringify(String(cell.w ?? cell.v).replace(/\s+/g, " ").slice(0, 80))}\n`;
+      if (++count > 700) break outer;
+    }
+    const merges = (ws["!merges"] || []).slice(0, 60).map(m => XLSX.utils.encode_range(m));
+    if (merges.length) listing += `Merged cells: ${merges.join(", ")}\n`;
+  }
+  const first = wb.SheetNames[0];
+  const prompt = `Fill in someone's own ${isCsv ? "CSV file" : "spreadsheet form"} using the documents they've given you.
+
+THE DOCUMENTS
+${docsSection(docs)}
+THEIR FILE: ${file.name}
+Only cells that already contain something are listed. Every other cell is empty.
+${listing || "(the file is empty)"}
+
+HOW TO FILL IT
+- Use only what the documents show. Don't guess.
+- Put each value in the empty cell that belongs to its label: usually the cell to the right of the label, or the cell below it when the label is a column heading.
+- For a table, write one row per item under the matching column headings, starting at the first empty row.${isCsv ? " In a CSV, add new rows under the last row." : ""}
+- Only write to empty cells. Never change a cell listed above.
+- Numbers as plain numbers (18.7, not "£18.70"). Dates as DD/MM/YYYY. Keep codes such as sort codes and account numbers as text.
+
+Reply with only JSON: {"fills":[{"sheet":"${first}","cell":"B4","value":"text or number"}]}`;
+  const opts = { signal };
+  if (images.length) opts.images = images;
+  const res = await sample.json(prompt, opts);
+  let n = 0;
+  for (const f of Array.isArray(res?.fills) ? res.fills : []) {
+    const sheet = wb.Sheets[f?.sheet] ? f.sheet : first, ws = wb.Sheets[sheet];
+    const a = String(f?.cell || "").toUpperCase().trim();
+    if (!ws || !/^[A-Z]{1,3}[1-9][0-9]{0,6}$/.test(a)) continue;
+    const ex = ws[a];
+    if (ex && ex.v != null && ex.v !== "") continue;
+    const v = f.value;
+    if (v == null || v === "") continue;
+    ws[a] = typeof v === "number" ? { t: "n", v } : { t: "s", v: String(v) };
+    const rg = XLSX.utils.decode_range(ws["!ref"] || "A1"), cc = XLSX.utils.decode_cell(a);
+    rg.s.r = Math.min(rg.s.r, cc.r); rg.s.c = Math.min(rg.s.c, cc.c); rg.e.r = Math.max(rg.e.r, cc.r); rg.e.c = Math.max(rg.e.c, cc.c);
+    ws["!ref"] = XLSX.utils.encode_range(rg);
+    n++;
+  }
+  if (!n) throw new Error(`Claude couldn't find where things go in ${file.name}.`);
+  const name = baseOf(file.name) + " - filled" + (isCsv ? ".csv" : ".xlsx");
+  const blob = isCsv ? new Blob([XLSX.utils.sheet_to_csv(wb.Sheets[first])], { type: "text/csv" }) : new Blob([XLSX.write(wb, { bookType: "xlsx", type: "array" })]);
+  return { name, blob, summary: `Filled ${n} cell${n > 1 ? "s" : ""}` };
+}
+function winAnsi(v) {
+  const keep = "–—‘’“”•…€™£";
+  return String(v).normalize("NFC").split("").map(ch => {
+    const c = ch.charCodeAt(0);
+    if ((c >= 32 && c <= 126) || (c >= 160 && c <= 255) || keep.includes(ch)) return ch;
+    const base = ch.normalize("NFD").replace(/[̀-ͯ]/g, "");
+    return base.length === 1 && base.charCodeAt(0) < 127 ? base : "?";
+  }).join("");
+}
+async function fillPdf(sample, file, docs, docImages, maxImg, signal) {
+  const buf = await file.arrayBuffer();
+  const lib = await getPdfjs();
+  const doc = await lib.getDocument({ data: new Uint8Array(buf.slice(0)), isEvalSupported: false }).promise;
+  const fields = [], byName = new Map(), pageText = [];
+  const nPages = Math.min(doc.numPages, 10);
+  for (let p = 1; p <= nPages; p++) {
+    const page = await doc.getPage(p);
+    let anns = [];
+    try { anns = await page.getAnnotations(); } catch {}
+    for (const a of anns) {
+      if (a.subtype !== "Widget" || !a.fieldName || a.pushButton || a.fieldType === "Sig") continue;
+      let f = byName.get(a.fieldName);
+      if (!f) {
+        f = { n: fields.length + 1, name: a.fieldName, page: p, rects: [],
+          type: a.fieldType === "Tx" ? "text" : a.fieldType === "Ch" ? "choice" : a.checkBox ? "checkbox" : a.radioButton ? "radio" : "text",
+          options: Array.isArray(a.options) ? a.options.map(o => String(o.displayValue ?? o.exportValue)) : [] };
+        fields.push(f); byName.set(a.fieldName, f);
+      }
+      f.rects.push({ page: p, rect: a.rect });
+      if (a.radioButton && a.buttonValue != null && !f.options.includes(String(a.buttonValue))) f.options.push(String(a.buttonValue));
+    }
+    try { const tc = await page.getTextContent(); pageText.push({ p, page, tc, size: page.getViewport({ scale: 1 }) }); } catch {}
+  }
+  const PL = await getPdfLib();
+  const pdf = await PL.PDFDocument.load(buf, { ignoreEncryption: true });
+  const images = docImages.slice();
+  const k = images.length;
+  const intro = k ? `Images 1 to ${k} are the documents.` : "";
+  let n = 0;
+  if (fields.length) {
+    for (let p = 1; p <= nPages && images.length < maxImg; p++) {
+      const here = fields.filter(f => f.rects.some(r => r.page === p));
+      if (!here.length) continue;
+      const cv = await renderPage(await doc.getPage(p), 1400), vp = cv._vp, ctx = cv.getContext("2d");
+      ctx.lineWidth = 2; ctx.font = "bold 18px sans-serif";
+      for (const f of here) for (const r of f.rects.filter(r => r.page === p)) {
+        const [x1, y1, x2, y2] = vp.convertToViewportRectangle(r.rect);
+        const x = Math.min(x1, x2), y = Math.min(y1, y2), w = Math.abs(x2 - x1), hh = Math.abs(y2 - y1);
+        ctx.strokeStyle = "#1E40FF"; ctx.strokeRect(x, y, w, hh);
+        const label = String(f.n), tw = ctx.measureText(label).width + 8;
+        ctx.fillStyle = "#1E40FF"; ctx.fillRect(x, y - 20, tw, 20);
+        ctx.fillStyle = "#fff"; ctx.fillText(label, x + 4, y - 4);
+      }
+      images.push(await new Promise(r => cv.toBlob(r, "image/jpeg", 0.85)));
+    }
+    const text = pageText.map(t => t.tc.items.map(i => i.str).join(" ")).join("\n").replace(/[ \t]+/g, " ").slice(0, 8000);
+    const prompt = `Fill in someone's own fillable PDF form (${file.name}) using the documents they've given you. ${intro}${images.length > k ? ` Images ${k + 1} to ${images.length} show the form's pages with every fillable box outlined in blue and numbered.` : ""}
+
+THE DOCUMENTS
+${docsSection(docs)}
+FILLABLE BOXES
+${fields.slice(0, 250).map(f => `${f.n}. page ${f.page}, ${f.type}${f.options.length ? " (options: " + f.options.join(" | ") + ")" : ""}, internal name ${JSON.stringify(f.name)}`).join("\n")}
+
+PRINTED TEXT OF THE FORM
+"""
+${text}
+"""
+
+Use only what the documents show. Match each value to the box it belongs in, using the labels printed next to the boxes. Checkboxes take true or false. Choice and radio boxes take exactly one of their listed options. Leave out boxes you have nothing for. Dates as DD/MM/YYYY.
+
+Reply with only JSON: {"fills":[{"box":1,"value":"..."}]}`;
+    const opts = { signal };
+    if (images.length) opts.images = images;
+    const res = await sample.json(prompt, opts);
+    const form = pdf.getForm();
+    for (const fill of Array.isArray(res?.fills) ? res.fills : []) {
+      const f = fields[Number(fill?.box) - 1];
+      if (!f || fill.value == null || fill.value === "") continue;
+      try {
+        const fld = form.getField(f.name);
+        const v = winAnsi(fill.value);
+        if (fld instanceof PL.PDFTextField) { const ml = fld.getMaxLength?.(); fld.setText(ml ? v.slice(0, ml) : v); }
+        else if (fld instanceof PL.PDFCheckBox) { (fill.value === true || /^(true|yes|x|1)$/i.test(String(fill.value))) ? fld.check() : fld.uncheck(); }
+        else if (fld instanceof PL.PDFDropdown || fld instanceof PL.PDFOptionList || fld instanceof PL.PDFRadioGroup) fld.select(v);
+        else continue;
+        n++;
+      } catch {}
+    }
+  } else {
+    // A flat PDF: write the values onto the page next to the printed labels.
+    const items = [];
+    for (const { p, tc } of pageText.slice(0, 3)) for (const it of tc.items) {
+      if (!it.str || !it.str.trim() || items.length >= 420) continue;
+      const [, , c, d, e, f] = it.transform;
+      items.push({ id: items.length + 1, page: p, x: e, y: f, w: it.width || 0, h: Math.hypot(c, d) || it.height || 10, text: it.str.slice(0, 60) });
+    }
+    if (!items.length) throw new Error(`${file.name} has no boxes or readable text to fill.`);
+    for (const { page } of pageText.slice(0, 3)) { if (images.length >= maxImg) break; const cv = await renderPage(page, 1400); images.push(await new Promise(r => cv.toBlob(r, "image/jpeg", 0.85))); }
+    const sz = pageText[0].size;
+    const prompt = `Fill in someone's own PDF form (${file.name}) using the documents they've given you. The form has no fillable boxes, so each value is written onto the page next to its printed label. ${intro}${images.length > k ? ` Images ${k + 1} to ${images.length} show the form's pages.` : ""}
+
+THE DOCUMENTS
+${docsSection(docs)}
+PRINTED TEXT PIECES OF THE FORM (id, page, position in PDF points from the bottom-left, width; pages are ${Math.round(sz.width)} by ${Math.round(sz.height)})
+${items.map(i => `${i.id}. p${i.page} x${Math.round(i.x)} y${Math.round(i.y)} w${Math.round(i.w)}: ${JSON.stringify(i.text)}`).join("\n")}
+
+Use only what the documents show. For each value pick the text piece to write it next to. "place" is "right" (same line, after the label), "below" (under the label) or "on" (on top of a blank line such as "________", which must then be the piece you pick). Leave out anything with no sensible place. Dates as DD/MM/YYYY.
+
+Reply with only JSON: {"fills":[{"after":12,"place":"right","value":"..."}]}`;
+    const opts = { signal };
+    if (images.length) opts.images = images;
+    const res = await sample.json(prompt, opts);
+    const font = await pdf.embedFont(PL.StandardFonts.Helvetica);
+    const pages = pdf.getPages();
+    for (const fill of Array.isArray(res?.fills) ? res.fills : []) {
+      const it = items[Number(fill?.after) - 1];
+      if (!it || fill.value == null || fill.value === "") continue;
+      const page = pages[it.page - 1]; if (!page) continue;
+      const size = Math.max(7, Math.min(11, it.h * 0.95));
+      const place = String(fill.place || "right");
+      const x = place === "below" || place === "on" ? it.x + (place === "on" ? 2 : 0) : it.x + it.w + 5;
+      const y = place === "below" ? it.y - it.h - 4 : it.y + (place === "on" ? 1 : 0);
+      try { page.drawText(winAnsi(fill.value), { x, y, size, font, color: PL.rgb(0.08, 0.16, 0.55), maxWidth: Math.max(60, page.getWidth() - x - 18), lineHeight: size * 1.2 }); n++; } catch {}
+    }
+  }
+  doc.destroy?.();
+  if (!n) throw new Error(`Claude couldn't find where things go in ${file.name}.`);
+  return { name: baseOf(file.name) + " - filled.pdf", blob: new Blob([await pdf.save()], { type: "application/pdf" }), summary: `Filled ${n} ${fields.length ? (n > 1 ? "boxes" : "box") : (n > 1 ? "places" : "place")}` };
+}
+
+/* ---------- hover sound ---------- */
+// Browsers only allow sound after the first click or key press, so the sound is set up then.
+const HOVER_SOUND = "data:audio/mpeg;base64,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WjkrDyKgeGskFtQ/Rtil+tW1YIYWH3FR6ZFUvF4eyQfqFRiVi6hsN0dnYs0y89SxZpRcOzlW//tyxO2CEqlq8iylD8oBsR0dgw347P9zX////+07bm///7lGnFlmWpaJxpxxZVs5RZRVxuf///5UlO7Pm5Usc7PRpwkCAjzLzZp3Z/uVLM7O0nFlFHkXeKivFhfxX+xMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+3DEvoPUQaKAzDDNwAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+const CREATE_SOUND = "data:audio/mpeg;base64,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VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//t0xMoD0+VsmAwkc4gAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+let actx = null, hoverBuf = null, createBuf = null, lastTick = 0;
+function primeAudio() {
+  if (actx) { if (actx.state === "suspended") actx.resume().catch(() => {}); return; }
+  try {
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    const decode = (uri, done) => {
+      const bin = atob(uri.split(",")[1]), u8 = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+      actx.decodeAudioData(u8.buffer, done, () => {});
+    };
+    decode(HOVER_SOUND, b => { hoverBuf = b; });
+    decode(CREATE_SOUND, b => { createBuf = b; });
+  } catch { actx = null; }
+}
+function play(buf, volume) {
+  if (!actx || !buf || actx.state !== "running") return;
+  const src = actx.createBufferSource(), gain = actx.createGain();
+  gain.gain.value = volume;
+  src.buffer = buf;
+  src.connect(gain).connect(actx.destination);
+  src.start();
+}
+// The hover tick sits well under everything else so running a finger round the dial stays quiet.
+function tick() {
+  const now = performance.now();
+  if (now - lastTick < 45) return;
+  lastTick = now;
+  play(hoverBuf, 0.18);
+}
+const created = () => play(createBuf, 0.7);
+for (const type of ["pointerdown", "keydown", "touchstart"]) window.addEventListener(type, primeAudio, { passive: true, capture: true });
+
+/* ---------- the dial ---------- */
+const R_OUT = 214, R_IN = 120, GAP = 16;
+const SEG_ICONS = {
+  photo: "M4 8h3l2-3h6l2 3h3v11H4z M12 9.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7",
+  grab: "M4 8V4h4 M16 4h4v4 M20 16v4h-4 M8 20H4v-4 M9 9h6v6H9z",
+  files: "M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4",
+  xlsx: "M4 4h16v16H4z M4 10h16 M4 15h16 M10 4v16",
+  csv: "M5 6h14 M5 10h14 M5 14h14 M5 18h9",
+  pdf: "M6 3h9l3 3v15H6z M15 3v3h3 M9 13h6 M9 17h4",
+  template: "M4 3h12v18H4z M7 8h6 M7 12h6 M13 19l6-6 2 2-6 6h-2z",
+  sheet: "M3 5h18v14H3z M3 9h18 M12 11.5v5.5 M9.5 14.5L12 17l2.5-2.5"
+};
+const OUT_KEYS = ["xlsx", "csv", "pdf", "template", "sheet"];
+let outId = store.get("scoopi.out2", "xlsx");
+if (!OUT_KEYS.includes(outId)) outId = "xlsx";
+let formId = store.get("scoopi.form", "expenses");
+if (!TEMPLATES[formId]) formId = "expenses";
+const FORM_ORDER = ["expenses", "invoice", "supplier"];
+const ring = $("#ring"), hub = $("#hub");
+let segList = [];
+function segments() {
+  const tpl = savedTemplate();
+  const ins = [
+    { key: "photo", side: "in", label: "PHOTO", title: "Take a photo" },
+    { key: "grab", side: "in", label: "SCREEN\nGRAB", title: "Grab part of your screen" },
+    { key: "files", side: "in", label: "FILES", title: "Add files" }
+  ];
+  const outs = [
+    { key: "xlsx", side: "out", label: "EXCEL", title: "Excel workbook" },
+    { key: "csv", side: "out", label: "CSV", title: "CSV file" },
+    { key: "pdf", side: "out", label: "PDF", title: "PDF" },
+    { key: "template", side: "out", label: "TEMPLATE", small: tpl ? baseOf(tpl.name).slice(0, 14) : null, title: tpl ? "Fill " + tpl.name : "Fill your own template" },
+    { key: "sheet", side: "out", label: "INTO\nSHEET", title: "Push into an open sheet" }
+  ];
+  // Left half runs bottom to top, right half top to bottom. j counts out from the middle slice, so a half fans open from where you're pulling.
+  ins.forEach((sg, i) => { sg.a0 = 90 + i * 60; sg.a1 = sg.a0 + 60; sg.j = Math.abs(i - 1); });
+  outs.forEach((sg, i) => { sg.a0 = -90 + i * 36; sg.a1 = sg.a0 + 36; sg.j = Math.abs(i - 2); });
+  return [...ins, ...outs];
+}
+function pt(a, r) { const rad = a * Math.PI / 180; return [r * Math.cos(rad), r * Math.sin(rad)]; }
+function sectorPath(a0, a1) {
+  const ro = R_OUT - 6, ri = R_IN + 6;
+  const po = (GAP / ro) * 180 / Math.PI, pi = (GAP / ri) * 180 / Math.PI;
+  const [x1, y1] = pt(a0 + po, ro), [x2, y2] = pt(a1 - po, ro), [x3, y3] = pt(a1 - pi, ri), [x4, y4] = pt(a0 + pi, ri);
+  const large = a1 - a0 > 180 ? 1 : 0;
+  return `M${x1.toFixed(2)} ${y1.toFixed(2)} A${ro} ${ro} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)} L${x3.toFixed(2)} ${y3.toFixed(2)} A${ri} ${ri} 0 ${large} 0 ${x4.toFixed(2)} ${y4.toFixed(2)}Z`;
+}
+function drawRing() {
+  segList = segments();
+  const groups = segList.map((sg, i) => {
+    const mid = (sg.a0 + sg.a1) / 2;
+    const [lx, ly] = pt(mid, (R_OUT + R_IN) / 2 + 2);
+    const [dx, dy] = pt(mid, 7);
+    // Labels too wide for their slice come in two lines, and the icon moves up to keep the pair centred.
+    const lines = sg.label.split("\n"), tall = sg.small || lines.length > 1;
+    const label = s("text", { x: lx.toFixed(1), y: (ly + (tall ? 8 : 14)).toFixed(1) },
+      lines.map((line, n) => s("tspan", { x: lx.toFixed(1), dy: n ? "1.15em" : null }, line)));
+    const small = sg.small ? s("text", { class: "small", x: lx.toFixed(1), y: (ly + 23).toFixed(1) }) : null;
+    if (small) small.textContent = sg.small;
+    return s("g", { class: "seg " + sg.side + (sg.key === outId ? " on" : ""), "data-seg": String(i), role: "button", tabindex: "-1", "aria-label": sg.title + (sg.side === "out" && sg.key === outId ? " (chosen)" : ""), "aria-pressed": sg.side === "out" ? String(sg.key === outId) : null, style: `--dx:${dx.toFixed(2)}px;--dy:${dy.toFixed(2)}px;--j:${sg.j}` },
+      s("g", { class: "bloom" },
+        s("path", { class: "shape", d: sectorPath(sg.a0, sg.a1) }),
+        s("g", { transform: `translate(${(lx - 11).toFixed(1)} ${(ly - (tall ? 30 : 24)).toFixed(1)}) scale(0.92)` }, s("path", { class: "ico", d: SEG_ICONS[sg.key] })),
+        label, small));
+  });
+  groups.forEach(g => { g.addEventListener("pointerenter", tick); g.addEventListener("focus", tick); });
+  const orbitR = String(R_IN - 10);
+  $("#ringSvg").replaceChildren(
+    s("g", { class: "orbit", "aria-hidden": "true" }, s("circle", { class: "track", r: orbitR }), s("circle", { class: "arc", r: orbitR })),
+    ...groups,
+    s("g", { id: "fx", "aria-hidden": "true" }));
+  applyOpen();
+}
+const calm = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+function fx(el, ms) { const layer = $("#fx"); if (!layer || calm()) return; layer.append(el); setTimeout(() => el.remove(), ms); }
+function wave() { fx(s("circle", { class: "wave", r: String(R_IN - 20) }), 1100); }
+function burst() {
+  const n = 16;
+  for (let i = 0; i < n; i++) {
+    const [x, y] = pt((i / n) * 360 + Math.random() * 14, 120 + Math.random() * 70);
+    fx(s("circle", { class: "spark" + (i % 4 === 0 ? " alt" : i % 4 === 2 ? " soft" : ""), r: (2 + Math.random() * 2.6).toFixed(1), style: `--x:${x.toFixed(1)}px;--y:${y.toFixed(1)}px;animation-delay:${Math.round(Math.random() * 90)}ms` }), 1300);
+  }
+}
+function syncSegs(popKey) {
+  document.querySelectorAll("#ringSvg .seg").forEach(g => {
+    const sg = segList[Number(g.dataset.seg)], on = sg.key === outId;
+    g.classList.toggle("on", on);
+    if (sg.side === "out") { g.setAttribute("aria-pressed", String(on)); g.setAttribute("aria-label", sg.title + (on ? " (chosen)" : "")); }
+    if (on && popKey === sg.key) { const b = g.querySelector(".bloom"); b.classList.remove("pop"); void b.getBoundingClientRect(); b.classList.add("pop"); }
+  });
+}
+
+/* ---------- opening the halves ---------- */
+let openSide = "none"; // none, left, right or both
+function setProgress(l, r) {
+  ring.style.setProperty("--pl", l.toFixed(3));
+  ring.style.setProperty("--pr", r.toFixed(3));
+  ring.style.setProperty("--pg", Math.max(l, r).toFixed(3));
+  // The centre is 43.5% of the ring, so 28.25% of the ring sits below it.
+  const g = Math.max(l, r), lift = (1 - g) * (6 - 0.2825 * ring.offsetWidth) + g * -20;
+  $("#tray").style.setProperty("--lift", lift.toFixed(1) + "px");
+}
+window.addEventListener("resize", () => { if (!ring.classList.contains("scrub")) applyOpen(); });
+function applyOpen() {
+  const l = openSide === "left" || openSide === "both", r = openSide === "right" || openSide === "both";
+  ring.classList.toggle("open-left", l); ring.classList.toggle("open-right", r);
+  setProgress(l ? 1 : 0, r ? 1 : 0);
+  document.querySelectorAll("#ringSvg .seg").forEach(g => {
+    const vis = segList[Number(g.dataset.seg)].side === "in" ? l : r;
+    g.setAttribute("tabindex", vis ? "0" : "-1");
+    g.setAttribute("aria-hidden", String(!vis));
+  });
+}
+function setOpen(side) { openSide = side; ring.classList.remove("scrub"); applyOpen(); }
+let hotIdx = -1;
+function setHot(i) {
+  if (i === hotIdx) return;
+  hotIdx = i;
+  if (i >= 0) tick();
+  document.querySelectorAll("#ringSvg .seg").forEach(g => g.classList.toggle("hot", Number(g.dataset.seg) === i));
+}
+// Which slice is under a point, worked out from the angle and distance to the centre.
+function segHit(x, y, side) {
+  const r = ring.getBoundingClientRect(), k = 460 / r.width;
+  const ux = (x - (r.left + r.width / 2)) * k, uy = (y - (r.top + r.height / 2)) * k;
+  const rad = Math.hypot(ux, uy);
+  if (rad < R_IN - 4 || rad > R_OUT + 18) return -1;
+  let a = Math.atan2(uy, ux) * 180 / Math.PI;
+  if (a < -90) a += 360;
+  return segList.findIndex(sg => (!side || sg.side === side) && a >= sg.a0 && a < sg.a1);
+}
+function setOut(key) {
+  outId = key; store.set("scoopi.out2", key);
+  clearResult();
+  if (key === "template") drawRing(); // the slice shows the template's name
+  syncSegs(key); refreshHub(); renderTray();
+}
+
+/* ---------- the centre button ---------- */
+let view = "rest", result = null, busyCtl = null, hubTimer = null, chipFlip = false, kindFlip = false;
+const outTitle = () => segList.find(x => x.key === outId)?.title || "Excel workbook";
+const chevrons = () => [
+  s("svg", { class: "chev l", viewBox: "0 0 14 14", "aria-hidden": "true" }, s("path", { d: "M9 2L4 7l5 5" })),
+  s("svg", { class: "chev r", viewBox: "0 0 14 14", "aria-hidden": "true" }, s("path", { d: "M5 2l5 5-5 5" }))];
+function hubAs(role, label) { hub.setAttribute("role", role); if (label) hub.setAttribute("aria-label", label); else hub.removeAttribute("aria-label"); }
+const GO_LABEL = { xlsx: "Make Excel", csv: "Make CSV", pdf: "Make PDF", template: "Fill template", sheet: "Fill sheet" };
+function makingWhat() { return outId === "template" ? (savedTemplate() ? baseOf(savedTemplate().name) : "Your template") : TEMPLATES[formId].name; }
+function hubRest() {
+  view = "rest"; clearInterval(hubTimer);
+  const n = inputs.length, items = `${n} item${n === 1 ? "" : "s"}`;
+  const tpl = outId === "template";
+  hub.replaceChildren(
+    h("div", { class: "kind" + (tpl ? " fixed" : "") + (kindFlip ? " flip" : ""), "aria-hidden": "true", title: tpl ? "" : "Tap to change what it makes" },
+      h("span", { text: makingWhat() }), tpl ? null : s("svg", { viewBox: "0 0 10 10" }, s("path", { d: "M2 3.5l3 3 3-3" }))),
+    h("div", { class: "go " + (n ? "ready" : "idle"), "aria-hidden": "true" }, GO_LABEL[outId]),
+    h("div", { class: "sub low", "aria-hidden": "true", text: n ? `from ${items}` : "Slide left to add" }),
+    ...chevrons());
+  kindFlip = false;
+  hubAs("button", (n ? `${GO_LABEL[outId]}: ${makingWhat()} from ${items}.` : "Nothing added yet. Press the left arrow, or slide left, to add things.") + (tpl ? "" : " Up and down arrows change what it makes.") + " Right arrow chooses the file type.");
+}
+function hubWorking(text) {
+  view = "working"; clearInterval(hubTimer);
+  const started = Date.now();
+  const secs = h("span");
+  const tick = () => { secs.textContent = `${Math.round((Date.now() - started) / 1000)}s · `; };
+  tick(); hubTimer = setInterval(tick, 1000);
+  hub.replaceChildren(
+    h("div", { class: "sub", text }),
+    h("div", { class: "go", role: "img", "aria-label": "Working" }, s("svg", { class: "spin", viewBox: "0 0 40 40" }, s("circle", { cx: "20", cy: "20", r: "16" }))),
+    h("div", { class: "sub" }, secs, h("button", { class: "lnk", type: "button", text: "Stop", onclick: () => busyCtl?.abort() })));
+  hubAs("group", "Reading");
+}
+function hubDone() {
+  view = "done"; clearInterval(hubTimer);
+  const again = h("button", { class: "lnk", type: "button", text: "Start again", onclick: () => { clearResult(); hubRest(); } });
+  if (result.copy != null) {
+    hub.replaceChildren(h("button", { class: "copybtn", type: "button", text: "Copy for your sheet", onclick: copyResult }),
+      h("div", { class: "sub", text: result.summary }), again, ...chevrons());
+    hubAs("group", "Ready to copy");
+    return;
+  }
+  hub.replaceChildren(
+    s("svg", { class: "check", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M5 12.5l4.5 4.5L19 7.5" })),
+    h("div", { class: "msg", text: "Made" }),
+    h("div", { class: "sub", text: result.summary }), again, ...chevrons());
+  hubAs("group", `Made ${result.name}. It's next to the dial.`);
+  showFiled();
+}
+// The made file lands next to the dial: drag it anywhere to save, or click it.
+let filedFor = null;
+function showFiled() {
+  const box = $("#filed");
+  if (filedFor === result && !box.hidden) return;
+  filedFor = result;
+  const card = h("button", { class: "result", type: "button", "aria-label": `${result.name}. Press to save, or drag it out.` },
+    h("span", { class: "doc", "aria-hidden": "true" }, h("b", { text: extOf(result.name).toUpperCase() })),
+    h("span", { class: "nm", text: result.name, title: result.name }),
+    h("span", { class: "how", text: "Drag out or click to save" }));
+  box.classList.remove("out");
+  box.replaceChildren(card);
+  box.hidden = false;
+  wirePullOut(card);
+  if (calm()) return;
+  // Fly out of the centre of the dial and settle beside it.
+  const a = hub.getBoundingClientRect(), b = card.getBoundingClientRect();
+  const dx = a.left + a.width / 2 - (b.left + b.width / 2), dy = a.top + a.height / 2 - (b.top + b.height / 2);
+  card.animate([
+    { transform: `translate(${dx}px, ${dy}px) scale(.3) rotate(-14deg)`, opacity: 0 },
+    { transform: `translate(${dx * 0.08}px, ${dy * 0.08 - 10}px) scale(1.06) rotate(3deg)`, opacity: 1, offset: 0.62 },
+    { transform: "none", opacity: 1 },
+  ], { duration: 820, easing: "cubic-bezier(.22,1,.36,1)" });
+}
+function hideFiled() {
+  const box = $("#filed");
+  filedFor = null;
+  if (box.hidden) return;
+  if (calm()) { box.hidden = true; box.replaceChildren(); return; }
+  box.classList.add("out");
+  setTimeout(() => { if (!filedFor) { box.hidden = true; box.replaceChildren(); box.classList.remove("out"); } }, 360);
+}
+function hubMessage(text, cls, ms = 5000) {
+  clearInterval(hubTimer);
+  const check = cls === "ok" ? s("svg", { class: "check", viewBox: "0 0 24 24", "aria-hidden": "true" }, s("path", { d: "M5 12.5l4.5 4.5L19 7.5" })) : null;
+  hub.replaceChildren(...[check, h("div", { class: "msg " + (cls || ""), text })].filter(Boolean));
+  hubAs("group", null);
+  hubTimer = setTimeout(refreshHub, ms);
+}
+function refreshHub() { if (view === "working") return; if (result) hubDone(); else hubRest(); }
+function clearResult() { result = null; hideFiled(); if (view !== "working") view = "rest"; }
+function cycleKind(step = 1) {
+  if (view === "working") return;
+  if (outId === "template") { say("This fills your own template. Slide right to pick a different output."); return; }
+  formId = FORM_ORDER[(FORM_ORDER.indexOf(formId) + step + FORM_ORDER.length) % FORM_ORDER.length];
+  store.set("scoopi.form", formId);
+  clearResult(); kindFlip = true; hubRest(); renderTray();
+  say(`Now making: ${TEMPLATES[formId].name}.`, 4000);
+}
+function tapHub() {
+  if (view === "working") return;
+  if (openSide !== "none") { setOpen("none"); return; }   // a tap first folds the options away
+  if (view === "done") { if (result?.copy != null) copyResult(); else save(); return; }
+  if (!inputs.length) { setOpen("left"); say("Add something first. Pick a way to bring it in."); return; }
+  run();
+}
+
+// Press the centre and slide: left opens the ways to add things, right opens the outputs.
+let gest = null;
+hub.addEventListener("pointerdown", e => {
+  if (e.button !== 0 || view === "working" || e.target.closest("button, .result")) return;
+  gest = { x: e.clientX, y: e.clientY, moved: false, side: null, p: 0, onKind: !!e.target.closest(".kind") };
+  hub.setPointerCapture(e.pointerId);
+});
+hub.addEventListener("pointermove", e => {
+  if (!gest) return;
+  const dx = e.clientX - gest.x, dy = e.clientY - gest.y, dist = Math.hypot(dx, dy);
+  if (!gest.moved && dist < 8) return;
+  gest.moved = true;
+  const rr = ring.getBoundingClientRect();
+  const hotSide = () => segHit(e.clientX, e.clientY, gest.side === "left" ? "in" : "out");
+  if (gest.latched) {
+    // Once a half is fully open it stays open while you move around it to pick.
+    // Only coming back to the middle of the centre lets you choose a side again.
+    const fromMiddle = Math.hypot(e.clientX - (rr.left + rr.width / 2), e.clientY - (rr.top + rr.height / 2));
+    if (fromMiddle > rr.width * 0.08) { setHot(hotSide()); return; }
+    gest.latched = false; gest.x = e.clientX; gest.y = e.clientY;
+    setHot(-1); setProgress(0, 0); ring.classList.add("scrub");
+    return;
+  }
+  if (!gest.side || Math.abs(dx) >= 6) gest.side = dx < 0 ? "left" : "right";
+  const p = Math.max(0, Math.min(1, (dist - 6) / (rr.width * 0.16)));
+  gest.p = p;
+  if (p >= 1) {
+    gest.latched = true;
+    openSide = gest.side; ring.classList.remove("scrub"); applyOpen();
+  } else {
+    ring.classList.add("scrub");
+    setProgress(gest.side === "left" ? p : 0, gest.side === "right" ? p : 0);
+  }
+  setHot(p > 0.35 ? hotSide() : -1);
+});
+hub.addEventListener("pointerup", () => {
+  if (!gest) return;
+  const g = gest; gest = null;
+  if (!g.moved) { if (g.onKind && view === "rest") cycleKind(); else tapHub(); return; }
+  const i = hotIdx; setHot(-1);
+  setOpen(i >= 0 || g.latched || g.p > 0.45 ? g.side : "none");
+  if (i >= 0) pressSeg(i);
+});
+hub.addEventListener("pointercancel", () => { gest = null; setHot(-1); setOpen(openSide); });
+hub.addEventListener("keydown", e => {
+  if (e.target !== hub) return;
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tapHub(); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); setOpen("left"); focusSeg("in"); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); setOpen("right"); focusSeg("out"); }
+  else if (e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); cycleKind(e.key === "ArrowDown" ? 1 : -1); }
+  else if (e.key === "Escape") setOpen("none");
+});
+function focusSeg(side) {
+  const i = side === "out" ? segList.findIndex(x => x.key === outId) : segList.findIndex(x => x.side === "in");
+  setTimeout(() => document.querySelector(`#ringSvg .seg[data-seg="${i}"]`)?.focus(), 30);
+}
+document.addEventListener("pointerdown", e => { if (openSide !== "none" && !ring.contains(e.target)) setOpen("none"); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && openSide !== "none") { setOpen("none"); hub.focus(); } });
+
+/* ---------- getting the result out ---------- */
+function wirePullOut(card) {
+  let p = null;
+  card.addEventListener("pointerdown", e => { if (e.button !== 0) return; e.stopPropagation(); p = { x: e.clientX, y: e.clientY, moved: false, ghost: null }; card.setPointerCapture(e.pointerId); });
+  card.addEventListener("pointermove", e => {
+    if (!p) return;
+    if (!p.moved && Math.hypot(e.clientX - p.x, e.clientY - p.y) < 6) return;
+    if (!p.moved) { p.moved = true; p.ghost = h("div", { class: "ghost", text: extOf(result.name).toUpperCase() }); document.body.append(p.ghost); card.style.opacity = ".35"; }
+    p.ghost.style.transform = `translate(${e.clientX - 27}px, ${e.clientY - 40}px)`;
+  });
+  card.addEventListener("pointerup", e => {
+    if (!p) return;
+    const q = p; p = null; card.style.opacity = "";
+    if (!q.moved) { save(); return; }
+    const dx = e.clientX - q.x, dy = e.clientY - q.y, d = Math.hypot(dx, dy) || 1;
+    if (d > 40) {
+      q.ghost.classList.add("fly");
+      q.ghost.style.transform = `translate(${e.clientX - 27 + dx / d * 140}px, ${e.clientY - 40 + dy / d * 140}px) scale(.6) rotate(${dx > 0 ? 10 : -10}deg)`;
+      setTimeout(() => q.ghost.remove(), 480);
+      save();
+    } else q.ghost?.remove();
+  });
+  card.addEventListener("pointercancel", () => { p?.ghost?.remove(); p = null; card.style.opacity = ""; });
+  card.addEventListener("click", e => { if (e.detail === 0) save(); });
+}
+async function save() {
+  if (!result || result.copy != null) return;
+  const dl = await downloadsP;
+  if (!dl) { hubMessage("Saving works when this page is open in Claude.", "bad"); return; }
+  try { await dl.save({ filename: result.name, data: result.blob }); hubMessage(`Saved ${result.name}`, "ok", 3500); }
+  catch (e) {
+    if (e?.code === "declined") return;
+    hubMessage(e?.code === "rate_limited" ? "A save is already waiting. Finish that one first." : "That file couldn't be saved here.", "bad");
+  }
+}
+async function copyResult() {
+  try { await navigator.clipboard.writeText(result.copy); hubMessage("Copied. Click into your sheet and paste.", "ok", 4500); }
+  catch { const box = $("#copyBox"); box.value = result.copy; $("#copySheet").hidden = false; box.focus(); box.select(); }
+}
+$("#copyClose").addEventListener("click", () => { $("#copySheet").hidden = true; });
+
+/* ---------- making the file ---------- */
+function errCopy(e) {
+  switch (e?.code) {
+    case "not_granted": case "sampling_disabled": case "not_declared": case "capability_disabled": case "capability_removed":
+      return "Claude isn't allowed to read files from this page.";
+    case "rate_limited": return "Too many requests. Wait a minute and try again.";
+    case "session_expired": return "Sign in to Claude again, then try once more.";
+    case "image_rejected": return "An image couldn't be read. Try a JPEG or PNG.";
+    case "images_unavailable": return "Images can't be sent from here. PDFs with text still work.";
+    case "prompt_too_large": return "Too much in one go. Remove a few things.";
+    case "invalid_json": return "The answer didn't come back as a form. Try again.";
+    case "refused": return "Claude wouldn't read these files.";
+    case "empty_completion": return "Nothing came back. Try fewer things.";
+    default: return e?.message && !e.code ? e.message : "Something went wrong. Try again.";
+  }
+}
+function tableText(t, rec) {
+  return buildAOA(t, rec).aoa.map(r => r.map(v => String(v ?? "").replace(/[\t\n\r]+/g, " ")).join("\t")).join("\n");
+}
+async function run() {
+  if (view === "working") return;
+  if (!inputs.length) { say("Add something first: a photo, a screen grab or a file."); return; }
+  if (outId === "template" && !savedTemplate()) { say("Upload your template first."); $("#tplPick").click(); return; }
+  const sample = await sampleP;
+  if (!sample) { hubMessage("Reading needs this page open in Claude.", "bad", 6000); return; }
+  setOpen("none");
+  busyCtl = new AbortController();
+  result = null; hideFiled();
+  ring.classList.add("working");
+  hubWorking(`Reading ${inputs.length} item${inputs.length === 1 ? "" : "s"}`);
+  try {
+    if (!caps) caps = await sample.limits().catch(() => null);
+    const maxImg = caps?.images?.maxCount || 0;
+    const { docs, images, left } = await gatherDocs(inputs.slice(), maxImg);
+    if (outId === "template") {
+      const file = templateFile();
+      result = extOf(file.name) === "pdf" || file.type === "application/pdf"
+        ? await fillPdf(sample, file, docs, images, maxImg, busyCtl.signal)
+        : await fillSheet(sample, file, docs, images, busyCtl.signal);
+    } else {
+      const t = TEMPLATES[formId];
+      const opts = { signal: busyCtl.signal };
+      if (images.length) opts.images = images;
+      const rec = toRecord(t, await sample.json(buildReadPrompt(t, docs), opts));
+      if (!hasData(rec)) throw new Error(`Nothing for a ${t.name.toLowerCase()} in those.`);
+      const summary = summaryOf(t, rec);
+      if (outId === "xlsx" || outId === "csv") result = { ...sheetFile(t, rec, outId), summary };
+      else if (outId === "pdf") result = { name: `${t.name} ${isoToday()}.pdf`, blob: await pdfReport(t, rec), summary };
+      else result = { copy: tableText(t, rec), summary };
+    }
+    view = "rest";
+    ring.classList.remove("working");
+    hubDone(); burst(); created();
+    if (left) say(`Only ${maxImg} pages and images fit in one go; the rest weren't read.`);
+    else say(result.copy != null ? "Press Copy, then click into your sheet and paste." : `${result.name} is next to the dial. Drag it out or click it to save.`);
+  } catch (e) {
+    view = "rest"; result = null; hideFiled();
+    if (e?.code === "cancelled") hubMessage("Stopped.", "", 2500);
+    else hubMessage(errCopy(e), "bad", 7000);
+  } finally { busyCtl = null; ring.classList.remove("working"); }
+}
+
+/* ---------- the tray ---------- */
+const seen = new Set();
+function formChip() {
+  let chip;
+  if (outId === "template") chip = h("button", { class: "formchip", type: "button", disabled: true, text: savedTemplate() ? "Your template" : "No template yet" });
+  else chip = h("button", { class: "formchip" + (chipFlip ? " flip" : ""), type: "button", text: TEMPLATES[formId].name, "aria-label": `Form: ${TEMPLATES[formId].name}. Press to change.`, onclick: () => {
+    formId = FORM_ORDER[(FORM_ORDER.indexOf(formId) + 1) % FORM_ORDER.length];
+    store.set("scoopi.form", formId); clearResult(); chipFlip = true; renderTray(); refreshHub();
+    $("#tray .formchip")?.focus();
+  } });
+  chipFlip = false;
+  return chip;
+}
+function renderTray() {
+  const tray = $("#tray");
+  if (!inputs.length) { tray.replaceChildren(h("span", { class: "empty", text: "Nothing added yet" })); return; }
+  let newCount = 0;
+  const thumbs = h("div", { class: "thumbs", "aria-label": "Added" }, inputs.map(f => h("div", { class: "tin" + (seen.has(f.id) ? "" : " new"), style: seen.has(f.id) ? null : `animation-delay:${(newCount++) * 60}ms`, title: f.error ? `${f.name}: ${f.error}` : f.name },
+    f.thumb ? h("img", { src: f.thumb, alt: f.name }) : h("span", { class: "ph", text: f.kind === "pdf" ? "PDF" : f.kind === "sheet" ? "XLS" : "TXT" }),
+    h("button", { type: "button", "aria-label": "Remove " + f.name, text: "×", onclick: () => removeInput(f.id) }))));
+  inputs.forEach(f => seen.add(f.id));
+  tray.replaceChildren(...[thumbs,
+    example ? h("span", { class: "ex", text: "Example" }) : null,
+    h("button", { class: "lnk", type: "button", text: "Clear", onclick: () => { clearInputs(); clearResult(); renderTray(); hubRest(); } })].filter(Boolean));
+}
+
+/* ---------- pressing a slice ---------- */
+const GRAB_HINT = "Mac: press Ctrl-Shift-Cmd-4, drag over what you want, then ⌘V here. Grab as many as you like. Windows: Win-Shift-S, then Ctrl-V.";
+function pressSeg(i) {
+  const sg = segList[i]; if (!sg) return;
+  if (view === "working") { say("Still working. Press Stop to cancel."); return; }
+  if (sg.side === "in") {
+    if (sg.key === "photo") $("#photoPick").click();
+    else if (sg.key === "files") $("#filePick").click();
+    else say(GRAB_HINT, 16000);
+    setTimeout(() => setOpen("none"), 280);
+    return;
+  }
+  if (sg.key === "template" && (outId === "template" || !savedTemplate())) { $("#tplPick").click(); setTimeout(() => setOpen("none"), 280); return; }
+  setOut(sg.key);
+  setTimeout(() => { setOpen("none"); hub.focus({ preventScroll: true }); }, 650);
+}
+$("#ringSvg").addEventListener("click", e => { const g = e.target.closest(".seg"); if (g) pressSeg(Number(g.dataset.seg)); });
+$("#ringSvg").addEventListener("keydown", e => {
+  const g = e.target.closest(".seg"); if (!g) return;
+  const i = Number(g.dataset.seg), side = segList[i].side;
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pressSeg(i); }
+  else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+    e.preventDefault();
+    const same = segList.map((x, k) => k).filter(k => segList[k].side === side);
+    const pos = same.indexOf(i), step = (e.key === "ArrowDown") === (side === "out") ? 1 : -1;
+    document.querySelector(`#ringSvg .seg[data-seg="${same[(pos + step + same.length) % same.length]}"]`)?.focus();
+  }
+});
+
+/* ---------- dropping files in ---------- */
+let depth = 0, dropTip = "", openBefore = "none";
+function dragHub(i) {
+  const tip = i >= 0 && segList[i].key === "template" ? "Drop to use as your template" : "Drop to add";
+  if (tip === dropTip) return;
+  dropTip = tip;
+  hub.replaceChildren(h("div", { class: "msg", text: tip }));
+}
+window.addEventListener("dragenter", e => {
+  if (!hasType(e, "Files")) return;
+  e.preventDefault();
+  if (++depth === 1) { openBefore = openSide; ring.classList.add("awake"); setOpen("both"); if (view !== "working") dragHub(-1); }
+});
+window.addEventListener("dragleave", e => { if (!hasType(e, "Files")) return; depth = Math.max(0, depth - 1); if (!depth) endDrag(openBefore); });
+window.addEventListener("dragover", e => {
+  if (!hasType(e, "Files")) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = "copy";
+  const i = segHit(e.clientX, e.clientY);
+  setHot(i); if (view !== "working") dragHub(i);
+});
+function endDrag(side) { depth = 0; dropTip = ""; setHot(-1); ring.classList.remove("awake"); setOpen(side); refreshHub(); }
+window.addEventListener("drop", e => {
+  if (!hasType(e, "Files")) return;
+  e.preventDefault();
+  const i = segHit(e.clientX, e.clientY);
+  const list = [...e.dataTransfer.files];
+  endDrag("none");
+  if (!list.length) return;
+  if (view === "working") { say("Still working. Drop them again when it's done."); return; }
+  if (i >= 0 && segList[i].key === "template") { setTemplate(list[0]); return; }
+  const n = addInputs(list);
+  if (n) say(`Added ${n}. Tap the centre to make the file.`);
+});
+
+/* ---------- paste screen grabs ---------- */
+document.addEventListener("paste", e => {
+  const t = e.target;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+  if (view === "working") return;
+  const imgs = [...(e.clipboardData?.files || [])].filter(f => f.type.startsWith("image/") || f.type === "application/pdf");
+  if (imgs.length) {
+    e.preventDefault();
+    const stamp = new Date().toTimeString().slice(0, 8).replace(/:/g, ".");
+    addInputs(imgs.map((f, i) => new File([f], f.type.startsWith("image/") ? `Screen grab ${stamp}${imgs.length > 1 ? "-" + (i + 1) : ""}.png` : (f.name || "Pasted.pdf"), { type: f.type })));
+    say(`Screen grab added (${inputs.length} in). Grab another, or tap the centre to make the file.`);
+    return;
+  }
+  const text = e.clipboardData?.getData("text/plain");
+  if (text && text.trim()) { e.preventDefault(); addInputs([new File([text], "Pasted text.txt", { type: "text/plain" })]); say("Text added. Tap the centre to make the file."); }
+});
+
+/* ---------- hints ---------- */
+const DEFAULT_HINT = "Slide the centre left to add things, right to pick a file type. Tap the name to change what it makes, tap the button to make it.";
+let sayTimer = null;
+function say(text, ms = 7000) {
+  $("#pillText").textContent = text;
+  clearTimeout(sayTimer);
+  sayTimer = setTimeout(() => { $("#pillText").textContent = DEFAULT_HINT; }, ms);
+}
+$("#filePick").addEventListener("change", e => { const fs = [...e.target.files]; e.target.value = ""; if (fs.length) { const n = addInputs(fs); if (n) say(`Added ${n}. Tap the centre to make the file.`); } });
+$("#photoPick").addEventListener("change", e => { const fs = [...e.target.files]; e.target.value = ""; if (fs.length) { addInputs(fs); say("Photo added. Tap the centre to make the file."); } });
+$("#tplPick").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if (f) setTemplate(f); });
+
+/* ---------- start ---------- */
+seedExample();
+drawRing();
+renderTray();
+hubRest();
+$("#pillText").textContent = DEFAULT_HINT;
+setTimeout(() => ring.classList.remove("intro"), 1000);
+// A one-off peek so the halves show they're there, then they fold away again.
+if (!calm()) {
+  setTimeout(() => { if (openSide === "none" && !gest) setProgress(0.3, 0.3); }, 1100);
+  setTimeout(() => { if (openSide === "none" && !gest) setProgress(0, 0); }, 1900);
+}
+if (document.fonts?.ready) document.fonts.ready.then(() => {
+  inputs.forEach((f, i) => { if (f.example) { f.thumb = drawReceipt(EXAMPLE[i], i + 1); f.blob = dataUrlBlob(f.thumb); } });
+  renderTray();
+});
+})();
+</script>
+
+</body>
+</html>
