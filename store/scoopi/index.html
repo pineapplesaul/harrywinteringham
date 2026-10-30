@@ -285,7 +285,7 @@
     try {
       const res = await fetch(cfg.supabaseUrl + "/rest/v1/waitlist", {
         method: "POST",
-        headers: { apikey: cfg.anonKey, authorization: "Bearer " + cfg.anonKey, "content-type": "application/json", prefer: "return=minimal" },
+        headers: { apikey: cfg.anonKey, "content-type": "application/json", prefer: "return=minimal" },
         body: JSON.stringify({ email, platform: "windows" }),
       });
       // 409 means that email is already on the list, which is fine.
