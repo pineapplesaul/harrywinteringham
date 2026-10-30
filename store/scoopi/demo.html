@@ -48,7 +48,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none !important}
-html,body{height:100%}
+html,body{height:100%;overscroll-behavior:none}
 body{
   margin:0;
   background-color:var(--wall-a);
@@ -1280,6 +1280,20 @@ hub.addEventListener("keydown", e => {
   else if (e.key === "ArrowUp" || e.key === "ArrowDown") { e.preventDefault(); cycleKind(e.key === "ArrowDown" ? 1 : -1); }
   else if (e.key === "Escape") setOpen("none");
 });
+
+/* ---------- a two-finger swipe slides the dial, rather than the browser going back a page ---------- */
+let swipe = 0, swipeDone = false, swipeQuiet;
+window.addEventListener("wheel", e => {
+  if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+  e.preventDefault();
+  clearTimeout(swipeQuiet);
+  swipeQuiet = setTimeout(() => { swipe = 0; swipeDone = false; }, 250);
+  if (swipeDone || view === "working") return;
+  swipe += e.deltaX;
+  // Fingers moving left open the left side, as dragging the centre left does; the other way closes it, then opens the right.
+  if (swipe > 40) { setOpen(openSide === "right" ? "none" : "left"); swipeDone = true; }
+  else if (swipe < -40) { setOpen(openSide === "left" ? "none" : "right"); swipeDone = true; }
+}, { passive: false });
 function focusSeg(side) {
   const i = side === "out" ? segList.findIndex(x => x.key === outId) : segList.findIndex(x => x.side === "in");
   setTimeout(() => document.querySelector(`#ringSvg .seg[data-seg="${i}"]`)?.focus(), 30);

@@ -1,8 +1,8 @@
-// Fill these in from the Supabase project (Settings → API). The anon key is public by design.
+// The Supabase project (Settings → API Keys). The publishable key is public by design.
 // Keep the prices in step with the PRICE_* and CREDITS_* secrets on the server (see LAUNCH.md).
 window.SCOOPI = {
-  supabaseUrl: "https://YOUR-PROJECT.supabase.co",
-  anonKey: "YOUR-SUPABASE-ANON-KEY",
+  supabaseUrl: "https://jzhxfzqnntlduzmvomob.supabase.co",
+  anonKey: "sb_publishable_RJjOCac66qNmfvstBHwTpQ_zETKQ2g1",
   prices: { scoopi: "£19", scoopiScans: 300, topup: "£5", topupScans: 100, free: 10 },
 };
 
