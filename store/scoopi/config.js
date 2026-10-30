@@ -3,7 +3,7 @@
 window.SCOOPI = {
   supabaseUrl: "https://YOUR-PROJECT.supabase.co",
   anonKey: "YOUR-SUPABASE-ANON-KEY",
-  prices: { scoopi: "£15", scoopiScans: 300, topup: "£5", topupScans: 200, free: 10 },
+  prices: { scoopi: "£19", scoopiScans: 300, topup: "£5", topupScans: 100, free: 10 },
 };
 
 // Fills in any [data-price] on the page, so prices live in one place.
