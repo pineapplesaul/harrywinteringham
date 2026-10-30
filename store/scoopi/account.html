@@ -48,7 +48,7 @@
       for (const kid of kids) if (kid != null) n.append(kid);
       return n;
     };
-    const show = (...kids) => panel.replaceChildren(...kids);
+    const show = (...kids) => panel.replaceChildren(...kids.filter((k) => k != null));
     const note = (text, bad) => el("div", { class: "msg" + (bad ? " bad" : "") }, text);
 
     if (!window.supabase || cfg.anonKey.startsWith("YOUR-")) {
@@ -56,6 +56,17 @@
       return;
     }
     const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.anonKey);
+
+    // Cloudflare Turnstile, the "not a robot" check, once its site key is in config.js.
+    function loadCaptcha() {
+      if (window.turnstile) return Promise.resolve(window.turnstile);
+      return new Promise((resolve) => {
+        const script = el("script", { src: "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" });
+        script.onload = () => resolve(window.turnstile || null);
+        script.onerror = () => resolve(null);
+        document.head.append(script);
+      });
+    }
 
     // Messages from the server come back as { error: { message } }.
     async function call(fn, body) {
@@ -78,11 +89,22 @@
       const input = el("input", { type: "email", required: "", autocomplete: "email", placeholder: "you@example.com", "aria-label": "Email" });
       const button = el("button", { class: "btn btn-primary", type: "submit" }, "Email me a link");
       const form = el("form", { class: "field" }, input, button);
+      const check = cfg.captchaSiteKey ? el("div", { class: "captcha" }) : null;
+      let token = "";
+      if (check) {
+        loadCaptcha().then((turnstile) => {
+          if (!turnstile) { check.replaceChildren(note("The robot check didn't load. Reload the page to try again.", true)); return; }
+          turnstile.render(check, { sitekey: cfg.captchaSiteKey, callback: (t) => { token = t; }, "expired-callback": () => { token = ""; } });
+        });
+      }
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+        if (check && !token) { if (!check.querySelector(".msg")) check.prepend(note("One moment: finish the robot check below first.")); return; }
         button.disabled = true;
         const redirect = new URL("account.html" + (fromApp ? "?app=1" : ""), location.href).href;
-        const { error } = await sb.auth.signInWithOtp({ email: input.value.trim(), options: { emailRedirectTo: redirect } });
+        const options = { emailRedirectTo: redirect };
+        if (token) options.captchaToken = token;
+        const { error } = await sb.auth.signInWithOtp({ email: input.value.trim(), options });
         if (error) { signedOut(error.message); return; }
         show(el("h1", {}, "Check your email"), el("p", {}, "We've sent a sign-in link to " + input.value.trim() + ". Open it on this computer."));
       });
@@ -91,6 +113,7 @@
         el("h1", {}, fromApp ? "Sign in to Scoopi" : "Get Scoopi"),
         el("p", {}, "Enter your email and we'll send you a link. No password needed. New accounts get " + prices.free + " free scans."),
         form,
+        check,
       );
     }
 

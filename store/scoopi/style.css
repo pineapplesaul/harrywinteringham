@@ -188,6 +188,7 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
 .field { display: flex; gap: 10px; flex-wrap: wrap; }
 .field input { flex: 1 1 220px; min-height: 50px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); padding: 0 16px; font: inherit; }
 .field input:focus { border-color: var(--indigo); outline: none; }
+.captcha { margin-top: 14px; min-height: 65px; }
 .balance { display: flex; align-items: baseline; gap: 10px; margin: 6px 0 20px; }
 .balance strong { font-size: 44px; letter-spacing: -.03em; line-height: 1; }
 .stack { display: grid; gap: 12px; margin-top: 8px; }
