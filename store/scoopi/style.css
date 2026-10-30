@@ -51,9 +51,9 @@ a { color: inherit; text-decoration-color: var(--indigo); text-decoration-thickn
 /* Header */
 .top { border-bottom: 1px solid var(--line); }
 .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-.brand { display: inline-flex; align-items: center; gap: .27em; font-weight: 700; font-size: 22px; letter-spacing: -.02em; text-decoration: none; }
-/* The S stands 1.3 times the capital height, as in brand/scoopi-logo-black.svg. */
-.brand .logo { height: .91em; width: auto; fill: currentColor; margin-top: -.06em; }
+.brand { display: inline-flex; align-items: center; gap: .26em; font-weight: 700; font-size: 22px; letter-spacing: -.02em; text-decoration: none; }
+/* The dial stands 1.25 times the capital height, as in brand/scoopi-logo-black.svg. */
+.brand .logo { height: .875em; width: auto; fill: currentColor; margin-top: -.06em; }
 .links { display: flex; align-items: center; gap: 24px; font-weight: 500; font-size: 15px; }
 .links a { text-decoration: none; }
 .links a:hover { text-decoration: underline; }
