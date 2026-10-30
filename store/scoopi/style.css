@@ -145,46 +145,9 @@ a { color: inherit; text-decoration-color: var(--indigo); text-decoration-thickn
 .tap.on { opacity: 1; }
 .tap.down { --s: .75; transition-duration: .12s; }
 
-/* UI fragment: an iPhone scanning receipts into Scoopi. Twelve seconds: three scans, three seconds apart, then a pause. */
-.phonescan { --scan: #7B7EF0; display: flex; align-items: center; gap: 28px; }
-.phone { width: 150px; height: 300px; border-radius: 30px; background: #1D1B20; padding: 8px; box-shadow: var(--product-shadow); flex: none; }
-.phone .screen { position: relative; height: 100%; border-radius: 23px; overflow: hidden; background: radial-gradient(120% 80% at 30% 20%, #8A6A4E, #4E3A2A); }
-.paper { position: absolute; left: 16%; top: 14%; width: 68%; height: 58%; background: #FBFAF6; border-radius: 3px; padding: 10px 9px; display: flex; flex-direction: column; gap: 6px; color: #2B2820; font: 700 8px/1.2 "DM Sans", sans-serif; letter-spacing: .04em; opacity: 0; }
-.paper b { text-align: center; margin-bottom: 4px; }
-.paper i { display: block; height: 4px; border-radius: 2px; background: #CFC9BE; }
-.paper i:nth-of-type(2) { width: 70%; }
-.paper em { margin-top: auto; font-style: normal; text-align: right; font-size: 10px; }
-.paper.p1 { opacity: 1; box-shadow: 0 0 0 3px var(--scan); }
-.flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
-.shutter { position: absolute; left: 50%; bottom: 14px; width: 36px; height: 36px; margin-left: -18px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, .45); }
-.arrive { display: grid; gap: 8px; justify-items: center; }
-.arrive .tray { display: flex; gap: 6px; padding: 8px 10px; border-radius: 14px; background: #FFF8F2; box-shadow: 0 10px 26px rgba(0, 0, 0, .14); min-width: 112px; min-height: 52px; }
-.arrive .t { width: 26px; height: 36px; border-radius: 3px; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .2); padding: 6px 4px; display: grid; gap: 3px; align-content: start; }
-.arrive .t i { display: block; height: 2px; border-radius: 1px; background: #CFC9BE; }
-.arrive .label { font-size: 13px; font-weight: 600; color: var(--ink-muted); }
-@media (prefers-reduced-motion: no-preference) {
-  .paper { animation: shoot 12s ease-in-out infinite both; }
-  .paper.p2 { animation-delay: -9s; }
-  .paper.p3 { animation-delay: -6s; }
-  .flash { animation: flash 12s linear infinite; }
-  .shutter { animation: press 12s ease-out infinite; }
-  .arrive .t1 { animation: land1 12s cubic-bezier(.3, 1.3, .5, 1) infinite both; }
-  .arrive .t2 { animation: land2 12s cubic-bezier(.3, 1.3, .5, 1) infinite both; }
-  .arrive .t3 { animation: land3 12s cubic-bezier(.3, 1.3, .5, 1) infinite both; }
-}
-/* In the viewfinder at an angle, outlined and flattened, the flash, then away into the tray. */
-@keyframes shoot {
-  0% { opacity: 0; transform: translate(-8px, 12px) rotate(-9deg) scale(.86); box-shadow: 0 0 0 0 transparent; }
-  2% { opacity: 1; }
-  9% { transform: translate(-8px, 12px) rotate(-9deg) scale(.86); box-shadow: 0 0 0 0 transparent; }
-  12.5%, 15% { opacity: 1; transform: none; box-shadow: 0 0 0 3px var(--scan); }
-  20%, 100% { opacity: 0; transform: translateX(110%) scale(.45); box-shadow: 0 0 0 3px var(--scan); }
-}
-@keyframes flash { 0%, 12.5%, 16.5%, 37.5%, 41.5%, 62.5%, 66.5%, 100% { opacity: 0; } 14.2%, 39.2%, 64.2% { opacity: .85; } }
-@keyframes press { 0%, 12.5%, 16%, 37.5%, 41%, 62.5%, 66%, 100% { transform: none; } 14.2%, 39.2%, 64.2% { transform: scale(.86); } }
-@keyframes land1 { 0%, 19% { opacity: 0; transform: translateX(-40px) scale(.6); } 23%, 95% { opacity: 1; transform: none; } 100% { opacity: 0; } }
-@keyframes land2 { 0%, 44% { opacity: 0; transform: translateX(-40px) scale(.6); } 48%, 95% { opacity: 1; transform: none; } 100% { opacity: 0; } }
-@keyframes land3 { 0%, 69% { opacity: 0; transform: translateX(-40px) scale(.6); } 73%, 95% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+/* A card with no picture yet: the words take the full width. */
+.card.solo { grid-template-columns: 1fr; }
+.card.solo p { max-width: 640px; }
 
 /* Windows waitlist: the page's one dark band. */
 .windows { padding: 72px 0 0; }
@@ -255,8 +218,6 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
   .sheet th, .sheet td { padding: 6px 6px; }
   .sheet .hide-sm { display: none; }
   .card .shot:not(.clip) { padding: 12px; }
-  .phonescan { gap: 16px; }
-  .phone { width: 128px; height: 256px; border-radius: 26px; }
   .windows .band { padding: 28px 22px; }
 }
 @media (prefers-reduced-motion: reduce) {
