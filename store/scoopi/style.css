@@ -192,6 +192,25 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
 .rev figcaption { margin-top: 18px; color: var(--ink-muted); font-size: 14px; }
 .rev figcaption b { color: var(--ink); font-weight: 600; }
 
+/* Earwig, from the makers: a dark card with a marked-up shoot. */
+.earwig { padding: 72px 0 0; }
+.ew { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; background: var(--charcoal); color: #F2F2EF; border-radius: 28px; padding: 48px; }
+.ew-eyebrow { display: inline-block; font-size: 13px; font-weight: 600; color: #FFC9A6; margin-bottom: 12px; }
+.ew h2 { font-size: clamp(30px, 3.8vw, 42px); line-height: 1.05; letter-spacing: -.03em; margin: 0 0 14px; }
+.ew p { color: #B9B2A8; margin: 0 0 24px; max-width: 480px; }
+.ew-shot { background: #232024; border-radius: 20px; padding: 22px; box-shadow: 0 24px 60px rgba(0, 0, 0, .35); }
+.ew-take { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #B9B2A8; }
+.ew-rec { color: #FF6B5E; }
+.ew-line { position: relative; height: 34px; margin: 16px 0 18px; border-radius: 8px; background: repeating-linear-gradient(90deg, #3A353B 0 2px, transparent 2px 9px), #2B272C; }
+.ew-line i { position: absolute; top: -4px; bottom: -4px; width: 3px; border-radius: 2px; background: #F58A42; box-shadow: 0 0 0 3px rgba(245, 138, 66, .2); }
+.ew-line i.b, .ew-marks .dot.b { background: #9AA8FF; }
+.ew-line i.c, .ew-marks .dot.c { background: #5CC892; }
+.ew-marks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 15px; }
+.ew-marks li { display: flex; align-items: center; gap: 10px; background: #2B272C; border-radius: 12px; padding: 10px 14px; }
+.ew-marks b { font-variant-numeric: tabular-nums; font-weight: 600; color: #F2F2EF; }
+.ew-marks .dot { width: 9px; height: 9px; border-radius: 50%; background: #F58A42; flex: none; }
+@media (max-width: 900px) { .ew { grid-template-columns: 1fr; padding: 28px; gap: 28px; } }
+
 /* Account page: plain black on white (white on black in dark mode), no cards. */
 .acct { --paper: #FFFFFF; --raised: #FFFFFF; --ink: #0A0A0A; --ink-muted: #6E6E73; --line: #E6E6E6; --indigo: #0A0A0A; --on-indigo: #FFFFFF; --coral: #D70015; }
 @media (prefers-color-scheme: dark) {
