@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scan for Scoopi</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
+  <style>
+    .panel { margin-top: 40px; }
+    .take { width: 100%; min-height: 64px; font-size: 18px; }
+    .pick { display: block; margin: 16px auto 0; }
+    .sent { list-style: none; padding: 0; margin: 28px 0 0; }
+    .sent li { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+    .sent .ok { color: var(--ink-muted); }
+    .sent .bad { color: var(--coral); }
+    input[type=file] { display: none; }
+  </style>
+</head>
+<body class="acct">
+  <main class="wrap">
+    <div class="panel" id="panel" aria-live="polite"></div>
+  </main>
+  <script>
+  // Opened from the QR code in Scoopi: each photo taken here goes to the Mac's tray. The link (after #) says whose.
+  (() => {
+    const cfg = window.SCOOPI, token = location.hash.slice(1), panel = document.getElementById("panel");
+    const el = (tag, attrs = {}, ...kids) => {
+      const n = document.createElement(tag);
+      for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+      for (const kid of kids) if (kid != null) n.append(kid);
+      return n;
+    };
+    if (!/^[\w-]+\.[0-9a-f]{32}\.\d+\.[0-9a-f]+$/.test(token)) {
+      panel.replaceChildren(el("h1", {}, "Scan for Scoopi"), el("p", {}, "Open this page by scanning the code in Scoopi on your Mac: Photo, then Scan with your phone."));
+      return;
+    }
+    const camera = el("input", { type: "file", accept: "image/*", capture: "environment" });
+    const library = el("input", { type: "file", accept: "image/*", multiple: "" });
+    const take = el("button", { class: "btn btn-primary take", type: "button" }, "Take a photo");
+    const pick = el("button", { class: "linkish pick", type: "button" }, "Or choose from your photos");
+    const sent = el("ul", { class: "sent" });
+    take.addEventListener("click", () => camera.click());
+    pick.addEventListener("click", () => library.click());
+    let n = 0;
+    for (const input of [camera, library]) input.addEventListener("change", async () => {
+      const files = [...input.files]; input.value = "";
+      for (const f of files) await send(f);
+    });
+    panel.replaceChildren(
+      el("h1", {}, "Scan for Scoopi"),
+      el("p", {}, "Take a photo of each receipt, flat and in good light. Each one appears in Scoopi on your Mac in a few seconds."),
+      take, pick, camera, library, sent);
+
+    // Photos are shrunk to 2,200 pixels on the long side (plenty to read) before they're sent.
+    function shrink(file) {
+      return new Promise((resolve, reject) => {
+        const img = new Image(), url = URL.createObjectURL(file);
+        img.onload = () => {
+          const s = Math.min(1, 2200 / Math.max(img.naturalWidth, img.naturalHeight));
+          const c = el("canvas"); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          URL.revokeObjectURL(url);
+          c.toBlob((b) => b ? resolve(b) : reject(new Error("Couldn't read that photo")), "image/jpeg", 0.85);
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Couldn't read that photo")); };
+        img.src = url;
+      });
+    }
+
+    async function send(file) {
+      const label = "Photo " + (++n), row = el("li", {}, el("span", {}, label), el("span", { class: "ok" }, "Sending…"));
+      sent.prepend(row);
+      const state = row.lastChild;
+      try {
+        const res = await fetch(cfg.supabaseUrl + "/functions/v1/phone?action=upload&token=" + encodeURIComponent(token), {
+          method: "POST", headers: { apikey: cfg.anonKey, "content-type": "image/jpeg" }, body: await shrink(file),
+        });
+        if (!res.ok) throw new Error((await res.json().catch(() => null))?.error?.message || "Couldn't send it. Try again.");
+        state.textContent = "✓ Sent to Scoopi";
+      } catch (e) {
+        state.className = "bad"; state.textContent = e.message;
+      }
+    }
+  })();
+  </script>
+</body>
+</html>
