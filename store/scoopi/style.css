@@ -192,24 +192,28 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
 .rev figcaption { margin-top: 18px; color: var(--ink-muted); font-size: 14px; }
 .rev figcaption b { color: var(--ink); font-weight: 600; }
 
-/* Earwig, from the makers: a dark card with a marked-up shoot. */
-.earwig { padding: 72px 0 0; }
-.ew { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; background: var(--charcoal); color: #F2F2EF; border-radius: 28px; padding: 48px; }
-.ew-eyebrow { display: inline-block; font-size: 13px; font-weight: 600; color: #FFC9A6; margin-bottom: 12px; }
-.ew h2 { font-size: clamp(30px, 3.8vw, 42px); line-height: 1.05; letter-spacing: -.03em; margin: 0 0 14px; }
-.ew p { color: #B9B2A8; margin: 0 0 24px; max-width: 480px; }
-.ew-shot { background: #232024; border-radius: 20px; padding: 22px; box-shadow: 0 24px 60px rgba(0, 0, 0, .35); }
-.ew-take { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #B9B2A8; }
-.ew-rec { color: #FF6B5E; }
-.ew-line { position: relative; height: 34px; margin: 16px 0 18px; border-radius: 8px; background: repeating-linear-gradient(90deg, #3A353B 0 2px, transparent 2px 9px), #2B272C; }
-.ew-line i { position: absolute; top: -4px; bottom: -4px; width: 3px; border-radius: 2px; background: #F58A42; box-shadow: 0 0 0 3px rgba(245, 138, 66, .2); }
-.ew-line i.b, .ew-marks .dot.b { background: #9AA8FF; }
-.ew-line i.c, .ew-marks .dot.c { background: #5CC892; }
-.ew-marks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 15px; }
-.ew-marks li { display: flex; align-items: center; gap: 10px; background: #2B272C; border-radius: 12px; padding: 10px 14px; }
-.ew-marks b { font-variant-numeric: tabular-nums; font-weight: 600; color: #F2F2EF; }
-.ew-marks .dot { width: 9px; height: 9px; border-radius: 50%; background: #F58A42; flex: none; }
-@media (max-width: 900px) { .ew { grid-template-columns: 1fr; padding: 28px; gap: 28px; } }
+/* Earwig, from the makers: a small, glossy card that slides in from the corner as you scroll. */
+.ewpop { position: fixed; left: 20px; bottom: 20px; z-index: 30; width: min(330px, calc(100vw - 40px)); display: flex; align-items: center; gap: 12px;
+  padding: 12px 34px 12px 12px; border-radius: 18px; color: #FFF6EC; overflow: hidden;
+  background: linear-gradient(150deg, #241F5C 0%, #030027 55%, #0B0640 100%);
+  box-shadow: 0 18px 44px rgba(3, 0, 39, .45), inset 0 1px 0 rgba(255, 255, 255, .18), inset 0 0 0 1px rgba(255, 255, 255, .08);
+  transform: translateY(calc(100% + 40px)); opacity: 0; transition: transform .55s cubic-bezier(.2, 1.2, .3, 1), opacity .3s; }
+.ewpop.in { transform: none; opacity: 1; }
+.ewpop[hidden] { display: none; }
+.ewpop::after { content: ""; position: absolute; inset: 0; pointer-events: none; transform: translateX(-120%);
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .22) 50%, transparent 65%); }
+.ewpop.in::after { animation: ewshine 4.5s 1s ease-in-out infinite; }
+@keyframes ewshine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+.ewpop img { width: 44px; height: 44px; border-radius: 12px; flex: none; box-shadow: 0 6px 16px rgba(255, 92, 77, .45); animation: ewbob 3s ease-in-out infinite; }
+@keyframes ewbob { 50% { transform: translateY(-3px) rotate(-4deg); } }
+.ewpop-body { display: grid; gap: 1px; text-decoration: none; color: inherit; line-height: 1.3; }
+.ewpop-body b { font-size: 15px; }
+.ewpop-body span { font-size: 12.5px; font-weight: 600; color: #FF8A7E; }
+.ewpop-body small { font-size: 12.5px; color: #C9C3D9; margin-top: 2px; }
+.ewpop-body:hover small { color: #FFF6EC; }
+.ewpop button { position: absolute; top: 6px; right: 8px; width: 24px; height: 24px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #FFF6EC; font: 600 15px/1 inherit; cursor: pointer; }
+.ewpop button:hover { background: rgba(255, 255, 255, .2); }
+@media (max-width: 520px) { .ewpop { left: 12px; bottom: 12px; width: calc(100vw - 24px); } }
 
 /* Account page: plain black on white (white on black in dark mode), no cards. */
 .acct { --paper: #FFFFFF; --raised: #FFFFFF; --ink: #0A0A0A; --ink-muted: #6E6E73; --line: #E6E6E6; --indigo: #0A0A0A; --on-indigo: #FFFFFF; --coral: #D70015; }

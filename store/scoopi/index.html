@@ -177,27 +177,16 @@
         <p>Mac only for now. Windows is on its way: <a href="#windows">leave your email</a> and we'll tell you when. Your iPhone does the scanning, though: press Photo on the dial, pick your iPhone, and it opens its document scanner. The scans land straight in Scoopi.</p>
       </details>
     </section>
-    <!-- From the makers: Earwig, Earwig AI Ltd's app for marking shoots. -->
-    <section class="wrap earwig" id="earwig">
-      <div class="ew">
-        <div class="ew-copy">
-          <span class="ew-eyebrow">From the makers of Scoopi</span>
-          <h2>Earwig: your shoot marks itself.</h2>
-          <p>Tap to mark the good bits while you film. Earwig transcribes the shoot as it happens, summarises it, signposts every mark, and builds a rough cut from them.</p>
-          <a class="btn btn-cream" href="https://www.earwig.io">See Earwig</a>
-        </div>
-        <div class="ew-shot" role="img" aria-label="A shoot timeline with marks: a great take, a laugh, and a line to use, each with its timecode">
-          <div class="ew-take"><span>Take 4</span><span class="ew-rec">● REC</span></div>
-          <div class="ew-line"><i style="left:14%"></i><i class="b" style="left:41%"></i><i class="c" style="left:68%"></i><i style="left:86%"></i></div>
-          <ul class="ew-marks">
-            <li><span class="dot"></span><b>00:12:41</b> Great take</li>
-            <li><span class="dot b"></span><b>00:18:03</b> Laugh, keep it</li>
-            <li><span class="dot c"></span><b>00:24:57</b> “Use this line”</li>
-          </ul>
-        </div>
-      </div>
-    </section>
   </main>
+  <!-- Earwig, from the makers of Scoopi: a small card that slides in once you've scrolled past the top. -->
+  <aside class="ewpop" id="ewpop" aria-label="Earwig, from the makers of Scoopi" hidden>
+    <img src="assets/earwig.png" alt="" width="44" height="44">
+    <a class="ewpop-body" href="https://www.earwig.io">
+      <b>Earwig</b><span>The first agent for filmmakers</span>
+      <small>Marks selects while you film, so you find them in the edit →</small>
+    </a>
+    <button type="button" aria-label="Close">×</button>
+  </aside>
 
   <footer>
     <div class="wrap">
@@ -339,6 +328,21 @@
     const row = button.closest(".row");
     setOut(row, !row.classList.contains("out"));
   });
+
+  // The Earwig card slides in after the first screen, unless it's been closed before.
+  const ewpop = document.getElementById("ewpop");
+  let ewClosed = false;
+  try { ewClosed = localStorage.getItem("ewpop.closed") === "1"; } catch {}
+  if (ewpop && !ewClosed) {
+    ewpop.hidden = false;
+    const check = () => ewpop.classList.toggle("in", scrollY > innerHeight * 0.8);
+    addEventListener("scroll", check, { passive: true }); check();
+    ewpop.querySelector("button").addEventListener("click", () => {
+      ewpop.classList.remove("in");
+      setTimeout(() => { ewpop.hidden = true; }, 400);
+      try { localStorage.setItem("ewpop.closed", "1"); } catch {}
+    });
+  }
   </script>
 </body>
 </html>
