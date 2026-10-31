@@ -190,6 +190,7 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
 .reviews h2 { font-size: clamp(32px, 4.4vw, 44px); line-height: 1.05; letter-spacing: -.03em; margin: 0 0 24px; }
 .revs { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: thin; }
 .rev { flex: 0 0 min(440px, 86%); scroll-snap-align: start; margin: 0; background: var(--raised); border: 1px solid var(--line); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; justify-content: space-between; }
+.rev-stars { display: block; color: #F5A623; font-size: 18px; letter-spacing: 2px; margin-bottom: 12px; }
 .rev blockquote { margin: 0; font-size: 19px; line-height: 1.45; letter-spacing: -.01em; }
 .rev figcaption { margin-top: 18px; color: var(--ink-muted); font-size: 14px; }
 .rev figcaption b { color: var(--ink); font-weight: 600; }
