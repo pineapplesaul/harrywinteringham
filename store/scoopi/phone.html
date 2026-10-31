@@ -20,6 +20,12 @@
     .sent .ok { color: var(--ink-muted); }
     .sent .bad { color: var(--coral); }
     input[type=file] { display: none; }
+    .cam video { display: block; width: 100%; max-height: 62vh; object-fit: contain; border-radius: 16px; background: #000; }
+    .cam .bar { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+    .cam .count { width: 72px; font-size: 15px; color: var(--ink-muted); }
+    .cam .done { width: 72px; text-align: right; }
+    .shutter { width: 74px; height: 74px; border-radius: 50%; border: 4px solid var(--ink); background: var(--paper); box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 40px var(--ink); cursor: pointer; transition: transform .1s; }
+    .shutter:active { transform: scale(.9); }
   </style>
 </head>
 <body class="acct">
@@ -42,10 +48,38 @@
     }
     const camera = el("input", { type: "file", accept: "image/*", capture: "environment" });
     const library = el("input", { type: "file", accept: "image/*", multiple: "" });
-    const take = el("button", { class: "btn btn-primary take", type: "button" }, "Take a photo");
+    const take = el("button", { class: "btn btn-primary take", type: "button" }, "Open camera");
     const pick = el("button", { class: "linkish pick", type: "button" }, "Or choose from your photos");
     const sent = el("ul", { class: "sent" });
-    take.addEventListener("click", () => camera.click());
+    // A camera in the page stays open, so you can take one photo after another; without it, the phone's own camera.
+    const video = el("video", { playsinline: "", muted: "", autoplay: "" });
+    const shutter = el("button", { class: "shutter", type: "button", "aria-label": "Take a photo" });
+    const count = el("span", { class: "count" });
+    const done = el("button", { class: "linkish done", type: "button" }, "Done");
+    const cam = el("div", { class: "cam", hidden: "" }, video, el("div", { class: "bar" }, count, shutter, done));
+    let stream = null, shots = 0;
+    take.addEventListener("click", async () => {
+      if (!navigator.mediaDevices?.getUserMedia) { camera.click(); return; }
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: "environment" }, width: { ideal: 3840 }, height: { ideal: 2160 } } });
+        video.muted = true; video.srcObject = stream; await video.play();
+        take.hidden = pick.hidden = true; cam.hidden = false;
+      } catch { camera.click(); }
+    });
+    shutter.addEventListener("click", () => {
+      const w = video.videoWidth, h = video.videoHeight;
+      if (!w) return;
+      const s = Math.min(1, 2200 / Math.max(w, h)), c = el("canvas");
+      c.width = Math.round(w * s); c.height = Math.round(h * s);
+      c.getContext("2d").drawImage(video, 0, 0, c.width, c.height);
+      video.animate([{ opacity: 0.15 }, { opacity: 1 }], { duration: 260 });
+      count.textContent = ++shots + (shots === 1 ? " photo" : " photos");
+      c.toBlob((b) => b && send(b, true), "image/jpeg", 0.85);
+    });
+    done.addEventListener("click", () => {
+      stream?.getTracks().forEach((t) => t.stop()); stream = null;
+      cam.hidden = true; take.hidden = pick.hidden = false;
+    });
     pick.addEventListener("click", () => library.click());
     let n = 0;
     for (const input of [camera, library]) input.addEventListener("change", async () => {
@@ -54,8 +88,8 @@
     });
     panel.replaceChildren(
       el("h1", {}, "Scan for Scoopi"),
-      el("p", {}, "Take a photo of each receipt, flat and in good light. Each one appears in Scoopi on your Mac in a few seconds."),
-      take, pick, camera, library, sent);
+      el("p", {}, "Take a photo of each receipt, flat and in good light, one after another. Each one appears in Scoopi on your Mac in a few seconds."),
+      take, pick, cam, camera, library, sent);
 
     // Photos are shrunk to 2,200 pixels on the long side (plenty to read) before they're sent.
     function shrink(file) {
@@ -73,13 +107,13 @@
       });
     }
 
-    async function send(file) {
+    async function send(file, ready = false) {
       const label = "Photo " + (++n), row = el("li", {}, el("span", {}, label), el("span", { class: "ok" }, "Sending…"));
       sent.prepend(row);
       const state = row.lastChild;
       try {
         const res = await fetch(cfg.supabaseUrl + "/functions/v1/phone?action=upload&token=" + encodeURIComponent(token), {
-          method: "POST", headers: { apikey: cfg.anonKey, "content-type": "image/jpeg" }, body: await shrink(file),
+          method: "POST", headers: { apikey: cfg.anonKey, "content-type": "image/jpeg" }, body: ready ? file : await shrink(file),
         });
         if (!res.ok) throw new Error((await res.json().catch(() => null))?.error?.message || "Couldn't send it. Try again.");
         state.textContent = "✓ Sent to Scoopi";
