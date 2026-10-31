@@ -131,12 +131,16 @@
 
       const connect = el("a", { class: "btn btn-quiet", href: appLink(session) }, "Open Scoopi and sign it in");
 
-      const buy = acct.unlocked
-        ? el("button", { class: "btn btn-quiet" }, "Top up · " + prices.topup)
-        : el("button", { class: "btn btn-primary" }, "Get Scoopi · " + prices.scoopi);
-      buy.addEventListener("click", busy(buy, async () => {
-        location.href = (await call("checkout", { pack: acct.unlocked ? "topup" : "scoopi" })).url;
-      }));
+      // The packs: Starter unlocks Scoopi; Pro and Studio unlock it with more scans; top-ups once it's unlocked.
+      const n = (x) => Number(x).toLocaleString("en-GB");
+      const packs = (acct.unlocked
+        ? [["topup", "Top up", prices.topupScans, prices.topup], ["pro", "Pro", prices.proScans, prices.pro], ["studio", "Studio", prices.studioScans, prices.studio]]
+        : [["scoopi", "Starter", prices.scoopiScans, prices.scoopi], ["pro", "Pro", prices.proScans, prices.pro], ["studio", "Studio", prices.studioScans, prices.studio]]);
+      const packRows = packs.map(([pack, name, scans, price], i) => {
+        const b = el("button", { class: "btn " + (i === 0 ? "btn-primary" : "btn-quiet") }, name + " · " + price);
+        b.addEventListener("click", busy(b, async () => { location.href = (await call("checkout", { pack })).url; }));
+        return el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, name), el("div", { class: "why" }, n(scans) + (pack === "topup" ? " more scans" : " scans, one-off"))), b);
+      });
 
       const signOut = el("button", { class: "linkish" }, "Sign out");
       signOut.addEventListener("click", async () => { await sb.auth.signOut(); signedOut(); });
@@ -150,8 +154,7 @@
         el("div", { class: "stack" },
           el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, "The app"), el("div", { class: "why" }, "macOS 14 or later")), download),
           el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, "Already installed?"), el("div", { class: "why" }, "Signs the app in with this account")), connect),
-          el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, acct.unlocked ? "More scans" : "Unlock Scoopi"),
-            el("div", { class: "why" }, acct.unlocked ? prices.topupScans + " more scans" : "One-off, founder price")), buy),
+          ...packRows,
         ),
       );
       // Credits arrive once Stripe confirms the payment, usually within seconds.
