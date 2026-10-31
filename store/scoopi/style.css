@@ -181,7 +181,9 @@ footer { border-top: 1px solid var(--line); margin-top: 64px; padding: 28px 0 40
 footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: center; }
 footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
 
-.tagline { font-size: clamp(20px, 2.2vw, 24px); line-height: 1.25; font-weight: 600; letter-spacing: -.015em; color: var(--ink); margin: -4px 0 14px; }
+.tagline { font-size: clamp(30px, 3.6vw, 40px); line-height: 1.08; font-weight: 700; letter-spacing: -.03em; color: var(--ink); margin: -2px 0 18px; }
+.tagline .x10 { color: var(--indigo); background: linear-gradient(transparent 62%, var(--peach) 62%, var(--peach) 92%, transparent 92%); padding: 0 .06em; display: inline-block; animation: x10pop .7s .3s cubic-bezier(.3, 1.6, .5, 1) backwards; }
+@keyframes x10pop { from { transform: scale(.6) rotate(-6deg); opacity: 0; } }
 
 /* What people are saying: quote cards in a row that scrolls sideways as more come in. */
 .reviews { padding: 72px 0 8px; }
