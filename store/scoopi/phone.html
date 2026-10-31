@@ -125,8 +125,8 @@
       sent.prepend(row);
       const state = row.lastChild;
       try {
-        const res = await fetch(cfg.supabaseUrl + "/functions/v1/phone?action=upload&token=" + encodeURIComponent(token), {
-          method: "POST", headers: { apikey: cfg.anonKey, "content-type": "image/jpeg" }, body: ready ? file : await shrink(file),
+        const res = await fetch(cfg.supabaseUrl + "/functions/v1/phone?action=upload", {
+          method: "POST", headers: { apikey: cfg.anonKey, "content-type": "image/jpeg", "x-scoopi-token": token }, body: ready ? file : await shrink(file),
         });
         if (!res.ok) throw new Error((await res.json().catch(() => null))?.error?.message || "Couldn't send it. Try again.");
         state.textContent = "✓ Sent to Scoopi";

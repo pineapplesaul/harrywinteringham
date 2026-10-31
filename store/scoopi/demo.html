@@ -347,9 +347,10 @@ sampleP.then(x => { if (x) x.limits().then(c => { caps = c; }).catch(() => {}); 
 
 /* ---------- libraries loaded on demand ---------- */
 const PDFJS_V = "3.11.174";
-const PDFJS = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_V}/pdf.min.js`;
-const PDFJS_WORKER = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_V}/pdf.worker.min.js`;
-const PDFLIB = "https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js";
+// Served from this site (site/vendor, from the npm packages), so no outside server's code runs on the page that holds the sign-in.
+const PDFJS = `vendor/pdfjs-${PDFJS_V}/pdf.min.js`;
+const PDFJS_WORKER = `vendor/pdfjs-${PDFJS_V}/pdf.worker.min.js`;
+const PDFLIB = "vendor/pdf-lib-1.17.1/pdf-lib.min.js";
 let pdfjsP = null, pdfLibP = null;
 function getPdfjs() {
   // The worker build runs on the page itself (no Web Worker), which this frame allows.

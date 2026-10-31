@@ -40,6 +40,8 @@
     const panel = document.getElementById("panel");
     const params = new URLSearchParams(location.search);
     const fromApp = params.get("app") === "1";
+    // The one-time code the Mac app made when its Sign in was pressed; it goes back with the session.
+    const state = (params.get("state") || "").replace(/[^0-9a-f]/g, "").slice(0, 64);
     const paid = params.get("paid");
 
     const el = (tag, attrs = {}, ...kids) => {
@@ -82,7 +84,7 @@
       const left = Math.max(60, (session.expires_at || 0) - Math.floor(Date.now() / 1000));
       return "scoopi://auth#access_token=" + encodeURIComponent(session.access_token) +
         "&refresh_token=" + encodeURIComponent(session.refresh_token) +
-        "&expires_in=" + left + "&email=" + encodeURIComponent(session.user.email || "");
+        "&expires_in=" + left + "&email=" + encodeURIComponent(session.user.email || "") + (state ? "&state=" + state : "");
     }
 
     function signedOut(message) {
@@ -101,7 +103,7 @@
         e.preventDefault();
         if (check && !token) { if (!check.querySelector(".msg")) check.prepend(note("One moment: finish the robot check below first.")); return; }
         button.disabled = true;
-        const redirect = new URL("account.html" + (fromApp ? "?app=1" : ""), location.href).href;
+        const redirect = new URL("account.html" + (fromApp ? "?app=1" + (state ? "&state=" + state : "") : ""), location.href).href;
         const options = { emailRedirectTo: redirect };
         if (token) options.captchaToken = token;
         const { error } = await sb.auth.signInWithOtp({ email: input.value.trim(), options });
