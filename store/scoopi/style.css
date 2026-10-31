@@ -194,7 +194,7 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
 .rev figcaption { margin-top: 18px; color: var(--ink-muted); font-size: 14px; }
 .rev figcaption b { color: var(--ink); font-weight: 600; }
 
-/* Earwig, from the makers: a small, glossy card that slides in from the corner as you scroll. */
+/* Earwig, from the makers: a glossy card that slides in from the corner a moment after the page opens. */
 .ewpop { position: fixed; left: 20px; bottom: 20px; z-index: 30; width: min(440px, calc(100vw - 40px)); display: flex; align-items: center; gap: 18px;
   padding: 20px 44px 20px 20px; border-radius: 24px; color: #FFF6EC; overflow: hidden;
   background: linear-gradient(150deg, #241F5C 0%, #030027 55%, #0B0640 100%);
@@ -206,21 +206,30 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
   background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .22) 50%, transparent 65%); }
 .ewpop.in::after { animation: ewshine 4.5s 1s ease-in-out infinite; }
 @keyframes ewshine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
-.ewpop { align-items: flex-start; }
-.ewpop img { width: 72px; height: 72px; border-radius: 18px; flex: none; box-shadow: 0 6px 16px rgba(255, 92, 77, .45); animation: ewbob 3s ease-in-out infinite; }
-@keyframes ewbob { 50% { transform: translateY(-3px) rotate(-4deg); } }
-.ewpop-body { display: grid; gap: 3px; line-height: 1.3; justify-items: start; }
+.ewpop { align-items: center; }
+/* The Earwig phone: 3D when it can be, otherwise the recording in a phone-shaped frame. */
+.ewpop-phone { position: relative; flex: none; width: 96px; height: 176px; display: block; }
+.ewpop-phone video { position: absolute; left: 14px; top: 8px; width: 68px; height: 146px; object-fit: cover; border-radius: 13px; box-shadow: 0 0 0 3px #2F3036, 0 12px 26px rgba(0, 0, 0, .5); transform: rotate(-6deg); }
+.ewpop-phone.is-3d video { opacity: 0; }
+.ewpop-canvas { position: absolute; inset: -10px -16px; width: calc(100% + 32px); height: calc(100% + 20px); }
+.ewpop-body { display: grid; gap: 3px; line-height: 1.3; justify-items: start; min-width: 0; }
+.ewpop-body b { display: flex; align-items: center; gap: 8px; }
+.ewpop-body b img { width: 26px; height: 26px; border-radius: 7px; box-shadow: 0 4px 12px rgba(255, 92, 77, .45); animation: ewbob 3s ease-in-out infinite; }
+@keyframes ewbob { 50% { transform: translateY(-2px) rotate(-6deg); } }
+/* The three lines take turns, sliding up. */
+.ewpop-roll { display: block; height: 1.35em; overflow: hidden; font-size: 16px; font-weight: 600; color: #FF8A7E; line-height: 1.35; }
+.ewpop-roll-in { display: block; animation: ewroll 8s cubic-bezier(.6, 0, .2, 1) infinite; }
+.ewpop-roll-in > span { display: block; height: 1.35em; white-space: nowrap; }
+@keyframes ewroll { 0%, 27% { transform: translateY(0); } 33%, 60% { transform: translateY(-1.35em); } 66%, 94% { transform: translateY(-2.7em); } 100% { transform: translateY(-4.05em); } }
 .ewpop-new { font-size: 11.5px; font-weight: 700; letter-spacing: .02em; color: #FFC9A6; }
 .ewpop-body b { font-size: 21px; letter-spacing: -.02em; }
-.ewpop-tag { font-size: 15px; font-weight: 600; color: #FF8A7E; }
-.ewpop-body small { font-size: 14.5px; line-height: 1.4; color: #C9C3D9; margin-top: 4px; }
 .ewpop-go { margin-top: 12px; display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 12px; background: #FF5C4D; color: #fff; font-weight: 700; font-size: 15px; text-decoration: none; box-shadow: 0 8px 20px rgba(255, 92, 77, .4); transition: transform .12s, filter .15s; }
 .ewpop-go:hover { filter: brightness(1.08); }
 .ewpop-go:active { transform: scale(.97); }
 .ewpop-fine { font-size: 12px; color: #9C95B5; margin-top: 4px; }
 .ewpop button { position: absolute; top: 10px; right: 12px; width: 28px; height: 28px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #FFF6EC; font: 600 15px/1 inherit; cursor: pointer; }
 .ewpop button:hover { background: rgba(255, 255, 255, .2); }
-@media (max-width: 520px) { .ewpop { left: 12px; bottom: 12px; width: calc(100vw - 24px); padding: 16px 40px 16px 16px; gap: 14px; } .ewpop img { width: 56px; height: 56px; border-radius: 14px; } .ewpop-body small { display: none; } }
+@media (max-width: 520px) { .ewpop { left: 12px; bottom: 12px; width: calc(100vw - 24px); padding: 16px 40px 16px 16px; gap: 14px; }  .ewpop-phone { width: 72px; height: 132px; } .ewpop-phone video { left: 10px; top: 6px; width: 52px; height: 112px; border-radius: 10px; } }
 
 /* Account page: plain black on white (white on black in dark mode), no cards. */
 .acct { --paper: #FFFFFF; --raised: #FFFFFF; --ink: #0A0A0A; --ink-muted: #6E6E73; --line: #E6E6E6; --indigo: #0A0A0A; --on-indigo: #FFFFFF; --coral: #D70015; }
