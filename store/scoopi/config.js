@@ -6,7 +6,7 @@ window.SCOOPI = {
   prices: { scoopi: "£19", scoopiScans: 300, topup: "£5", topupScans: 100, free: 10 },
   // Cloudflare Turnstile's site key (public), for the "not a robot" check on sign-in. Empty leaves it off.
   // Add it here and publish before switching on CAPTCHA in Supabase, or sign-in stops working (see LAUNCH.md).
-  captchaSiteKey: "",
+  captchaSiteKey: "0x4AAAAAAFtyKoEkmJohRtUc",
 };
 
 // Fills in any [data-price] on the page, so prices live in one place.
