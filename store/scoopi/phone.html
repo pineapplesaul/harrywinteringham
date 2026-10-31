@@ -20,6 +20,7 @@
     .sent .ok { color: var(--ink-muted); }
     .sent .bad { color: var(--coral); }
     input[type=file] { display: none; }
+    .credit { margin-top: 48px; font-size: 13px; color: var(--ink-muted); }
     /* The camera fills the screen, with its controls over the bottom, like the phone's own camera. */
     .cam { position: fixed; inset: 0; z-index: 50; background: #000; }
     .cam[hidden] { display: none; }
@@ -40,6 +41,12 @@
   // Opened from the QR code in Scoopi: each photo taken here goes to the Mac's tray. The link (after #) says whose.
   (() => {
     const cfg = window.SCOOPI, token = location.hash.slice(1), panel = document.getElementById("panel");
+    const credit = () => {
+      const p = document.createElement("p"), a = document.createElement("a");
+      p.className = "credit"; a.href = "https://www.earwig.io"; a.textContent = "Earwig";
+      p.append("Scoopi, made by ", a);
+      return p;
+    };
     const el = (tag, attrs = {}, ...kids) => {
       const n = document.createElement(tag);
       for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
@@ -47,7 +54,7 @@
       return n;
     };
     if (!/^[\w-]+\.[0-9a-f]{32}\.\d+\.[0-9a-f]+$/.test(token)) {
-      panel.replaceChildren(el("h1", {}, "Scan for Scoopi"), el("p", {}, "Open this page by scanning the code in Scoopi on your Mac: Photo, then Scan with your phone."));
+      panel.replaceChildren(el("h1", {}, "Scan for Scoopi"), el("p", {}, "Open this page by scanning the code in Scoopi on your Mac: Photo, then Scan with your phone."), credit());
       return;
     }
     const camera = el("input", { type: "file", accept: "image/*", capture: "environment" });
@@ -95,7 +102,7 @@
     panel.replaceChildren(
       el("h1", {}, "Scan for Scoopi"),
       el("p", {}, "Take a photo of each receipt, flat and in good light, one after another. Each one appears in Scoopi on your Mac in a few seconds."),
-      take, pick, cam, camera, library, sent);
+      take, pick, cam, camera, library, sent, credit());
 
     // Photos are shrunk to 2,200 pixels on the long side (plenty to read) before they're sent.
     function shrink(file) {
