@@ -116,7 +116,7 @@ function start() {
   const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(-3, 4, 5); scene.add(key);
   const rim = new THREE.DirectionalLight(0xffb8a8, 1.0); rim.position.set(4, 1, -3); scene.add(rim);
   const camera = new THREE.PerspectiveCamera(24, 1, 0.1, 100);
-  camera.position.set(0, 0, 4.1);
+  camera.position.set(0, 0, 3.95);
 
   const tex = new THREE.VideoTexture(video);
   tex.colorSpace = THREE.SRGBColorSpace;
