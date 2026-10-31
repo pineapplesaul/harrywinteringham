@@ -183,6 +183,15 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
 
 .tagline { font-size: clamp(20px, 2.2vw, 24px); line-height: 1.25; font-weight: 600; letter-spacing: -.015em; color: var(--ink); margin: -4px 0 14px; }
 
+/* What people are saying: quote cards in a row that scrolls sideways as more come in. */
+.reviews { padding: 72px 0 8px; }
+.reviews h2 { font-size: clamp(32px, 4.4vw, 44px); line-height: 1.05; letter-spacing: -.03em; margin: 0 0 24px; }
+.revs { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: thin; }
+.rev { flex: 0 0 min(440px, 86%); scroll-snap-align: start; margin: 0; background: var(--raised); border: 1px solid var(--line); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; justify-content: space-between; }
+.rev blockquote { margin: 0; font-size: 19px; line-height: 1.45; letter-spacing: -.01em; }
+.rev figcaption { margin-top: 18px; color: var(--ink-muted); font-size: 14px; }
+.rev figcaption b { color: var(--ink); font-weight: 600; }
+
 /* Account page: plain black on white (white on black in dark mode), no cards. */
 .acct { --paper: #FFFFFF; --raised: #FFFFFF; --ink: #0A0A0A; --ink-muted: #6E6E73; --line: #E6E6E6; --indigo: #0A0A0A; --on-indigo: #FFFFFF; --coral: #D70015; }
 @media (prefers-color-scheme: dark) {
