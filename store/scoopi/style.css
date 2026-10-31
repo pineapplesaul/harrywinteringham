@@ -193,8 +193,8 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
 .rev figcaption b { color: var(--ink); font-weight: 600; }
 
 /* Earwig, from the makers: a small, glossy card that slides in from the corner as you scroll. */
-.ewpop { position: fixed; left: 20px; bottom: 20px; z-index: 30; width: min(330px, calc(100vw - 40px)); display: flex; align-items: center; gap: 12px;
-  padding: 12px 34px 12px 12px; border-radius: 18px; color: #FFF6EC; overflow: hidden;
+.ewpop { position: fixed; left: 20px; bottom: 20px; z-index: 30; width: min(440px, calc(100vw - 40px)); display: flex; align-items: center; gap: 18px;
+  padding: 20px 44px 20px 20px; border-radius: 24px; color: #FFF6EC; overflow: hidden;
   background: linear-gradient(150deg, #241F5C 0%, #030027 55%, #0B0640 100%);
   box-shadow: 0 18px 44px rgba(3, 0, 39, .45), inset 0 1px 0 rgba(255, 255, 255, .18), inset 0 0 0 1px rgba(255, 255, 255, .08);
   transform: translateY(calc(100% + 40px)); opacity: 0; transition: transform .55s cubic-bezier(.2, 1.2, .3, 1), opacity .3s; }
@@ -204,16 +204,21 @@ footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
   background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .22) 50%, transparent 65%); }
 .ewpop.in::after { animation: ewshine 4.5s 1s ease-in-out infinite; }
 @keyframes ewshine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
-.ewpop img { width: 44px; height: 44px; border-radius: 12px; flex: none; box-shadow: 0 6px 16px rgba(255, 92, 77, .45); animation: ewbob 3s ease-in-out infinite; }
+.ewpop { align-items: flex-start; }
+.ewpop img { width: 72px; height: 72px; border-radius: 18px; flex: none; box-shadow: 0 6px 16px rgba(255, 92, 77, .45); animation: ewbob 3s ease-in-out infinite; }
 @keyframes ewbob { 50% { transform: translateY(-3px) rotate(-4deg); } }
-.ewpop-body { display: grid; gap: 1px; text-decoration: none; color: inherit; line-height: 1.3; }
-.ewpop-body b { font-size: 15px; }
-.ewpop-body span { font-size: 12.5px; font-weight: 600; color: #FF8A7E; }
-.ewpop-body small { font-size: 12.5px; color: #C9C3D9; margin-top: 2px; }
-.ewpop-body:hover small { color: #FFF6EC; }
-.ewpop button { position: absolute; top: 6px; right: 8px; width: 24px; height: 24px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #FFF6EC; font: 600 15px/1 inherit; cursor: pointer; }
+.ewpop-body { display: grid; gap: 3px; line-height: 1.3; justify-items: start; }
+.ewpop-new { font-size: 11.5px; font-weight: 700; letter-spacing: .02em; color: #FFC9A6; }
+.ewpop-body b { font-size: 21px; letter-spacing: -.02em; }
+.ewpop-tag { font-size: 15px; font-weight: 600; color: #FF8A7E; }
+.ewpop-body small { font-size: 14.5px; line-height: 1.4; color: #C9C3D9; margin-top: 4px; }
+.ewpop-go { margin-top: 12px; display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 12px; background: #FF5C4D; color: #fff; font-weight: 700; font-size: 15px; text-decoration: none; box-shadow: 0 8px 20px rgba(255, 92, 77, .4); transition: transform .12s, filter .15s; }
+.ewpop-go:hover { filter: brightness(1.08); }
+.ewpop-go:active { transform: scale(.97); }
+.ewpop-fine { font-size: 12px; color: #9C95B5; margin-top: 4px; }
+.ewpop button { position: absolute; top: 10px; right: 12px; width: 28px; height: 28px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #FFF6EC; font: 600 15px/1 inherit; cursor: pointer; }
 .ewpop button:hover { background: rgba(255, 255, 255, .2); }
-@media (max-width: 520px) { .ewpop { left: 12px; bottom: 12px; width: calc(100vw - 24px); } }
+@media (max-width: 520px) { .ewpop { left: 12px; bottom: 12px; width: calc(100vw - 24px); padding: 16px 40px 16px 16px; gap: 14px; } .ewpop img { width: 56px; height: 56px; border-radius: 14px; } .ewpop-body small { display: none; } }
 
 /* Account page: plain black on white (white on black in dark mode), no cards. */
 .acct { --paper: #FFFFFF; --raised: #FFFFFF; --ink: #0A0A0A; --ink-muted: #6E6E73; --line: #E6E6E6; --indigo: #0A0A0A; --on-indigo: #FFFFFF; --coral: #D70015; }

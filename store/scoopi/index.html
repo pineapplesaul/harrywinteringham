@@ -178,13 +178,17 @@
       </details>
     </section>
   </main>
-  <!-- Earwig, from the makers of Scoopi: a small card that slides in once you've scrolled past the top. -->
+  <!-- Earwig, from the makers of Scoopi: a card that slides in a moment after the page opens. -->
   <aside class="ewpop" id="ewpop" aria-label="Earwig, from the makers of Scoopi" hidden>
-    <img src="assets/earwig.png" alt="" width="44" height="44">
-    <a class="ewpop-body" href="https://www.earwig.io">
-      <b>Earwig</b><span>The first agent for filmmakers</span>
-      <small>Marks selects while you film, so you find them in the edit →</small>
-    </a>
+    <img src="assets/earwig.png" alt="" width="72" height="72">
+    <div class="ewpop-body">
+      <span class="ewpop-new">New · from the makers of Scoopi</span>
+      <b>Earwig</b>
+      <span class="ewpop-tag">The first agent for filmmakers</span>
+      <small>Marks selects while you film, so you find them in the edit. Live transcription, AI in the room, and a rough cut built from your marks.</small>
+      <a class="ewpop-go" href="https://www.earwig.io">Try Earwig free →</a>
+      <span class="ewpop-fine">First month free</span>
+    </div>
     <button type="button" aria-label="Close">×</button>
   </aside>
 
@@ -329,14 +333,13 @@
     setOut(row, !row.classList.contains("out"));
   });
 
-  // The Earwig card slides in after the first screen, unless it's been closed before.
+  // The Earwig card slides in a moment after the page opens, unless it's been closed before.
   const ewpop = document.getElementById("ewpop");
   let ewClosed = false;
   try { ewClosed = localStorage.getItem("ewpop.closed") === "1"; } catch {}
   if (ewpop && !ewClosed) {
     ewpop.hidden = false;
-    const check = () => ewpop.classList.toggle("in", scrollY > innerHeight * 0.8);
-    addEventListener("scroll", check, { passive: true }); check();
+    setTimeout(() => ewpop.classList.add("in"), 1200);
     ewpop.querySelector("button").addEventListener("click", () => {
       ewpop.classList.remove("in");
       setTimeout(() => { ewpop.hidden = true; }, 400);
