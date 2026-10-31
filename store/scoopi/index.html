@@ -38,7 +38,7 @@
         <p class="tagline">Receipts done about 10× faster than by hand.</p>
         <p class="desc">Drop in receipts, photos and PDFs, pick what you want back, and Scoopi fills in the form: your expense claim, an invoice, or your company's own template. The receipts come bundled in a PDF, numbered to match.</p>
         <p class="compat"><b>Works on</b> macOS 14 or later · Apple silicon &amp; Intel · <a href="#windows">Windows coming soon</a></p>
-        <div class="price"><strong data-price="scoopi">£19</strong><span>one-off, with <span data-price="scoopiScans">300</span> scans. Founder price while we launch.</span></div>
+        <div class="price"><strong data-price="scoopi">£19</strong><span>one-off. Founder price while we launch.</span></div>
         <div class="buy">
           <a class="btn btn-primary" href="account.html">Buy · <span data-price="scoopi">£19</span></a>
           <a class="btn btn-quiet" href="account.html">Try it free</a>
@@ -64,8 +64,8 @@
 
       <article class="card solo">
         <div>
-          <h3>Scan with your iPhone.</h3>
-          <p>Press Photo on the dial and pick your iPhone. It opens straight into the document scanner, which finds each receipt's edges and flattens it, then sends it to Scoopi. Scan a handful in a row and they land in the tray one by one. There's nothing to install on the phone.</p>
+          <h3>Scan with your phone.</h3>
+          <p>Press Photo on the dial and Scoopi shows a QR code. Scan it with any phone, iPhone or Android, and its camera opens ready to go. Snap one receipt after another and each lands in Scoopi's tray in seconds. There's nothing to install on the phone.</p>
         </div>
         <!-- Harry's picture of a phone scan goes here, for example:
         <div class="shot"><img src="assets/phone-scan.jpg" alt="Scanning a receipt with an iPhone into Scoopi"></div>
@@ -339,7 +339,8 @@
   try { ewClosed = localStorage.getItem("ewpop.closed") === "1"; } catch {}
   if (ewpop && !ewClosed) {
     ewpop.hidden = false;
-    setTimeout(() => ewpop.classList.add("in"), 1200);
+    // On phones it waits a little longer, so the product is seen first.
+    setTimeout(() => ewpop.classList.add("in"), matchMedia("(max-width: 520px)").matches ? 6000 : 1200);
     ewpop.querySelector("button").addEventListener("click", () => {
       ewpop.classList.remove("in");
       setTimeout(() => { ewpop.hidden = true; }, 400);

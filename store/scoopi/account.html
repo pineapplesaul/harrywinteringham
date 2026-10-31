@@ -151,7 +151,7 @@
           el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, "The app"), el("div", { class: "why" }, "macOS 14 or later")), download),
           el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, "Already installed?"), el("div", { class: "why" }, "Signs the app in with this account")), connect),
           el("div", { class: "row" }, el("div", {}, el("div", { class: "what" }, acct.unlocked ? "More scans" : "Unlock Scoopi"),
-            el("div", { class: "why" }, acct.unlocked ? prices.topupScans + " more scans" : "One-off, with " + prices.scoopiScans + " scans")), buy),
+            el("div", { class: "why" }, acct.unlocked ? prices.topupScans + " more scans" : "One-off, founder price")), buy),
         ),
       );
       // Credits arrive once Stripe confirms the payment, usually within seconds.
