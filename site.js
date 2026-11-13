@@ -85,6 +85,26 @@ const bubbleObs = new IntersectionObserver((entries, obs) => {
 }, { threshold: 0.5 });
 document.querySelectorAll('.has-bubbles').forEach(el => bubbleObs.observe(el));
 
+// Project hero marked data-autoplay plays its trailer on load. Browsers often block sound until
+// the visitor has interacted with the site, so if that happens it plays muted with a Sound on button.
+const heroTrailer = document.querySelector('.p-hero[data-autoplay] video');
+const soundBtn = document.querySelector('.p-hero .sound-btn');
+if (heroTrailer) {
+  heroTrailer.addEventListener('playing', () => heroTrailer.classList.add('ready'), { once: true });
+  heroTrailer.muted = false;
+  heroTrailer.play().catch(() => {
+    heroTrailer.muted = true;
+    soundBtn.hidden = false;
+    return heroTrailer.play();
+  }).catch(() => {});
+  soundBtn.addEventListener('click', () => {
+    heroTrailer.muted = false;
+    heroTrailer.currentTime = 0;
+    heroTrailer.play().catch(() => {});
+    soundBtn.hidden = true;
+  });
+}
+
 // Full-bleed player
 const player = document.querySelector('.player');
 const stage = player.querySelector('.player-stage');
@@ -107,6 +127,7 @@ function openOverlay(overlay, fromEl) {
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
   document.querySelectorAll('video[data-src]').forEach(v => v.pause());
+  if (heroTrailer) heroTrailer.pause();
 }
 
 function closeOverlay(overlay, cleanup) {
@@ -115,6 +136,7 @@ function closeOverlay(overlay, cleanup) {
     overlay.hidden = true;
     document.body.style.overflow = '';
     loops.forEach(v => { if (v.src) v.play().catch(() => {}); });
+    if (heroTrailer) { heroTrailer.muted = true; soundBtn.hidden = false; heroTrailer.play().catch(() => {}); }
   };
   if (overlay._from) setOrigin(overlay, overlay._from);
   overlay.classList.remove('open');

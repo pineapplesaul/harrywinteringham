@@ -81,6 +81,14 @@ h4 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacin
   display: grid; place-items: center; cursor: pointer; transition: transform 0.3s, background 0.3s;
 }
 .play-btn svg { width: 44px; height: 44px; fill: #000; margin-left: 6px; }
+.sound-btn {
+  position: absolute; right: 24px; bottom: 24px; z-index: 1; border: 0; border-radius: 999px;
+  padding: 12px 20px; font: inherit; font-weight: 700; color: #000; cursor: pointer;
+  background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: background 0.3s;
+}
+.sound-btn:hover { background: rgba(255, 255, 255, 0.7); }
+.sound-btn[hidden] { display: none; }
 .play-btn:hover { transform: scale(1.06); background: rgba(255, 255, 255, 0.7); }
 
 .p-info { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 64px var(--gutter) 120px; }
